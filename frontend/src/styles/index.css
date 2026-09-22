@@ -1,0 +1,34 @@
+:root {
+  --bg-primary: #0a0d14;
+  --bg-card: rgba(18, 24, 38, 0.85);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --accent-cyan: #06b6d4;
+  --accent-blue: #3b82f6;
+  --accent-amber: #f59e0b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  font-family: 'Outfit', sans-serif;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism Container */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
