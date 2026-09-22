@@ -5,7 +5,6 @@
 - **Framework**: Spring Boot 3.4.0
 - **ORM / Persistence**: Spring Data JPA, Hibernate
 - **Build Tool**: Maven (Maven Wrapper `mvnw`)
-- **API Documentation**: Springdoc OpenAPI 3 (Swagger UI)
 
 ## 2. Frontend
 - **Runtime & Package Manager**: Node.js v22.x LTS, npm 10.x

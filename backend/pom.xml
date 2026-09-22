@@ -16,7 +16,6 @@
 
 	<properties>
 		<java.version>25</java.version>
-		<springdoc.version>2.7.0</springdoc.version>
 		<mssql-jdbc.version>12.8.1.jre11</mssql-jdbc.version>
 	</properties>
 
@@ -46,13 +45,6 @@
 			<version>${mssql-jdbc.version}</version>
 		</dependency>
 
-		<!-- OpenAPI 3 & Swagger UI Documentation -->
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>${springdoc.version}</version>
-		</dependency>
-
 		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -73,28 +65,22 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.13.0</version>
 				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-							<version>${lombok.version}</version>
-						</path>
-					</annotationProcessorPaths>
+					<source>25</source>
+					<target>25</target>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.5.0</version>
 				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
+					<mainClass>com.virtualtune.VirtualTuneApplication</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
