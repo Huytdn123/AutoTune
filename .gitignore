@@ -44,4 +44,6 @@ pnpm-debug.log*
 database/*.mdf
 database/*.ldf
 database/*.bak
-"docs/" 
+docs/
+
+
