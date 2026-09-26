@@ -70,6 +70,13 @@
 			<version>${mssql-jdbc.version}</version>
 		</dependency>
 
+		<!-- H2 In-Memory Database (Zero-Install Database Engine) -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>

@@ -3,14 +3,6 @@ package com.virtualtune;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * VIRTUAL TUNE - B2B 3D Automotive Customization Platform
- *
- * TÀI KHOẢN TEST TỪNG ROLE (Mật khẩu: password123):
- * - GARAGE_OWNER    : admin_garage / password123
- * - LEAD_TECHNICIAN : tech_lead    / password123
- * - CAR_OWNER       : customer_vip / password123
- */
 @SpringBootApplication
 public class VirtualTuneApplication {
 

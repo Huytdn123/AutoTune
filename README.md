@@ -7,7 +7,8 @@
 ![React](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-6.0-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Three.js](https://img.shields.io/badge/Three.js-r170-black?style=for-the-badge&logo=threedotjs&logoColor=white)
-![MS SQL Server](https://img.shields.io/badge/MSSQL_Server-2022-CC292B?style=for-the-badge&logo=microsoftsqlserver&logoColor=white)
+![H2 Database](https://img.shields.io/badge/Database-H2_In--Memory_(Zero_Install)-006699?style=for-the-badge&logo=databricks&logoColor=white)
+![MS SQL Server](https://img.shields.io/badge/MSSQL_Server-2022_(Tùy_Chọn)-CC292B?style=for-the-badge&logo=microsoftsqlserver&logoColor=white)
 ![Security](https://img.shields.io/badge/Security-Spring_Security_6_%2B_JWT-blue?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 
 **Nền tảng B2B SaaS hỗ trợ cá nhân hóa, mô phỏng 3D độ xe tương tác thời gian thực & quản lý vận hành xưởng độ xe chuyên nghiệp.**  
@@ -46,15 +47,15 @@
 | **Build Tool** | Vite | 6.x | Fast HMR, tối ưu bundle |
 | **3D Engine** | Three.js + `@react-three/fiber` | ^0.170.x | Render mô hình 3D WebGL trực tiếp |
 | **3D Helpers** | `@react-three/drei` | Latest | Controls, Environment & Lighting |
-| **HTTP Client** | Axios | Latest | Xử lý REST API & JWT Interceptors |
+| **HTTP Client** | Axios | Latest | Xử lý REST API, Mock Fallback & JWT Interceptors |
 | **Icons** | Material Symbols | CDN | Google Fonts Icons |
 
 ### ⚙️ Backend
 | Thành Phần | Công Nghệ | Phiên Bản | Ghi Chú |
 |:---|:---|:---:|:---|
-| **Ngôn ngữ** | Java (OpenJDK) | 25.0.1 | Hiệu năng cao |
+| **Ngôn ngữ** | Java (Oracle JDK) | 25.0.1 | Hiệu năng cao, Virtual Threads |
 | **Framework** | Spring Boot | 3.5.0 | RESTful API |
-| **Bảo mật** | Spring Security 6 | 6.x | Stateless, BCrypt |
+| **Bảo mật** | Spring Security 6 | 6.x | Stateless, BCrypt, H2 Console Allowed |
 | **Xác thực** | JJWT (Java JWT) | 0.12.6 | JWT Token-based Authentication |
 | **ORM** | Spring Data JPA + Hibernate | 6.x | Quản lý Entity & Database |
 | **Build Tool** | Maven Wrapper (`mvnw`) | 3.14.0 | Build độc lập môi trường |
@@ -62,31 +63,32 @@
 ### 🗄️ Database
 | Thành Phần | Công Nghệ | Chi Tiết |
 |:---|:---|:---|
-| **DBMS** | Microsoft SQL Server | 2022 |
-| **Driver** | `mssql-jdbc` | 12.8.1.jre11 |
-| **Cổng mặc định** | `1433` | `localhost:1433` |
-| **Tên DB** | `VirtualTuneDB` | Bảng quan hệ chuẩn hóa |
-| **Cơ chế Schema** | `ddl-auto=create` | Tự động sinh bảng và nạp dữ liệu mẫu khi backend khởi chạy |
+| **Mặc Định (Zero-Install)** | **H2 In-Memory Database** | Tự động tạo DB trong RAM, chạy ngay trên mọi máy **không cần cài đặt DB**. Tự động seed tài khoản test & phụ tùng xe. |
+| **Web Console Quản Trị** | H2 Web Console | Truy cập trực tiếp tại `http://localhost:8080/h2-console` |
+| **Tùy Chọn Mở Rộng** | Microsoft SQL Server 2022 | Hỗ trợ kết nối SQL Server thật qua file cấu hình `application.properties` (kèm script `database/VirtualTuneDB.sql`) |
 
 ---
 
 ## ⚡ Khởi Chạy Dự Án
 
 ### 1. Khởi Chạy Nhanh 1-Click (Khuyên Dùng)
-Nhấp đúp vào file **[`start-dev.bat`](start-dev.bat)** tại thư mục gốc để tự động mở cả 2 dịch vụ:
-- **Backend API (Spring Boot - Java 25):** `http://localhost:8080`
-- **Frontend App (React 19 Vite):** `http://localhost:5173`
+Nhấp đúp vào file **[`start-dev.bat`](start-dev.bat)** tại thư mục gốc:
+- **Tự động kiểm tra môi trường:** Quét Java 25 & Node.js (tự động hỗ trợ tải và cài đặt nếu máy chưa có).
+- **Tự động cài đặt thư viện:** Chạy `npm install` nếu phát hiện chưa có `node_modules`.
+- **Bung 2 Terminal độc lập:**
+  - **Backend API (Spring Boot - Java 25):** `http://localhost:8080`
+  - **Frontend Application (React 19 Vite):** `http://localhost:5173`
+- **Quản lý Database H2:** `http://localhost:8080/h2-console`  
+  *(JDBC URL: `jdbc:h2:mem:VirtualTuneDB` | User: `sa` | Password: để trống)*
 
 ---
 
 ### 2. Khởi Chạy Thủ Công (Tùy Chọn)
-*(Yêu cầu: Java 25, Node.js v20+, SQL Server 2022 trên port 1433)*
 
 * **Backend:**
   ```powershell
   cd backend
-  $env:JAVA_HOME = "C:\Program Files\Java\jdk-25"
-  .\mvnw.cmd clean spring-boot:run
+  .\mvnw.cmd spring-boot:run
   ```
 * **Frontend:**
   ```bash
@@ -94,7 +96,8 @@ Nhấp đúp vào file **[`start-dev.bat`](start-dev.bat)** tại thư mục g�
   npm install
   npm run dev
   ```
-* **Reset Database (khi cần):**
+* **Chuyển sang SQL Server thật (khi cần):**
+  Mở file [`backend/src/main/resources/application.properties`](backend/src/main/resources/application.properties), bỏ comment các dòng cấu hình SQL Server và chạy file script:
   ```bash
   sqlcmd -S localhost -U sa -P 123 -C -i "database\VirtualTuneDB.sql"
   ```
@@ -112,19 +115,18 @@ Nhấp đúp vào file **[`start-dev.bat`](start-dev.bat)** tại thư mục g�
 
 ```text
 VIRTUAL TUNE/
-├── ⚡ start-dev.bat           # Script 1-click khởi chạy đồng thời Backend & Frontend
+├── ⚡ start-dev.bat           # Script 1-click thông minh kiểm tra môi trường & chạy đồng thời
 ├── 🔑 TEST_ACCOUNTS.md        # Danh sách tài khoản kiểm thử & phân quyền
 ├── 📖 README.md               # Tài liệu tổng quan & hướng dẫn dự án
 ├── backend/                   # Source code Backend Spring Boot 3.5 (Java 25)
-│   ├── src/main/java/         # Controllers, Services, Security, Models
-│   ├── src/main/resources/    # application.properties
+│   ├── src/main/java/         # Controllers, Services, Security, Models, DataInitializer
+│   ├── src/main/resources/    # application.properties (H2 / SQL Server)
 │   └── pom.xml                # Dependencies Maven
 ├── frontend/                  # Source code Frontend React 19 + Vite 6
 │   ├── src/                   # Components, Pages, 3D Studio, Assets
 │   └── package.json           # Dependencies npm
 ├── database/                  # File script SQL VirtualTuneDB.sql
-├── docs/                      # Tài liệu thiết kế & SRS
-└── scripts/                   # Scripts hỗ trợ
+└── docs/                      # Tài liệu thiết kế & SRS (được gitignore an toàn)
 ```
 
 ---
