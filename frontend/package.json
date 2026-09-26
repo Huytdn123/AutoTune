@@ -9,11 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.8",
+    "@react-three/fiber": "^9.8.1",
+    "axios": "^1.7.7",
+    "lucide-react": "^0.460.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "three": "^0.170.0",
-    "lucide-react": "^0.460.0",
-    "axios": "^1.7.7"
+    "react-router-dom": "^7.18.4",
+    "three": "^0.170.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
