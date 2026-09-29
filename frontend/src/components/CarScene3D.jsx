@@ -1,49 +1,75 @@
-import { useRef, useEffect, useMemo, Suspense } from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
-import { useGLTF, MeshReflectorMaterial, Environment, ContactShadows } from '@react-three/drei'
+import { useRef, useEffect, useMemo } from 'react'
+import { useFrame } from '@react-three/fiber'
+import { useGLTF, MeshReflectorMaterial, ContactShadows } from '@react-three/drei'
 import * as THREE from 'three'
 
-// ─── Ferrari 458 Italia – Official Three.js Model ──────────────────────────
-// Model by vicent091036 (Sketchfab), bundled locally in /models/ with local Draco decoder
-const FERRARI_GLB = '/models/ferrari.glb'
-const FERRARI_AO  = '/models/ferrari_ao.png'
-const DRACO_PATH  = '/draco/gltf/'
+// ─── Supported 3D Real-Life Car Models ─────────────────────────────────────────
+export const CAR_MODEL_FILES = {
+  'ferrari-458':           '/models/ferrari.glb',
+  'lamborghini-aventador': '/models/lamborghini.glb',
+  'porsche-gt3':           '/models/porsche.glb',
+  'mclaren-720s':          '/models/mclaren.glb',
+  'bmw-m4-csl':            '/models/bmw.glb',
+  'nissan-gtr':            '/models/nissan_gtr.glb',
+}
 
-// Preload the model locally
-useGLTF.preload(FERRARI_GLB, DRACO_PATH)
+const DRACO_PATH = '/draco/gltf/'
+const FERRARI_AO = '/models/ferrari_ao.png'
 
-// ─── Ferrari Model Component ──────────────────────────────────────────────
-export function FerrariModel({ bodyColor, detailsColor, glassColor, isAnimating }) {
-  const { scene } = useGLTF(FERRARI_GLB, DRACO_PATH)
+// Preload all real car models for seamless zero-latency switching
+Object.values(CAR_MODEL_FILES).forEach(url => {
+  useGLTF.preload(url, DRACO_PATH)
+})
+
+// ─── Universal Vehicle 3D Model Component ─────────────────────────────────────
+export function VehicleModel3D({
+  modelPath = '/models/ferrari.glb',
+  modelId = 'ferrari-458',
+  bodyColor = '#CC0000',
+  detailsColor = '#CCCCCC',
+  glassColor = '#C8D8F0',
+  isAnimating = false,
+  autoRotate = false,
+  autoRotateSpeed = 0.4
+}) {
+  const { scene } = useGLTF(modelPath || CAR_MODEL_FILES['ferrari-458'], DRACO_PATH)
   const wheelsRef = useRef([])
-  const carRef = useRef()
+  const groupRef = useRef()
 
-  // Materials
+  // Clone scene deep so each model instance is isolated from the global cache
+  const clonedScene = useMemo(() => scene.clone(true), [scene])
+
+  // Studio-grade PBR Car Paint Material
   const bodyMaterial = useMemo(() => new THREE.MeshPhysicalMaterial({
+    name: 'custom_body_paint',
     color: new THREE.Color(bodyColor),
-    metalness: 1.0,
-    roughness: 0.5,
+    metalness: 0.9,
+    roughness: 0.35,
     clearcoat: 1.0,
     clearcoatRoughness: 0.03,
-    envMapIntensity: 1.5,
+    envMapIntensity: 1.6,
   }), [])
 
+  // Wheel Rims & Metal Trim Material
   const detailsMaterial = useMemo(() => new THREE.MeshStandardMaterial({
+    name: 'custom_rim_details',
     color: new THREE.Color(detailsColor),
-    metalness: 1.0,
-    roughness: 0.5,
+    metalness: 0.9,
+    roughness: 0.35,
   }), [])
 
+  // Automotive Glass Material with Realistic Optical Transmission
   const glassMaterial = useMemo(() => new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color(glassColor),
-    metalness: 0.25,
-    roughness: 0,
-    transmission: 1.0,
-    transparent: true,
-    opacity: 0.85,
+    name: 'custom_automotive_glass',
+    color: new THREE.Color(glassColor || '#ffffff'),
+    metalness: 0.1,
+    roughness: 0.0,
+    transmission: 0.96,
+    ior: 1.5,
+    thickness: 0.3,
   }), [])
 
-  // Update colors reactively
+  // Reactively update material colors
   useEffect(() => {
     bodyMaterial.color.set(bodyColor)
     bodyMaterial.needsUpdate = true
@@ -59,71 +85,178 @@ export function FerrariModel({ bodyColor, detailsColor, glassColor, isAnimating 
     glassMaterial.needsUpdate = true
   }, [glassColor, glassMaterial])
 
-  // Apply materials to Ferrari mesh parts + collect wheel refs
+  // Setup scene: remove license plates, apply materials, auto-orient and scale
   useEffect(() => {
-    if (!scene) return
-    const car = scene.children[0]
-    if (!car) return
+    if (!clonedScene) return
 
-    // Body paint
-    const body = car.getObjectByName('body')
-    if (body) body.material = bodyMaterial
+    // Reset transforms before measuring bounds
+    clonedScene.position.set(0, 0, 0)
+    clonedScene.scale.set(1, 1, 1)
+    clonedScene.rotation.set(0, 0, 0)
 
-    // Rims
-    ;['rim_fl', 'rim_fr', 'rim_rr', 'rim_rl', 'trim'].forEach(name => {
-      const obj = car.getObjectByName(name)
-      if (obj) obj.material = detailsMaterial
-    })
+    const isFerrari = modelPath.includes('ferrari')
+    const isLambo   = modelPath.includes('lamborghini')
+    const isPorsche = modelPath.includes('porsche')
+    const isMcLaren = modelPath.includes('mclaren')
+    const isBMW     = modelPath.includes('bmw')
+    const isNissan  = modelPath.includes('nissan')
 
-    // Glass
-    const glass = car.getObjectByName('glass')
-    if (glass) glass.material = glassMaterial
+    const wheels = []
 
-    // Wheels for animation
-    wheelsRef.current = ['wheel_fl', 'wheel_fr', 'wheel_rl', 'wheel_rr']
-      .map(name => car.getObjectByName(name))
-      .filter(Boolean)
+    const platesToRemove = []
 
-    // Enable shadows on all meshes
-    scene.traverse(obj => {
-      if (obj.isMesh) {
-        obj.castShadow = true
-        obj.receiveShadow = true
+    // 1. Remove all license plates ("xóa hết biển số xe đi" - front & rear) + Apply custom materials
+    clonedScene.traverse(child => {
+      if (child.isMesh) {
+        child.castShadow = true
+        child.receiveShadow = true
+
+        const mat = child.material
+        const matName = mat ? (mat.name || '').toLowerCase() : ''
+        const nodeName = (child.name || '').toLowerCase()
+
+        // Hide and strip license plate meshes/materials across all cars
+        const isLicensePlate = 
+          /license|registar|numberplate|number_plate|license_plate|targa|matricula/i.test(matName) ||
+          /license|registar|numberplate|number_plate|license_plate|targa|matricula|chamferbox01|chamferbox04|plane\.005|plane\.006/i.test(nodeName)
+
+        if (isLicensePlate) {
+          platesToRemove.push(child)
+          return
+        }
+
+        // Apply custom paint / materials per car brand
+        if (isFerrari) {
+          if (nodeName === 'body' || nodeName.includes('mirror')) child.material = bodyMaterial
+          if (['rim_fl', 'rim_fr', 'rim_rr', 'rim_rl', 'trim'].includes(nodeName)) child.material = detailsMaterial
+          if (nodeName === 'glass') child.material = glassMaterial
+        } else if (isLambo) {
+          // Hide secondary overlapping rims if present (keep primary T0A rims)
+          if (nodeName.includes('_t0b_')) {
+            child.visible = false
+            return
+          }
+          // Side mirrors (Obj_ORVM / Mt_MirrorCover) and body panels inherit bodyMaterial
+          if (matName.includes('mt_body') || matName.includes('mt_mirrorcover') || nodeName.includes('orvm') || nodeName.includes('mirror')) {
+            child.material = bodyMaterial
+          }
+          if (matName.includes('mt_alloywheels') || matName.includes('mt_brakecaliper')) child.material = detailsMaterial
+          if (matName.includes('mt_windscreens') || matName.includes('mt_glass')) child.material = glassMaterial
+        } else if (isPorsche) {
+          // 1. ALL Windows & Glass FIRST (Side windows boot004_0, rear window, windshield, headlight lenses)
+          const isGlass = 
+            nodeName.includes('boot004') ||
+            nodeName.includes('boot.004') ||
+            nodeName.includes('window') ||
+            nodeName.includes('windshield') ||
+            matName === 'window' ||
+            matName === 'glass'
+
+          if (isGlass) {
+            child.material = glassMaterial
+          }
+          // 2. Wheel Rims (Cylinder meshes with silver material)
+          else if (
+            (nodeName.includes('cylinder') || nodeName.includes('wheel') || nodeName.includes('rim')) &&
+            matName === 'silver'
+          ) {
+            child.material = detailsMaterial
+          }
+          // 3. Body Paint Panels & Side Mirrors ONLY
+          // Meshes: boot001_0 (rear bumper), boot002_0 (roof/rear body), boot005_0 (doors/sides), boot008_0 (hood/front), plane002/003/004 (mirrors)
+          else if (
+            matName === 'paint' ||
+            /^(boot\.?00[1258]|plane\.?00[234])/i.test(nodeName)
+          ) {
+            child.material = bodyMaterial
+          }
+        } else if (isMcLaren) {
+          if (matName === 'material' || matName === 'carpaint' || matName.includes('carpaint') || nodeName.includes('mirror') || matName.includes('mirror')) child.material = bodyMaterial
+          if (matName === 'details' || matName === 'chrome' || nodeName.includes('rim')) child.material = detailsMaterial
+          if (matName.includes('windows') || matName.includes('clear_glass')) child.material = glassMaterial
+        } else if (isBMW) {
+          if (matName.includes('car paint') || matName.includes('wire_228153184') || nodeName.includes('mirror')) child.material = bodyMaterial
+          if (matName.includes('rims') || matName.includes('metalparts')) child.material = detailsMaterial
+          if (matName.includes('glass') || matName.includes('stuklo')) child.material = glassMaterial
+        } else if (isNissan) {
+          if (matName.includes('bodycolor') || nodeName.includes('body') || nodeName.includes('mirror')) child.material = bodyMaterial
+          if (matName.includes('brakerotor') || nodeName.includes('wheel') || nodeName.includes('rim')) child.material = detailsMaterial
+          if (nodeName.includes('glass') || nodeName.includes('window')) child.material = glassMaterial
+        }
       }
     })
-  }, [scene, bodyMaterial, detailsMaterial, glassMaterial])
 
-  // Wheel spin animation
-  useFrame((state) => {
-    if (!isAnimating) return
-    const time = -state.clock.getElapsedTime()
-    wheelsRef.current.forEach(wheel => {
-      if (wheel) wheel.rotation.x = time * Math.PI * 2
+    // Permanently detach and hide all license plates (both front and rear)
+    platesToRemove.forEach(mesh => {
+      mesh.visible = false
+      if (mesh.material) {
+        mesh.material.visible = false
+        mesh.material.opacity = 0
+        mesh.material.transparent = true
+      }
+      if (mesh.parent) {
+        mesh.parent.remove(mesh)
+      }
     })
+
+    // 2. Auto-orient: if length was modeled along X axis, rotate 90 deg around Y so front faces Z
+    const rawBox = new THREE.Box3().setFromObject(clonedScene)
+    const rawSize = rawBox.getSize(new THREE.Vector3())
+    const isFacingX = rawSize.x > rawSize.z * 1.2
+    if (isFacingX) {
+      clonedScene.rotation.y = Math.PI / 2
+    }
+
+    // 3. Normalization: scale to standard supercar length (~4.4 units)
+    const orientedBox = new THREE.Box3().setFromObject(clonedScene)
+    const orientedSize = orientedBox.getSize(new THREE.Vector3())
+    const length = Math.max(orientedSize.x, orientedSize.z)
+    const scale = 4.4 / Math.max(length, 0.01)
+    clonedScene.scale.set(scale, scale, scale)
+
+    // 4. Center on X & Z, and place tires flush on the showroom floor (Y = 0)
+    const finalBox = new THREE.Box3().setFromObject(clonedScene)
+    const center = finalBox.getCenter(new THREE.Vector3())
+    clonedScene.position.x = -center.x
+    clonedScene.position.z = -center.z
+    clonedScene.position.y = -finalBox.min.y
+  }, [clonedScene, modelPath, bodyMaterial, detailsMaterial, glassMaterial])
+
+  // Turntable Auto-Rotate (Stationary car on rotating platform)
+  useFrame((_, delta) => {
+    if (autoRotate && groupRef.current) {
+      groupRef.current.rotation.y += delta * autoRotateSpeed
+    }
   })
 
-  // AO shadow plane
+  // Baked AO shadow plane for Ferrari
+  const isFerrari = (modelPath || '').includes('ferrari')
   const aoTexture = useMemo(() => {
+    if (!isFerrari) return null
     const loader = new THREE.TextureLoader()
     return loader.load(FERRARI_AO)
-  }, [])
+  }, [isFerrari])
 
   return (
-    <group ref={carRef}>
-      <primitive object={scene} />
-      {/* Baked AO shadow plane underneath the car */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]} renderOrder={2}>
-        <planeGeometry args={[0.655 * 4, 1.3 * 4]} />
-        <meshBasicMaterial
-          map={aoTexture}
-          blending={THREE.MultiplyBlending}
-          toneMapped={false}
-          transparent={true}
-        />
-      </mesh>
+    <group ref={groupRef}>
+      <primitive object={clonedScene} />
+      {isFerrari && aoTexture && (
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]} renderOrder={2}>
+          <planeGeometry args={[0.655 * 4, 1.3 * 4]} />
+          <meshBasicMaterial
+            map={aoTexture}
+            blending={THREE.MultiplyBlending}
+            toneMapped={false}
+            transparent={true}
+          />
+        </mesh>
+      )}
     </group>
   )
 }
+
+// Alias for backwards compatibility
+export const FerrariModel = VehicleModel3D
 
 // ─── Showroom Floor ──────────────────────────────────────────────────────────
 export function ShowroomFloor() {
@@ -145,13 +278,13 @@ export function ShowroomFloor() {
           metalness={0.6}
         />
       </mesh>
-      {/* Contact shadow */}
+      {/* Dynamic contact shadow for any car shape */}
       <ContactShadows
         position={[0, -0.005, 0]}
-        opacity={0.6}
+        opacity={0.65}
         scale={12}
-        blur={2.5}
-        far={10}
+        blur={2.2}
+        far={8}
       />
     </>
   )
@@ -161,7 +294,7 @@ export function ShowroomFloor() {
 export function StudioLights() {
   return (
     <>
-      <ambientLight intensity={0.2} color="#ffffff" />
+      <ambientLight intensity={0.3} color="#ffffff" />
       <spotLight
         position={[5, 8, -6]}
         angle={0.35}
@@ -192,20 +325,13 @@ export function StudioLights() {
   )
 }
 
-// ─── Grid Floor (animated) ───────────────────────────────────────────────────
-export function AnimatedGrid({ isAnimating }) {
-  const gridRef = useRef()
-  useFrame((state) => {
-    if (gridRef.current && isAnimating) {
-      gridRef.current.position.z = (-state.clock.getElapsedTime()) % 1
-    }
-  })
+// ─── Grid Floor (Showroom floor grid) ─────────────────────────────────────────
+export function AnimatedGrid() {
   return (
     <gridHelper
-      ref={gridRef}
       args={[20, 40, '#ffffff', '#ffffff']}
       position={[0, -0.005, 0]}
-      material-opacity={0.08}
+      material-opacity={0.06}
       material-transparent={true}
       material-depthWrite={false}
     />
@@ -222,9 +348,9 @@ export function CarLoadingFallback() {
   })
   return (
     <group>
-      <mesh ref={meshRef} position={[0, 0.4, 0]}>
-        <boxGeometry args={[0.4, 0.4, 0.4]} />
-        <meshStandardMaterial color="#3060ff" wireframe />
+      <mesh ref={meshRef} position={[0, 0.5, 0]}>
+        <boxGeometry args={[0.5, 0.5, 0.5]} />
+        <meshStandardMaterial color="#0066ff" wireframe />
       </mesh>
     </group>
   )

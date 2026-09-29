@@ -103,7 +103,7 @@ export default function SalesWorkspacePage() {
 </div>
 
 <div className="flex-1 relative overflow-hidden flex items-center justify-center bg-[#0d0e12]">
-<img className="w-full h-full object-cover select-none" data-alt="Configured Porsche 911 GT3 with track pack" src="https://lh3.googleusercontent.com/aida/AEtjO1XEUaqiGLJebnm4MwCSEASCu9kl4c-lGRo79CWVoJJhd9ptRkw5gYuDEmH3sqqCQN2hoRKOPu2_32LnmETPK7bgVmhUBYrVAXz1ZJGDiMFc_hDOZF1Om9UYEWKeerUM3MbYrJwVuz3czadcwQrgJdVZJnw8KnAy_4pL9Y5LR9ktiZ73yc02Nx97r6UKEis8RiRQJO52RA8XSBiJ_txjRr7KSLsYDGV3HzR3ST59Px9CbaulYA7qs0a9lzg" />
+<img className="w-full h-full object-cover select-none" data-alt="Configured Porsche 911 GT3 with track pack" src="/images/sales-porsche-gt3.jpg" />
 
 <div className="absolute inset-0 bg-gradient-to-t from-[#0d0e12]/80 via-transparent to-transparent pointer-events-none"></div>
 

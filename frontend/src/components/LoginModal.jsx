@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import logoImg from '../assets/logo.jpg'
+
+const logoImg = '/images/logo.jpg'
 
 /**
  * LoginModal - Brand Compliant Login & Role Selection

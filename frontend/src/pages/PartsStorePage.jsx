@@ -27,7 +27,7 @@ const CURATED_PARTS = [
     stock: 8,
     rating: 4.9,
     badge: 'HOT / BESTSELLER',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDsdY7AkDaD-730M6oc9RX4EfMoKg7AVPrqnQ0pi0pa09fTRPi8YSnpLnR7M3LyLw6O144lf3wSbuLmZHYw7nkoorXQIdhw_sL3wj7v1eH_OHzSSvwbDcjzbVyhQoHwx1B-ahqOZW1tiaRqnkhF0R7xn3VJ6jXeGhzyDVUXT4nx5M4RTJulhLin53pWLSXptIYcZ5yZ2UyCOGn5ywhztN2OKX_cgN8i0Y-cw2c3VK599d2TRs4iciY9'
+    image: '/images/wheel-titanium.jpg'
   },
   {
     id: 2,
@@ -42,7 +42,7 @@ const CURATED_PARTS = [
     stock: 6,
     rating: 5.0,
     badge: 'TRACK LEGEND',
-    image: 'https://images.unsplash.com/photo-1578844251758-2f71da64c96f?w=600'
+    image: '/images/wheel-volk-te37.jpg'
   },
   {
     id: 3,
@@ -57,7 +57,7 @@ const CURATED_PARTS = [
     stock: 3,
     rating: 4.95,
     badge: 'SIGNATURE SOUND',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCQ47eXVMCWcObYU3ZZdBeLsUTGhO_fkICz9lX3xbi-wLgK86SdSvbNaV0yDxuTj49cuIu5EDLUnAp6kGTXJ2g5IQVlDtICek-6s4CxsdZouTQ0A8ZRGVRXCFNowhI0jn3cN6qf3dfcj8ZNSt-V4-bvwlWzzfR0Rg1-vMM0nllJOjP9svw7EZ1gQP9B_-3nNRJsuUzrtnATawlS4MU5zYSSSBVsIm8AZQqduE1GS_p3eRsC_eYF44za'
+    image: '/images/exhaust-akrapovic.jpg'
   },
   {
     id: 4,
@@ -72,7 +72,7 @@ const CURATED_PARTS = [
     stock: 4,
     rating: 4.88,
     badge: 'NÜRBURGRING SPEC',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuARRBsKuWRBzkECezJu5ItEIUGaMb96LgTdd2Vq2UVzjieHukjvsSoOPcj6JReoE06pUz1XuHEyI13O25_TPh5mBqjXw6rxdLRKMzZBTgr1K8i4wbbcYMGwWrCm7E_6IdSK4Ii_YGcnxm8fUquO2fdhbwE2kaegGkAMINyMkxxkRDaoEH7zMSR6mhZ0-3vy37uyN3fQ7EEJXeGIu6NErHaYp0Y7MT4KZQuzB7ELa0FUcMIj6zA5Wgva'
+    image: '/images/suspension-kw.jpg'
   },
   {
     id: 5,
@@ -87,7 +87,7 @@ const CURATED_PARTS = [
     stock: 5,
     rating: 4.92,
     badge: 'TÜV COMPLIANT',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDSNTBW0tas2QMTVD3RS0cdRlmYn4dvL_b955aloixkhxxuWGDQWx9m2SdYZGG3wBDs8-sE1wx7OhpQw-09QXMByElGuGXb8Jel_sEM4Ep3e77HBvnLSfujyNvyDK7k0-rX9j3MvOVoUmtsk2k_tIL9-iKJ14Tz4BVJIeCvXQV6PG8CKC-gTtcqs1BJW42tXYxQJyZQ70TfBL1IH9qdwoYN8qQRtLyEOdgxHHq0x3mxxAnF90G3bqWv'
+    image: '/images/brake-brembo.jpg'
   },
   {
     id: 6,
@@ -102,7 +102,7 @@ const CURATED_PARTS = [
     stock: 2,
     rating: 4.98,
     badge: 'PRE-PREG CARBON',
-    image: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=600'
+    image: '/images/aero-carbon.jpg'
   }
 ]
 

@@ -3,20 +3,254 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Environment } from '@react-three/drei'
 import { useNavigate } from 'react-router-dom'
 import {
+  VehicleModel3D,
   FerrariModel,
   ShowroomFloor,
   StudioLights,
   AnimatedGrid,
   CarLoadingFallback,
+  CAR_MODEL_FILES,
 } from '../components/CarScene3D'
 
 /**
  * ConfiguratorPage - 3D Vehicle Configurator Studio
- * Ferrari 458 Italia · Virtual Tune Automotive Precision System
- * Model by vicent091036 · Official Three.js GLTF Model
+ * Real 3D Production Supercars & Sports Cars
+ * Precision CAD Fitment & Automotive Customization Platform
  */
 
-// ─── Color presets ────────────────────────────────────────────────────────────
+// ─── Car Model Registry (6 Distinct Real-Life 3D GLB Models) ─────────────────
+const CAR_MODELS = [
+  {
+    id: 'ferrari-458',
+    brand: 'Ferrari',
+    model: '458 Italia',
+    modelPath: CAR_MODEL_FILES['ferrari-458'],
+    year: '2009–2015',
+    tagline: '4.5L V8 · 562hp · 0-100: 3.4s',
+    accentColor: '#CC0000',
+    defaultBody: '#CC0000',
+    defaultRim: '#CCCCCC',
+    defaultGlass: '#C8D8F0',
+    price: 328000,
+    badge: 'Maranello, Italy',
+    specs: {
+      performance: [
+        { label: 'Engine',       value: '4.5L V8 Naturally Aspirated' },
+        { label: 'Power',        value: '562 hp @ 9,000 rpm' },
+        { label: 'Torque',       value: '398 lb-ft @ 6,000 rpm' },
+        { label: '0–100 km/h',  value: '3.4 seconds' },
+        { label: 'Top Speed',    value: '325 km/h' },
+        { label: 'Transmission', value: '7-speed Dual Clutch' },
+        { label: 'Weight',       value: '1,380 kg' },
+      ],
+      aerodynamics: [
+        { label: 'Downforce', value: '140 kg @ 200 km/h' },
+        { label: 'Front Splitter', value: 'Carbon Fibre Fixed' },
+        { label: 'Diffuser',  value: 'Active Variable' },
+        { label: 'Cd',        value: '0.33' },
+        { label: 'Cl',        value: '-0.26' },
+      ],
+      suspension: [
+        { label: 'Front',   value: 'Double Wishbone MagneRide' },
+        { label: 'Rear',    value: 'Multi-Link Adaptive' },
+        { label: 'Dampers', value: 'Magneto-rheological' },
+        { label: 'Springs', value: 'Coilover Adjustable' },
+      ],
+    },
+  },
+  {
+    id: 'lamborghini-aventador',
+    brand: 'Lamborghini',
+    model: 'Aventador LP700',
+    modelPath: CAR_MODEL_FILES['lamborghini-aventador'],
+    year: '2011–2021',
+    tagline: '6.5L V12 · 700hp · 0-100: 2.9s',
+    accentColor: '#F5C400',
+    defaultBody: '#F5C400',
+    defaultRim: '#1A1A1A',
+    defaultGlass: '#1A1A1A',
+    price: 393000,
+    badge: 'Sant\'Agata Bolognese, Italy',
+    specs: {
+      performance: [
+        { label: 'Engine',       value: '6.5L L539 60° V12' },
+        { label: 'Power',        value: '700 hp @ 8,250 rpm' },
+        { label: 'Torque',       value: '509 lb-ft @ 5,500 rpm' },
+        { label: '0–100 km/h',  value: '2.9 seconds' },
+        { label: 'Top Speed',    value: '350 km/h' },
+        { label: 'Transmission', value: '7-speed ISR Independent Shifting' },
+        { label: 'Weight',       value: '1,575 kg' },
+      ],
+      aerodynamics: [
+        { label: 'Downforce',    value: '220 kg @ 250 km/h' },
+        { label: 'Front Splitter', value: 'Carbon Aero Inlets' },
+        { label: 'Rear Wing',    value: 'Active 3-Position Electronically Managed' },
+        { label: 'Cd',           value: '0.33' },
+        { label: 'Cl',           value: '-0.35' },
+      ],
+      suspension: [
+        { label: 'Front',   value: 'Formula 1 Style Pushrod Magneto' },
+        { label: 'Rear',    value: 'Pushrod Horizontal Damper' },
+        { label: 'Dampers', value: 'Magneto-rheological Pushrod' },
+        { label: 'Springs', value: 'Öhlins Race Coilover' },
+      ],
+    },
+  },
+  {
+    id: 'porsche-gt3',
+    brand: 'Porsche',
+    model: '911 GT3 RS',
+    modelPath: CAR_MODEL_FILES['porsche-gt3'],
+    year: '2022–2025',
+    tagline: '4.0L Flat-6 · 525hp · 0-100: 3.2s',
+    accentColor: '#0A1A6E',
+    defaultBody: '#FAFAFA',
+    defaultRim: '#CCCCCC',
+    defaultGlass: '#C8D8F0',
+    price: 224000,
+    badge: 'Stuttgart-Zuffenhausen, Germany',
+    specs: {
+      performance: [
+        { label: 'Engine',       value: '4.0L Flat-6 Natural Aspirated' },
+        { label: 'Power',        value: '525 hp @ 8,500 rpm' },
+        { label: 'Torque',       value: '343 lb-ft @ 6,300 rpm' },
+        { label: '0–100 km/h',  value: '3.2 seconds' },
+        { label: 'Top Speed',    value: '296 km/h' },
+        { label: 'Transmission', value: '7-speed PDK' },
+        { label: 'Weight',       value: '1,450 kg' },
+      ],
+      aerodynamics: [
+        { label: 'Downforce',    value: '860 kg @ 285 km/h' },
+        { label: 'Swan-Neck Wing', value: '2-Position Manual DRS Active' },
+        { label: 'Front Lid',    value: 'Carbon Aero Package With Vents' },
+        { label: 'Cd',           value: '0.36' },
+        { label: 'Cl',           value: '-1.25' },
+      ],
+      suspension: [
+        { label: 'Front',   value: 'Double Wishbone Pushrod' },
+        { label: 'Rear',    value: 'Multi-link Lightweight' },
+        { label: 'Dampers', value: 'PASM Sport 20mm Lowered' },
+        { label: 'Springs', value: 'GT3 RS Race-Tuned' },
+      ],
+    },
+  },
+  {
+    id: 'mclaren-720s',
+    brand: 'McLaren',
+    model: '720S / P1',
+    modelPath: CAR_MODEL_FILES['mclaren-720s'],
+    year: '2018–2023',
+    tagline: '4.0L TT V8 · 720hp · 0-100: 2.8s',
+    accentColor: '#FF6B00',
+    defaultBody: '#FF6B00',
+    defaultRim: '#CCCCCC',
+    defaultGlass: '#1A1A1A',
+    price: 312000,
+    badge: 'Woking, United Kingdom',
+    specs: {
+      performance: [
+        { label: 'Engine',       value: '4.0L Twin-Turbo V8 M840T' },
+        { label: 'Power',        value: '720 hp @ 7,500 rpm' },
+        { label: 'Torque',       value: '568 lb-ft @ 5,500 rpm' },
+        { label: '0–100 km/h',  value: '2.8 seconds' },
+        { label: 'Top Speed',    value: '341 km/h' },
+        { label: 'Transmission', value: '7-speed SSG Dual Clutch' },
+        { label: 'Weight',       value: '1,332 kg' },
+      ],
+      aerodynamics: [
+        { label: 'Downforce',    value: '1,000+ kg @ 250 km/h' },
+        { label: 'Active Wing',  value: 'Integrated Active Airbrake' },
+        { label: 'Front',        value: 'Carbon MonoCell II Front Sub' },
+        { label: 'Cd',           value: '0.32' },
+        { label: 'Cl',           value: '-0.46' },
+      ],
+      suspension: [
+        { label: 'Front',   value: 'Proactive Chassis Control II' },
+        { label: 'Rear',    value: 'Wishbone Hydraulic Interconnect' },
+        { label: 'Dampers', value: '3-Stage Variable PCC II' },
+        { label: 'Springs', value: 'High-Performance GTR Race' },
+      ],
+    },
+  },
+  {
+    id: 'nissan-gtr',
+    brand: 'Nissan',
+    model: 'GT-R Nismo (R35)',
+    modelPath: CAR_MODEL_FILES['nissan-gtr'],
+    year: '2020–2024',
+    tagline: '3.8L TT V6 · 600hp · 0-100: 2.7s',
+    accentColor: '#E60012',
+    defaultBody: '#E60012',
+    defaultRim: '#1A1A1A',
+    defaultGlass: '#1A1A1A',
+    price: 215000,
+    badge: 'Tochigi, Kanto, Japan',
+    specs: {
+      performance: [
+        { label: 'Engine',       value: '3.8L Twin-Turbo V6 VR38DETT' },
+        { label: 'Power',        value: '600 hp @ 6,800 rpm' },
+        { label: 'Torque',       value: '481 lb-ft @ 3,600–5,600 rpm' },
+        { label: '0–100 km/h',  value: '2.7 seconds' },
+        { label: 'Top Speed',    value: '330 km/h' },
+        { label: 'Transmission', value: '6-speed Dual Clutch ATTESA E-TS AWD' },
+        { label: 'Weight',       value: '1,725 kg' },
+      ],
+      aerodynamics: [
+        { label: 'Downforce',    value: '100 kg @ 300 km/h' },
+        { label: 'Rear Wing',    value: 'Dry Carbon Fiber High Downforce' },
+        { label: 'Front Fenders', value: 'Carbon Louvers GT3 Style' },
+        { label: 'Cd',           value: '0.26' },
+        { label: 'Cl',           value: '-0.30' },
+      ],
+      suspension: [
+        { label: 'Front',   value: 'Double Wishbone Aluminum' },
+        { label: 'Rear',    value: 'Multi-link High-Rigidity' },
+        { label: 'Dampers', value: 'Bilstein DampTronic Custom Tuned' },
+        { label: 'Springs', value: 'Nismo Competition Spec' },
+      ],
+    },
+  },
+  {
+    id: 'bmw-m4-csl',
+    brand: 'BMW',
+    model: 'M4 Competition',
+    modelPath: CAR_MODEL_FILES['bmw-m4-csl'],
+    year: '2022–2024',
+    tagline: '3.0L TT I6 · 503hp · 0-100: 3.8s',
+    accentColor: '#0066CC',
+    defaultBody: '#1A1A1A',
+    defaultRim: '#CCCCCC',
+    defaultGlass: '#C8D8F0',
+    price: 82000,
+    badge: 'Munich, Bavaria, Germany',
+    specs: {
+      performance: [
+        { label: 'Engine',       value: '3.0L Twin-Turbo I6 S58' },
+        { label: 'Power',        value: '503 hp @ 6,250 rpm' },
+        { label: 'Torque',       value: '479 lb-ft @ 2,750 rpm' },
+        { label: '0–100 km/h',  value: '3.8 seconds' },
+        { label: 'Top Speed',    value: '290 km/h' },
+        { label: 'Transmission', value: '8-speed M Steptronic' },
+        { label: 'Weight',       value: '1,725 kg' },
+      ],
+      aerodynamics: [
+        { label: 'Downforce',  value: '95 kg @ 200 km/h' },
+        { label: 'Front Splitter', value: 'CFRP M Performance Inlets' },
+        { label: 'Rear Wing',  value: 'Carbon Diffuser & Lip' },
+        { label: 'Cd',         value: '0.34' },
+        { label: 'Cl',         value: '-0.22' },
+      ],
+      suspension: [
+        { label: 'Front',   value: 'Double Wishbone 5-Link' },
+        { label: 'Rear',    value: '5-Link Integral Active Steer' },
+        { label: 'Dampers', value: 'M Adaptive Suspension EDC' },
+        { label: 'Springs', value: 'M Competition Sport Tuned' },
+      ],
+    },
+  },
+]
+
+// ─── Shared color presets ─────────────────────────────────────────────────────
 const BODY_COLORS = [
   { hex: '#CC0000', name: 'Rosso Corsa', finish: 'Metallic' },
   { hex: '#0A1A6E', name: 'Blu Tour de France', finish: 'Metallic' },
@@ -26,6 +260,10 @@ const BODY_COLORS = [
   { hex: '#1B4D1B', name: 'Verde Britannique', finish: 'Satin' },
   { hex: '#B87A2A', name: 'Bronzo Fiorano', finish: 'Metallic' },
   { hex: '#7A7A7A', name: 'Grigio Silverstone', finish: 'Metallic' },
+  { hex: '#FF6B00', name: 'McLaren Papaya Orange', finish: 'Metallic' },
+  { hex: '#1B4D8E', name: 'Le Mans Blue', finish: 'Metallic' },
+  { hex: '#2D5A27', name: 'Racing Green', finish: 'Satin' },
+  { hex: '#8B0000', name: 'Midnight Burgundy', finish: 'Pearl' },
 ]
 
 const RIM_COLORS = [
@@ -34,6 +272,8 @@ const RIM_COLORS = [
   { hex: '#B87A2A', name: 'Oro Spazzolato' },
   { hex: '#CC0000', name: 'Rosso Accento' },
   { hex: '#4A4A4A', name: 'Grigio Antracite' },
+  { hex: '#0066CC', name: 'BMW Blau' },
+  { hex: '#2D2D2D', name: 'Gunmetal' },
 ]
 
 const GLASS_COLORS = [
@@ -43,47 +283,40 @@ const GLASS_COLORS = [
   { hex: '#FAFAFA', name: 'Trasparente' },
 ]
 
-// ─── Side panel config sections ───────────────────────────────────────────────
-const SPEC_DATA = {
-  performance: [
-    { label: 'Engine', value: '4.5L V8 Naturally Aspirated' },
-    { label: 'Power', value: '562 hp @ 9,000 rpm' },
-    { label: 'Torque', value: '398 lb-ft @ 6,000 rpm' },
-    { label: '0–100 km/h', value: '3.4 seconds' },
-    { label: 'Top Speed', value: '325 km/h' },
-    { label: 'Transmission', value: '7-speed Dual Clutch' },
-    { label: 'Weight', value: '1,380 kg' },
-  ],
-  aerodynamics: [
-    { label: 'Downforce', value: '140 kg @ 200 km/h' },
-    { label: 'Front Splitter', value: 'Carbon Fibre Fixed' },
-    { label: 'Diffuser', value: 'Active Variable' },
-    { label: 'Cd', value: '0.33' },
-    { label: 'Cl', value: '-0.26' },
-  ],
-  suspension: [
-    { label: 'Front', value: 'Double Wishbone MagneRide' },
-    { label: 'Rear', value: 'Multi-Link Adaptive' },
-    { label: 'Dampers', value: 'Magneto-rheological' },
-    { label: 'Springs', value: 'Coilover Adjustable' },
-  ],
-}
+// ─── (SPEC_DATA moved into CAR_MODELS registry above) ────────────────────────
 
 export default function ConfiguratorPage() {
   const navigate = useNavigate()
   const orbitRef = useRef()
 
-  const [bodyColor, setBodyColor] = useState('#CC0000')
-  const [rimColor, setRimColor] = useState('#CCCCCC')
-  const [glassColor, setGlassColor] = useState('#C8D8F0')
-  const [isAnimating, setIsAnimating] = useState(true)
-  const [activeTab, setActiveTab] = useState('performance')
-  const [activeSection, setActiveSection] = useState('color') // 'color' | 'specs' | 'options'
-  const [selectedBody, setSelectedBody] = useState(BODY_COLORS[0])
-  const [selectedRim, setSelectedRim] = useState(RIM_COLORS[0])
+  // ── Car model selection ────────────────────────────────────────────────────
+  const [selectedModelId, setSelectedModelId] = useState(CAR_MODELS[0].id)
+  const activeCar = CAR_MODELS.find(c => c.id === selectedModelId) || CAR_MODELS[0]
+
+  // ── Color state (initialised from active car defaults) ────────────────────
+  const [bodyColor, setBodyColor]   = useState(activeCar.defaultBody)
+  const [rimColor,  setRimColor]    = useState(activeCar.defaultRim)
+  const [glassColor, setGlassColor] = useState(activeCar.defaultGlass)
+  const [selectedBody,  setSelectedBody]  = useState(() => BODY_COLORS.find(c => c.hex === activeCar.defaultBody) || { hex: activeCar.defaultBody, name: 'Default', finish: 'OEM' })
+  const [selectedRim,   setSelectedRim]   = useState(() => RIM_COLORS.find(c => c.hex === activeCar.defaultRim) || { hex: activeCar.defaultRim, name: 'Default' })
   const [selectedGlass, setSelectedGlass] = useState(GLASS_COLORS[0])
 
-  const totalBuild = 328000
+  // ── Viewer controls ────────────────────────────────────────────────────────
+  const [activeTab,    setActiveTab]    = useState('performance')
+  const [activeSection, setActiveSection] = useState('model')  // 'model'|'color'|'specs'|'options'
+  const [showModelSelector, setShowModelSelector] = useState(false)
+
+  // Switch car model → reset colors to that car's defaults
+  const handleModelSwitch = useCallback((car) => {
+    setSelectedModelId(car.id)
+    setBodyColor(car.defaultBody)
+    setRimColor(car.defaultRim)
+    setGlassColor(car.defaultGlass)
+    setSelectedBody(BODY_COLORS.find(c => c.hex === car.defaultBody) || { hex: car.defaultBody, name: 'Default', finish: 'OEM' })
+    setSelectedRim(RIM_COLORS.find(c => c.hex === car.defaultRim) || { hex: car.defaultRim, name: 'Default' })
+    setSelectedGlass(GLASS_COLORS[0])
+    setActiveSection('color')
+  }, [])
 
   const handleBodyColor = useCallback((color) => {
     setSelectedBody(color)
@@ -98,6 +331,15 @@ export default function ConfiguratorPage() {
   const handleGlassColor = useCallback((color) => {
     setSelectedGlass(color)
     setGlassColor(color.hex)
+  }, [])
+
+  // Camera preset view switcher (snaps camera smoothly to pre-configured angles)
+  const handleCameraPreset = useCallback((cam) => {
+    if (orbitRef.current) {
+      orbitRef.current.object.position.set(cam[0], cam[1], cam[2])
+      orbitRef.current.target.set(0, 0.5, 0)
+      orbitRef.current.update()
+    }
   }, [])
 
   return (
@@ -115,8 +357,8 @@ export default function ConfiguratorPage() {
 
           {/* Car name watermark */}
           <div className="absolute top-4 left-4 z-10 pointer-events-none">
-            <div className="text-[11px] font-mono text-white/20 uppercase tracking-[0.3em]">Ferrari</div>
-            <div className="text-3xl font-black text-white/6 uppercase tracking-tight leading-none">458 Italia</div>
+            <div className="text-[11px] font-mono text-white/20 uppercase tracking-[0.3em]">{activeCar.brand}</div>
+            <div className="text-3xl font-black text-white/6 uppercase tracking-tight leading-none">{activeCar.model}</div>
           </div>
 
           {/* Instruction hint */}
@@ -127,9 +369,9 @@ export default function ConfiguratorPage() {
             </div>
           </div>
 
-          {/* THREE.JS CANVAS */}
+          {/* THREE.JS CANVAS (Zoomed closer into car by default) */}
           <Canvas
-            camera={{ position: [4.5, 2, 7], fov: 40 }}
+            camera={{ position: [3.3, 1.4, 4.8], fov: 40 }}
             shadows
             dpr={[1, 2]}
             gl={{ antialias: true, toneMapping: 3, toneMappingExposure: 1.2 }}
@@ -142,14 +384,16 @@ export default function ConfiguratorPage() {
             />
 
             <StudioLights />
-            <AnimatedGrid isAnimating={isAnimating} />
+            <AnimatedGrid />
 
             <Suspense fallback={<CarLoadingFallback />}>
-              <FerrariModel
+              <VehicleModel3D
+                key={activeCar.id}
+                modelPath={activeCar.modelPath}
+                modelId={activeCar.id}
                 bodyColor={bodyColor}
                 detailsColor={rimColor}
                 glassColor={glassColor}
-                isAnimating={isAnimating}
               />
               <ShowroomFloor />
             </Suspense>
@@ -158,8 +402,8 @@ export default function ConfiguratorPage() {
               ref={orbitRef}
               enablePan={true}
               enableZoom={true}
-              minDistance={3}
-              maxDistance={15}
+              minDistance={1.8}
+              maxDistance={12}
               maxPolarAngle={Math.PI / 2.1}
               target={[0, 0.5, 0]}
               autoRotate={false}
@@ -168,18 +412,19 @@ export default function ConfiguratorPage() {
             />
           </Canvas>
 
-          {/* ── BOTTOM VIEW CONTROLS ─────────────────────────────────────── */}
+          {/* ── BOTTOM VIEW CONTROLS (Tightly Framed Camera Presets) ──────── */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 px-2 py-1 rounded-xl bg-[#0d0d12]/90 backdrop-blur-md border border-white/10 shadow-xl">
             {[
-              { label: 'Front 3/4', cam: [4.5, 1.8, 7] },
-              { label: 'Side', cam: [8, 1.5, 0] },
-              { label: 'Rear 3/4', cam: [-4.5, 1.8, -7] },
-              { label: 'Top Down', cam: [0, 9, 0.1] },
-              { label: 'Front', cam: [0, 1.5, 8] },
+              { label: 'Front 3/4', cam: [3.3, 1.4, 4.8] },
+              { label: 'Side',      cam: [5.2, 1.2, 0] },
+              { label: 'Rear 3/4',  cam: [-3.3, 1.4, -4.8] },
+              { label: 'Top Down',  cam: [0, 6.0, 0.1] },
+              { label: 'Front',     cam: [0, 1.2, 5.0] },
             ].map(view => (
               <button
                 key={view.label}
-                className="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-white/50 hover:text-white hover:bg-white/8 transition-all"
+                onClick={() => handleCameraPreset(view.cam)}
+                className="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-white/50 hover:text-white hover:bg-white/8 transition-all cursor-pointer"
               >
                 {view.label}
               </button>
@@ -187,32 +432,33 @@ export default function ConfiguratorPage() {
           </div>
         </main>
 
-        {/* ── SIDE PANEL (Always fits screen so both green boxes show together) ── */}
+        {/* ── SIDE PANEL ─────────────────────────────────────────────────────── */}
         <aside className="w-[330px] flex flex-col bg-[#0f0f16] border-l border-white/8 h-full shrink-0 z-20 min-h-0">
 
           {/* Header */}
           <div className="px-4 pt-3.5 pb-2.5 border-b border-white/8 shrink-0">
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-sm font-black text-white tracking-wide uppercase">Ferrari 458 Italia</h2>
-                <p className="text-[10px] text-white/40 mt-0.5 font-mono">4.5L V8 · 562hp · 0-100: 3.4s</p>
+                <h2 className="text-sm font-black text-white tracking-wide uppercase">{activeCar.brand} {activeCar.model}</h2>
+                <p className="text-[10px] text-white/40 mt-0.5 font-mono">{activeCar.tagline}</p>
               </div>
-              <div className="px-2 py-0.5 rounded-md bg-emerald-950/50 border border-emerald-500/30 text-emerald-400 text-[9px] font-bold uppercase tracking-wider">
-                2009–2015
+              <div className="px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-wider" style={{ borderColor: activeCar.accentColor + '50', color: activeCar.accentColor, backgroundColor: activeCar.accentColor + '15' }}>
+                {activeCar.year}
               </div>
             </div>
 
             {/* Section Tabs */}
             <div className="flex gap-1 mt-2.5 p-1 rounded-lg bg-white/5">
               {[
-                { id: 'color', icon: 'palette', label: 'Color' },
-                { id: 'specs', icon: 'speed', label: 'Specs' },
-                { id: 'options', icon: 'tune', label: 'Options' },
+                { id: 'model',   icon: 'directions_car', label: 'Models' },
+                { id: 'color',   icon: 'palette',         label: 'Color' },
+                { id: 'specs',   icon: 'speed',            label: 'Specs' },
+                { id: 'options', icon: 'tune',             label: 'Options' },
               ].map(tab => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveSection(tab.id)}
-                  className={`flex-1 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition-all ${
+                  className={`flex-1 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider flex items-center justify-center gap-0.5 transition-all ${
                     activeSection === tab.id
                       ? 'bg-primary text-on-primary shadow-lg shadow-primary/30'
                       : 'text-white/40 hover:text-white/70'
@@ -228,6 +474,52 @@ export default function ConfiguratorPage() {
           {/* Content (Scrollable if needed on very small screens, compact by default) */}
           <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3.5 min-h-0"
             style={{ scrollbarWidth: 'thin', scrollbarColor: '#333 transparent' }}>
+
+            {/* ── MODEL SELECTOR TAB ──────────────────────────────────────── */}
+            {activeSection === 'model' && (
+              <div className="space-y-2">
+                <p className="text-[9px] font-bold uppercase tracking-widest text-white/30 mb-2">Select Vehicle</p>
+                {CAR_MODELS.map(car => (
+                  <button
+                    key={car.id}
+                    id={`car-model-${car.id}`}
+                    onClick={() => handleModelSwitch(car)}
+                    className={`w-full p-3 rounded-lg border text-left transition-all ${
+                      selectedModelId === car.id
+                        ? 'border-primary/60 bg-primary/10'
+                        : 'border-white/8 bg-white/3 hover:border-white/20 hover:bg-white/6'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div
+                          className="w-4 h-4 rounded-full border border-white/20 shrink-0"
+                          style={{ backgroundColor: car.defaultBody }}
+                        />
+                        <div>
+                          <p className={`text-xs font-bold ${selectedModelId === car.id ? 'text-primary' : 'text-white'}`}>
+                            {car.brand} {car.model}
+                          </p>
+                          <p className="text-[9px] text-white/30 font-mono mt-0.5">{car.tagline}</p>
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-[9px] font-bold font-mono" style={{ color: car.accentColor }}>
+                          ${car.price.toLocaleString()}
+                        </p>
+                        <p className="text-[8px] text-white/25">{car.year}</p>
+                      </div>
+                    </div>
+                    {selectedModelId === car.id && (
+                      <div className="mt-2 pt-2 border-t border-white/10 flex items-center gap-1 text-[9px] text-primary/70 font-mono">
+                        <span className="material-symbols-outlined text-xs">check_circle</span>
+                        Currently selected · {car.badge}
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* ── COLOR TAB ───────────────────────────────────────────────── */}
             {activeSection === 'color' && (
@@ -369,7 +661,7 @@ export default function ConfiguratorPage() {
               <div className="space-y-3">
                 {/* Sub-tabs */}
                 <div className="flex gap-1 p-0.5 rounded-lg bg-white/5">
-                  {Object.keys(SPEC_DATA).map(key => (
+                  {Object.keys(activeCar.specs).map(key => (
                     <button
                       key={key}
                       onClick={() => setActiveTab(key)}
@@ -383,7 +675,7 @@ export default function ConfiguratorPage() {
                 </div>
 
                 <div className="space-y-1">
-                  {SPEC_DATA[activeTab].map(item => (
+                  {(activeCar.specs[activeTab] || []).map(item => (
                     <div key={item.label} className="flex justify-between items-center py-1.5 border-b border-white/5 last:border-0">
                       <span className="text-[10px] text-white/40 font-medium">{item.label}</span>
                       <span className="text-[11px] text-white font-bold font-mono text-right max-w-[55%]">{item.value}</span>
@@ -391,11 +683,11 @@ export default function ConfiguratorPage() {
                   ))}
                 </div>
 
-                {/* Ferrari badge */}
-                <div className="p-3 rounded-lg bg-[#CC0000]/10 border border-[#CC0000]/30 text-center">
-                  <p className="text-[9px] font-mono text-white/30 uppercase tracking-widest">Ferrari S.p.A.</p>
-                  <p className="text-lg font-black text-[#CC0000] mt-0.5">458 Italia</p>
-                  <p className="text-[9px] text-white/30 mt-0.5 font-mono">Maranello, Italy · 2009–2015</p>
+                {/* Car brand badge */}
+                <div className="p-3 rounded-lg text-center border" style={{ backgroundColor: activeCar.accentColor + '15', borderColor: activeCar.accentColor + '40' }}>
+                  <p className="text-[9px] font-mono text-white/30 uppercase tracking-widest">{activeCar.badge}</p>
+                  <p className="text-lg font-black mt-0.5" style={{ color: activeCar.accentColor }}>{activeCar.model}</p>
+                  <p className="text-[9px] text-white/30 mt-0.5 font-mono">{activeCar.brand} · {activeCar.year}</p>
                 </div>
               </div>
             )}
@@ -452,9 +744,9 @@ export default function ConfiguratorPage() {
             </div>
 
             <div className="flex justify-between items-center mb-2">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Estimated Total</span>
-              <span className="text-lg font-black text-primary font-mono">
-                ${totalBuild.toLocaleString()}
+              <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Base MSRP</span>
+              <span className="text-lg font-black font-mono" style={{ color: activeCar.accentColor }}>
+                ${activeCar.price.toLocaleString()}
               </span>
             </div>
 

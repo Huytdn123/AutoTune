@@ -82,7 +82,7 @@ export default function HomePage() {
 </div>
 
 <div className="relative w-full aspect-video rounded overflow-hidden bg-surface-dim">
-<img className="w-full h-full object-cover" data-alt="A cutting-edge hypercar in an atmospheric deep navy engineering hangar with an active holographic blue CAD telemetry wireframe overlay tracking fender wheel clearance and aerodynamic downforce lines, cinematic automotive studio lighting with metallic graphite body reflections." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGxkI9BFk9QA8-6anGIaia73A5flH0B6-mqiNayr5yS7oDfHjnlfYz3bEYppozbmiBA_g72z2ytV3mrH4ureMg68VxXXc2BDotF5tL78vU_rLwMqENhGmDv0wBbduFrVtTvx7WSIsiXJMyIeQx19g4tiySGXxdNYPpphIA95JaJcN48g8K34M7KZRzLUHxxc2akUbmF6ZrEAMygjtlMa6MRFfyO3KR6di166Qa4KyG_wbmpN-vXdLX" />
+<img className="w-full h-full object-cover" data-alt="A cutting-edge hypercar in an atmospheric deep navy engineering hangar with an active holographic blue CAD telemetry wireframe overlay tracking fender wheel clearance and aerodynamic downforce lines, cinematic automotive studio lighting with metallic graphite body reflections." src="/images/hero-car.jpg" />
 
 <div className="absolute inset-0 hud-scanner pointer-events-none opacity-40"></div>
 
@@ -277,7 +277,7 @@ export default function HomePage() {
 
 <div className="bg-surface-container-low border border-outline-variant/40 rounded overflow-hidden flex flex-col md:flex-row">
 <div className="w-full md:w-1/2 aspect-square relative bg-surface-container-lowest">
-<img alt="Titanium forged lightweight racing wheel rim with motorsport tire" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1V0K7BJ_Lv7bOtZRfFvohsQLg02F0V-BMVUU4Dp4CjLvL58cvlKmNMZtlUrZ3F3Ph3V2z-2ZVZHpBUwFa4k2ue3IM3a_HeGhOIWk297-JJb7Muex5B7NuHYuTmIWxzsPkQ55nJBx82nFgaRBuUvPnbp-jHOZnJtKek7kSR9Pb5mLyU10KJPfgLIUWG2qSLAxvYRpHODzy9mBfYrjQnPVADHpEEGyjBxvftjNC1UgLSVHcj9WSJlSbxn2zo" />
+<img alt="Titanium forged lightweight racing wheel rim with motorsport tire" className="w-full h-full object-cover" src="/images/wheel-titanium.jpg" />
 <div className="absolute bottom-2 left-2 bg-surface-container-lowest/90 px-2 py-0.5 rounded text-[10px] font-mono text-primary border border-outline-variant/30">
               SPEC: 20x11J ET48
             </div>
@@ -313,7 +313,7 @@ export default function HomePage() {
 
 <div className="bg-surface-container-low border border-outline-variant/40 rounded overflow-hidden flex flex-col md:flex-row">
 <div className="w-full md:w-1/2 aspect-square relative bg-surface-container-lowest">
-<img alt="High-performance carbon ceramic brake rotor and blue Brembo caliper assembly" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1UDmA90fePaJuCj9HjvF1tZ0O2HGdMc_XYeAJOKbgIaA2_iPw-ufTR_J9UcGqibWAk6OcT1TJ1dOjUq3Hgfv4CuZnVn5_wZfNxooHBKE_jXnHXgTnfXyCZiQnnDpM7-vO_TiIToWPfRyMomxPBEX5EEnTcbNlcrxZsXTwR5k575vwJhJ6gEPkzFz4QGKZltazWy9gn7eIW5fL5I_PwsGaLaeOgREtODCQ-yQ1ON0WpqJnnZLOT59IF_SAQ" />
+<img alt="High-performance carbon ceramic brake rotor and blue Brembo caliper assembly" className="w-full h-full object-cover" src="/images/brake-brembo.jpg" />
 <div className="absolute bottom-2 left-2 bg-surface-container-lowest/90 px-2 py-0.5 rounded text-[10px] font-mono text-primary border border-outline-variant/30">
               ROTOR: 410mm Carbon-Ceramic
             </div>

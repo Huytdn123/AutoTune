@@ -3,12 +3,12 @@ import { Link, useNavigate } from 'react-router-dom'
 import { inventoryApi, partApi } from '../services/api'
 
 const PART_IMAGES = {
-  'BBS-FIR-992-TITAN': 'https://lh3.googleusercontent.com/aida-public/AB6AXuDsdY7AkDaD-730M6oc9RX4EfMoKg7AVPrqnQ0pi0pa09fTRPi8YSnpLnR7M3LyLw6O144lf3wSbuLmZHYw7nkoorXQIdhw_sL3wj7v1eH_OHzSSvwbDcjzbVyhQoHwx1B-ahqOZW1tiaRqnkhF0R7xn3VJ6jXeGhzyDVUXT4nx5M4RTJulhLin53pWLSXptIYcZ5yZ2UyCOGn5ywhztN2OKX_cgN8i0Y-cw2c3VK599d2TRs4iciY9',
-  'RAYS-TE37-ULTRA-20': 'https://images.unsplash.com/photo-1578844251758-2f71da64c96f?w=600',
-  'AKR-EVO-TITAN-992': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCQ47eXVMCWcObYU3ZZdBeLsUTGhO_fkICz9lX3xbi-wLgK86SdSvbNaV0yDxuTj49cuIu5EDLUnAp6kGTXJ2g5IQVlDtICek-6s4CxsdZouTQ0A8ZRGVRXCFNowhI0jn3cN6qf3dfcj8ZNSt-V4-bvwlWzzfR0Rg1-vMM0nllJOjP9svw7EZ1gQP9B_-3nNRJsuUzrtnATawlS4MU5zYSSSBVsIm8AZQqduE1GS_p3eRsC_eYF44za',
-  'KW-35271842-V4CS': 'https://lh3.googleusercontent.com/aida-public/AB6AXuARRBsKuWRBzkECezJu5ItEIUGaMb96LgTdd2Vq2UVzjieHukjvsSoOPcj6JReoE06pUz1XuHEyI13O25_TPh5mBqjXw6rxdLRKMzZBTgr1K8i4wbbcYMGwWrCm7E_6IdSK4Ii_YGcnxm8fUquO2fdhbwE2kaegGkAMINyMkxxkRDaoEH7zMSR6mhZ0-3vy37uyN3fQ7EEJXeGIu6NErHaYp0Y7MT4KZQuzB7ELa0FUcMIj6zA5Wgva',
-  'BRM-1N1.9042A2': 'https://lh3.googleusercontent.com/aida-public/AB6AXuDSNTBW0tas2QMTVD3RS0cdRlmYn4dvL_b955aloixkhxxuWGDQWx9m2SdYZGG3wBDs8-sE1wx7OhpQw-09QXMByElGuGXb8Jel_sEM4Ep3e77HBvnLSfujyNvyDK7k0-rX9j3MvOVoUmtsk2k_tIL9-iKJ14Tz4BVJIeCvXQV6PG8CKC-gTtcqs1BJW42tXYxQJyZQ70TfBL1IH9qdwoYN8qQRtLyEOdgxHHq0x3mxxAnF90G3bqWv',
-  'VOR-CF-AERO-992': 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=600'
+  'BBS-FIR-992-TITAN': '/images/wheel-titanium.jpg',
+  'RAYS-TE37-ULTRA-20': '/images/wheel-volk-te37.jpg',
+  'AKR-EVO-TITAN-992': '/images/exhaust-akrapovic.jpg',
+  'KW-35271842-V4CS': '/images/suspension-kw.jpg',
+  'BRM-1N1.9042A2': '/images/brake-brembo.jpg',
+  'VOR-CF-AERO-992': '/images/aero-carbon.jpg'
 }
 
 const INVENTORY_CATEGORIES = [

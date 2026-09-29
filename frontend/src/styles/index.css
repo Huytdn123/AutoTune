@@ -155,3 +155,9 @@ body {
 button, a {
   transition: all 0.15s ease-in-out;
 }
+
+/* 360 auto-rotate icon spin animation */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}

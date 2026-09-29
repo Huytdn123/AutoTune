@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import logoImg from '../assets/logo.jpg'
+
+const logoImg = '/images/logo.jpg'
 
 export const NAVIGATION_GROUPS = [
   {
