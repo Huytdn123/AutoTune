@@ -199,12 +199,19 @@ export function VehicleModel3D({
       }
     })
 
-    // 2. Auto-orient: if length was modeled along X axis, rotate 90 deg around Y so front faces Z
-    const rawBox = new THREE.Box3().setFromObject(clonedScene)
-    const rawSize = rawBox.getSize(new THREE.Vector3())
-    const isFacingX = rawSize.x > rawSize.z * 1.2
-    if (isFacingX) {
-      clonedScene.rotation.y = Math.PI / 2
+    // 2. Auto-orient: if length was modeled along X axis, rotate 90 deg around Y so front faces Z.
+    //    Ferrari has a baked quaternion [-0.5,-0.5,-0.5,0.5] in its root node that causes it to
+    //    end up oriented along Z after Three.js parsing — rear facing +Z. Fix with explicit PI flip.
+    if (isFerrari) {
+      // Ferrari: parsed along Z but rear faces camera → rotate 180° to bring front forward
+      clonedScene.rotation.y = Math.PI
+    } else {
+      const rawBox = new THREE.Box3().setFromObject(clonedScene)
+      const rawSize = rawBox.getSize(new THREE.Vector3())
+      const isFacingX = rawSize.x > rawSize.z * 1.2
+      if (isFacingX) {
+        clonedScene.rotation.y = Math.PI / 2
+      }
     }
 
     // 3. Normalization: scale to standard supercar length (~4.4 units)

@@ -305,6 +305,7 @@ export default function ConfiguratorPage() {
   const [activeTab,    setActiveTab]    = useState('performance')
   const [activeSection, setActiveSection] = useState('model')  // 'model'|'color'|'specs'|'options'
   const [showModelSelector, setShowModelSelector] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   // Switch car model → reset colors to that car's defaults
   const handleModelSwitch = useCallback((car) => {
@@ -346,7 +347,7 @@ export default function ConfiguratorPage() {
     <div className="bg-[#0d0d12] text-white antialiased h-[calc(100vh-4rem)] flex flex-col w-full overflow-hidden select-none font-sans">
 
       {/* ── MAIN LAYOUT (Pure 2-Panel Split: 3D Viewport + Control Panel) ── */}
-      <div className="flex flex-1 overflow-hidden min-h-0">
+      <div className="flex flex-1 overflow-hidden min-h-0 relative">
 
         {/* ── 3D CANVAS ───────────────────────────────────────────────────── */}
         <main className="flex-1 relative bg-[#0d0d12] overflow-hidden">
@@ -432,8 +433,37 @@ export default function ConfiguratorPage() {
           </div>
         </main>
 
+        {/* ── SIDEBAR TOGGLE BUTTON (always visible at edge) ──────────────── */}
+        <button
+          onClick={() => setSidebarOpen(o => !o)}
+          title={sidebarOpen ? 'Collapse panel' : 'Expand panel'}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-5 h-12 bg-[#0f0f16] border border-white/10 rounded-l-lg shadow-xl hover:bg-white/10 transition-all group"
+          style={{
+            right: sidebarOpen ? '330px' : '0px',
+            transition: 'right 0.35s cubic-bezier(0.4,0,0.2,1)'
+          }}
+        >
+          <span
+            className="material-symbols-outlined text-sm text-white/50 group-hover:text-white transition-transform duration-300"
+            style={{ transform: sidebarOpen ? 'rotate(0deg)' : 'rotate(180deg)' }}
+          >
+            chevron_right
+          </span>
+        </button>
+
         {/* ── SIDE PANEL ─────────────────────────────────────────────────────── */}
-        <aside className="w-[330px] flex flex-col bg-[#0f0f16] border-l border-white/8 h-full shrink-0 z-20 min-h-0">
+        <aside
+          className="flex flex-col bg-[#0f0f16] border-l border-white/8 h-full shrink-0 z-20 min-h-0 overflow-hidden"
+          style={{
+            width: '330px',
+            transform: sidebarOpen ? 'translateX(0)' : 'translateX(100%)',
+            transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)',
+            position: sidebarOpen ? 'relative' : 'absolute',
+            right: 0,
+            top: 0,
+            bottom: 0,
+          }}
+        >
 
           {/* Header */}
           <div className="px-4 pt-3.5 pb-2.5 border-b border-white/8 shrink-0">
