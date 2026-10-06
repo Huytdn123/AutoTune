@@ -46,8 +46,22 @@ public class UserPrincipal implements UserDetails {
         List<String> permCodes = new ArrayList<>();
 
         if (user.getRole() != null) {
-            String roleCode = user.getRole().getRoleCode();
+            String roleCode = user.getRole().getRoleCode().toUpperCase();
             authorities.add(new SimpleGrantedAuthority("ROLE_" + roleCode));
+            if (roleCode.equals("LEAD_TECHNICIAN") || roleCode.equals("TECHNICIAN")) {
+                authorities.add(new SimpleGrantedAuthority("ROLE_TECHNICIAN"));
+                authorities.add(new SimpleGrantedAuthority("ROLE_LEAD_TECHNICIAN"));
+            }
+            if (roleCode.equals("CAR_OWNER") || roleCode.equals("CUSTOMER")) {
+                authorities.add(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
+                authorities.add(new SimpleGrantedAuthority("ROLE_CAR_OWNER"));
+            }
+            if (roleCode.equals("GARAGE_OWNER")) {
+                authorities.add(new SimpleGrantedAuthority("ROLE_GARAGE_OWNER"));
+            }
+            if (roleCode.equals("ADMIN")) {
+                authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            }
 
             if (user.getRole().getPermissions() != null) {
                 user.getRole().getPermissions().forEach(p -> {

@@ -13,99 +13,6 @@ const STORE_CATEGORIES = [
   { id: 'aero', label: 'Carbon Aero Kits', icon: 'speed' }
 ]
 
-const CURATED_PARTS = [
-  {
-    id: 1,
-    name: 'BBS FI-R Forged Monoblock Wheel Set 20"/21"',
-    brand: 'BBS Germany',
-    category: 'wheels',
-    sku: 'BBS-FIR-992-TITAN',
-    priceVnd: 215000000,
-    priceUsd: 8600,
-    spec: 'Ultra-lightweight aerospace forged aluminum • PCD 5x112 / ET35 • 7.8 kg/wheel',
-    compatible: 'Porsche 911 GT3 (992), BMW M3/M4 (G80/G82)',
-    stock: 8,
-    rating: 4.9,
-    badge: 'HOT / BESTSELLER',
-    image: '/images/wheel-titanium.jpg'
-  },
-  {
-    id: 2,
-    name: 'Volk Racing TE37 Ultra M-Spec Forged 20"',
-    brand: 'Rays Japan',
-    category: 'wheels',
-    sku: 'RAYS-TE37-ULTRA-20',
-    priceVnd: 185000000,
-    priceUsd: 7400,
-    spec: 'Motorsport-grade forged monoblock • PCD 5x114.3 • Bronze Anodized finish',
-    compatible: 'Ferrari 458, Nissan GT-R R35, Honda Civic Type R',
-    stock: 6,
-    rating: 5.0,
-    badge: 'TRACK LEGEND',
-    image: '/images/wheel-volk-te37.jpg'
-  },
-  {
-    id: 3,
-    name: 'Akrapovič Evolution Line Titanium Exhaust System',
-    brand: 'Akrapovič',
-    category: 'exhaust',
-    sku: 'AKR-EVO-TITAN-992',
-    priceVnd: 185000000,
-    priceUsd: 7400,
-    spec: 'Full Titanium construction • Bluetooth active flap control • -11.4 kg weight savings',
-    compatible: 'Porsche 992 GT3 / GT3 RS, Carrera S',
-    stock: 3,
-    rating: 4.95,
-    badge: 'SIGNATURE SOUND',
-    image: '/images/exhaust-akrapovic.jpg'
-  },
-  {
-    id: 4,
-    name: 'KW Suspensions V4 Clubsport 3-Way Coilover Kit',
-    brand: 'KW Automotive',
-    category: 'suspension',
-    sku: 'KW-35271842-V4CS',
-    priceVnd: 123000000,
-    priceUsd: 4920,
-    spec: '16-click rebound & independent high/low speed compression • Uniball camber plates',
-    compatible: 'BMW M3 G80, M4 G82, Porsche 911 (992)',
-    stock: 4,
-    rating: 4.88,
-    badge: 'NÜRBURGRING SPEC',
-    image: '/images/suspension-kw.jpg'
-  },
-  {
-    id: 5,
-    name: 'Brembo GT-S 6-Piston Big Brake Kit 380x34mm',
-    brand: 'Brembo Racing',
-    category: 'brakes',
-    sku: 'BRM-1N1.9042A2',
-    priceVnd: 96250000,
-    priceUsd: 3850,
-    spec: 'Radial monoblock caliper • 2-piece Type 3 slotted disc • 800°C thermal endurance',
-    compatible: 'Universal PCD 5x112 / 5x114.3 / 5x120',
-    stock: 5,
-    rating: 4.92,
-    badge: 'TÜV COMPLIANT',
-    image: '/images/brake-brembo.jpg'
-  },
-  {
-    id: 6,
-    name: 'Vorsteiner Aero Carbon Wing & Rear Diffuser Package',
-    brand: 'Vorsteiner USA',
-    category: 'aero',
-    sku: 'VOR-CF-AERO-992',
-    priceVnd: 145000000,
-    priceUsd: 5800,
-    spec: 'Pre-preg 2x2 weave vacuum autoclave carbon • Aerodynamic downforce profile',
-    compatible: 'Porsche 911 GT3 / Turbo S, BMW M4 G82',
-    stock: 2,
-    rating: 4.98,
-    badge: 'PRE-PREG CARBON',
-    image: '/images/aero-carbon.jpg'
-  }
-]
-
 export default function PartsStorePage() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -116,6 +23,48 @@ export default function PartsStorePage() {
   const [toastMessage, setToastMessage] = useState(null)
   const [cartCount, setCartCount] = useState(4)
   const [viewItem, setViewItem] = useState(null)
+  const [partsList, setPartsList] = useState([])
+  const [loadingParts, setLoadingParts] = useState(true)
+  const [partsError, setPartsError] = useState(null)
+
+  const fetchParts = () => {
+    setLoadingParts(true)
+    setPartsError(null)
+    partApi.getAll().then(res => {
+      if (Array.isArray(res) && res.length > 0) {
+        setPartsList(res.map(p => ({
+          id: p.partId || p.id,
+          name: p.partName || p.name,
+          brand: p.brand,
+          category: (p.category || '').toLowerCase().includes('wheel') ? 'wheels'
+                  : (p.category || '').toLowerCase().includes('exhaust') ? 'exhaust'
+                  : (p.category || '').toLowerCase().includes('brake') ? 'brakes'
+                  : (p.category || '').toLowerCase().includes('shock') || (p.category || '').toLowerCase().includes('suspension') ? 'suspension'
+                  : (p.category || '').toLowerCase().includes('aero') ? 'aero' : (p.category || 'all').toLowerCase(),
+          sku: p.sku,
+          priceVnd: p.priceVnd || p.price,
+          priceUsd: p.priceUsd || Math.round((p.priceVnd || 0) / 25000),
+          spec: p.specifications || p.spec,
+          compatible: p.compatibleVehicles || p.compatible || 'Universal Supercar Fitment',
+          stock: p.stockQuantity ?? p.stock ?? 0,
+          rating: p.rating ? Number(p.rating) : 4.9,
+          badge: p.badge || 'HOT / BESTSELLER',
+          image: p.imageUrl || p.image || '/images/hero-car.jpg'
+        })))
+      } else {
+        setPartsError('No parts found in the backend database.')
+      }
+    }).catch(err => {
+      console.error('Backend parts fetch failed:', err)
+      setPartsError('Unable to connect to the backend parts catalog (/api/parts). Please try again.')
+    }).finally(() => {
+      setLoadingParts(false)
+    })
+  }
+
+  useEffect(() => {
+    fetchParts()
+  }, [])
 
   useEffect(() => {
     if (location.search.includes('inventory')) {
@@ -138,12 +87,12 @@ export default function PartsStorePage() {
     showToast(`Added "${item.name}" to Parts Cart!`)
   }
 
-  const filteredItems = CURATED_PARTS.filter(item => {
+  const filteredItems = partsList.filter(item => {
     const matchCategory = selectedCategory === 'all' || item.category === selectedCategory
     const matchSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                         item.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
                         item.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        item.compatible.toLowerCase().includes(searchQuery.toLowerCase())
+                        (item.compatible && item.compatible.toLowerCase().includes(searchQuery.toLowerCase()))
     return matchCategory && matchSearch
   })
 
@@ -321,7 +270,27 @@ export default function PartsStorePage() {
           </span>
         </div>
 
-        {filteredItems.length === 0 ? (
+        {loadingParts ? (
+          <div className="py-24 text-center flex flex-col items-center justify-center space-y-4 bg-[#162447]/40 rounded-2xl border border-white/10">
+            <div className="w-12 h-12 rounded-full border-4 border-[#6091c3]/20 border-t-[#6091c3] animate-spin" />
+            <h3 className="text-sm font-bold uppercase tracking-wider text-white">Loading Parts Catalog</h3>
+            <p className="text-xs text-[#8f9099] font-mono">Connecting to backend /api/parts...</p>
+          </div>
+        ) : partsError && partsList.length === 0 ? (
+          <div className="py-20 text-center space-y-4 bg-[#162447]/40 rounded-2xl border border-rose-500/30">
+            <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 mx-auto">
+              <span className="material-symbols-outlined text-2xl">cloud_off</span>
+            </div>
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider">Parts Catalog Connection Error</h3>
+            <p className="text-xs text-[#c8d4ea] max-w-md mx-auto">{partsError}</p>
+            <button
+              onClick={fetchParts}
+              className="px-4 py-2 rounded-lg bg-[#6091c3] hover:bg-[#6091c3]/80 text-white text-xs font-bold font-['Montserrat'] uppercase transition-all shadow-md"
+            >
+              Retry Connection
+            </button>
+          </div>
+        ) : filteredItems.length === 0 ? (
           <div className="py-20 text-center space-y-3 bg-[#162447]/40 rounded-2xl border border-white/10">
             <span className="material-symbols-outlined text-5xl text-[#8f9099]">search_off</span>
             <p className="text-sm text-[#c8d4ea]">No performance components match "{searchQuery}"</p>

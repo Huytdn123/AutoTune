@@ -105,6 +105,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/login", "/api/auth/logout").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/parts/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/cars/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/builds/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/builds").permitAll()
                         .requestMatchers("/models/**", "/assets/**", "/error", "/h2-console/**").permitAll()
                         // All other API endpoints require authentication
                         .requestMatchers("/api/**").authenticated()

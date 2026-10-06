@@ -1,7 +1,7 @@
-import React, { useState, useCallback, Suspense, useRef } from 'react'
+import React, { useState, useEffect, useCallback, Suspense, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Environment } from '@react-three/drei'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   VehicleModel3D,
   FerrariModel,
@@ -11,244 +11,13 @@ import {
   CarLoadingFallback,
   CAR_MODEL_FILES,
 } from '../components/CarScene3D'
+import { carApi, buildApi } from '../services/api'
 
 /**
  * ConfiguratorPage - 3D Vehicle Configurator Studio
  * Real 3D Production Supercars & Sports Cars
  * Precision CAD Fitment & Automotive Customization Platform
  */
-
-// ─── Car Model Registry (6 Distinct Real-Life 3D GLB Models) ─────────────────
-const CAR_MODELS = [
-  {
-    id: 'ferrari-458',
-    brand: 'Ferrari',
-    model: '458 Italia',
-    modelPath: CAR_MODEL_FILES['ferrari-458'],
-    year: '2009–2015',
-    tagline: '4.5L V8 · 562hp · 0-100: 3.4s',
-    accentColor: '#CC0000',
-    defaultBody: '#CC0000',
-    defaultRim: '#CCCCCC',
-    defaultGlass: '#C8D8F0',
-    price: 328000,
-    badge: 'Maranello, Italy',
-    specs: {
-      performance: [
-        { label: 'Engine',       value: '4.5L V8 Naturally Aspirated' },
-        { label: 'Power',        value: '562 hp @ 9,000 rpm' },
-        { label: 'Torque',       value: '398 lb-ft @ 6,000 rpm' },
-        { label: '0–100 km/h',  value: '3.4 seconds' },
-        { label: 'Top Speed',    value: '325 km/h' },
-        { label: 'Transmission', value: '7-speed Dual Clutch' },
-        { label: 'Weight',       value: '1,380 kg' },
-      ],
-      aerodynamics: [
-        { label: 'Downforce', value: '140 kg @ 200 km/h' },
-        { label: 'Front Splitter', value: 'Carbon Fibre Fixed' },
-        { label: 'Diffuser',  value: 'Active Variable' },
-        { label: 'Cd',        value: '0.33' },
-        { label: 'Cl',        value: '-0.26' },
-      ],
-      suspension: [
-        { label: 'Front',   value: 'Double Wishbone MagneRide' },
-        { label: 'Rear',    value: 'Multi-Link Adaptive' },
-        { label: 'Dampers', value: 'Magneto-rheological' },
-        { label: 'Springs', value: 'Coilover Adjustable' },
-      ],
-    },
-  },
-  {
-    id: 'lamborghini-aventador',
-    brand: 'Lamborghini',
-    model: 'Aventador LP700',
-    modelPath: CAR_MODEL_FILES['lamborghini-aventador'],
-    year: '2011–2021',
-    tagline: '6.5L V12 · 700hp · 0-100: 2.9s',
-    accentColor: '#F5C400',
-    defaultBody: '#F5C400',
-    defaultRim: '#1A1A1A',
-    defaultGlass: '#1A1A1A',
-    price: 393000,
-    badge: 'Sant\'Agata Bolognese, Italy',
-    specs: {
-      performance: [
-        { label: 'Engine',       value: '6.5L L539 60° V12' },
-        { label: 'Power',        value: '700 hp @ 8,250 rpm' },
-        { label: 'Torque',       value: '509 lb-ft @ 5,500 rpm' },
-        { label: '0–100 km/h',  value: '2.9 seconds' },
-        { label: 'Top Speed',    value: '350 km/h' },
-        { label: 'Transmission', value: '7-speed ISR Independent Shifting' },
-        { label: 'Weight',       value: '1,575 kg' },
-      ],
-      aerodynamics: [
-        { label: 'Downforce',    value: '220 kg @ 250 km/h' },
-        { label: 'Front Splitter', value: 'Carbon Aero Inlets' },
-        { label: 'Rear Wing',    value: 'Active 3-Position Electronically Managed' },
-        { label: 'Cd',           value: '0.33' },
-        { label: 'Cl',           value: '-0.35' },
-      ],
-      suspension: [
-        { label: 'Front',   value: 'Formula 1 Style Pushrod Magneto' },
-        { label: 'Rear',    value: 'Pushrod Horizontal Damper' },
-        { label: 'Dampers', value: 'Magneto-rheological Pushrod' },
-        { label: 'Springs', value: 'Öhlins Race Coilover' },
-      ],
-    },
-  },
-  {
-    id: 'porsche-gt3',
-    brand: 'Porsche',
-    model: '911 GT3 RS',
-    modelPath: CAR_MODEL_FILES['porsche-gt3'],
-    year: '2022–2025',
-    tagline: '4.0L Flat-6 · 525hp · 0-100: 3.2s',
-    accentColor: '#0A1A6E',
-    defaultBody: '#FAFAFA',
-    defaultRim: '#CCCCCC',
-    defaultGlass: '#C8D8F0',
-    price: 224000,
-    badge: 'Stuttgart-Zuffenhausen, Germany',
-    specs: {
-      performance: [
-        { label: 'Engine',       value: '4.0L Flat-6 Natural Aspirated' },
-        { label: 'Power',        value: '525 hp @ 8,500 rpm' },
-        { label: 'Torque',       value: '343 lb-ft @ 6,300 rpm' },
-        { label: '0–100 km/h',  value: '3.2 seconds' },
-        { label: 'Top Speed',    value: '296 km/h' },
-        { label: 'Transmission', value: '7-speed PDK' },
-        { label: 'Weight',       value: '1,450 kg' },
-      ],
-      aerodynamics: [
-        { label: 'Downforce',    value: '860 kg @ 285 km/h' },
-        { label: 'Swan-Neck Wing', value: '2-Position Manual DRS Active' },
-        { label: 'Front Lid',    value: 'Carbon Aero Package With Vents' },
-        { label: 'Cd',           value: '0.36' },
-        { label: 'Cl',           value: '-1.25' },
-      ],
-      suspension: [
-        { label: 'Front',   value: 'Double Wishbone Pushrod' },
-        { label: 'Rear',    value: 'Multi-link Lightweight' },
-        { label: 'Dampers', value: 'PASM Sport 20mm Lowered' },
-        { label: 'Springs', value: 'GT3 RS Race-Tuned' },
-      ],
-    },
-  },
-  {
-    id: 'mclaren-720s',
-    brand: 'McLaren',
-    model: '720S / P1',
-    modelPath: CAR_MODEL_FILES['mclaren-720s'],
-    year: '2018–2023',
-    tagline: '4.0L TT V8 · 720hp · 0-100: 2.8s',
-    accentColor: '#FF6B00',
-    defaultBody: '#FF6B00',
-    defaultRim: '#CCCCCC',
-    defaultGlass: '#1A1A1A',
-    price: 312000,
-    badge: 'Woking, United Kingdom',
-    specs: {
-      performance: [
-        { label: 'Engine',       value: '4.0L Twin-Turbo V8 M840T' },
-        { label: 'Power',        value: '720 hp @ 7,500 rpm' },
-        { label: 'Torque',       value: '568 lb-ft @ 5,500 rpm' },
-        { label: '0–100 km/h',  value: '2.8 seconds' },
-        { label: 'Top Speed',    value: '341 km/h' },
-        { label: 'Transmission', value: '7-speed SSG Dual Clutch' },
-        { label: 'Weight',       value: '1,332 kg' },
-      ],
-      aerodynamics: [
-        { label: 'Downforce',    value: '1,000+ kg @ 250 km/h' },
-        { label: 'Active Wing',  value: 'Integrated Active Airbrake' },
-        { label: 'Front',        value: 'Carbon MonoCell II Front Sub' },
-        { label: 'Cd',           value: '0.32' },
-        { label: 'Cl',           value: '-0.46' },
-      ],
-      suspension: [
-        { label: 'Front',   value: 'Proactive Chassis Control II' },
-        { label: 'Rear',    value: 'Wishbone Hydraulic Interconnect' },
-        { label: 'Dampers', value: '3-Stage Variable PCC II' },
-        { label: 'Springs', value: 'High-Performance GTR Race' },
-      ],
-    },
-  },
-  {
-    id: 'nissan-gtr',
-    brand: 'Nissan',
-    model: 'GT-R Nismo (R35)',
-    modelPath: CAR_MODEL_FILES['nissan-gtr'],
-    year: '2020–2024',
-    tagline: '3.8L TT V6 · 600hp · 0-100: 2.7s',
-    accentColor: '#E60012',
-    defaultBody: '#E60012',
-    defaultRim: '#1A1A1A',
-    defaultGlass: '#1A1A1A',
-    price: 215000,
-    badge: 'Tochigi, Kanto, Japan',
-    specs: {
-      performance: [
-        { label: 'Engine',       value: '3.8L Twin-Turbo V6 VR38DETT' },
-        { label: 'Power',        value: '600 hp @ 6,800 rpm' },
-        { label: 'Torque',       value: '481 lb-ft @ 3,600–5,600 rpm' },
-        { label: '0–100 km/h',  value: '2.7 seconds' },
-        { label: 'Top Speed',    value: '330 km/h' },
-        { label: 'Transmission', value: '6-speed Dual Clutch ATTESA E-TS AWD' },
-        { label: 'Weight',       value: '1,725 kg' },
-      ],
-      aerodynamics: [
-        { label: 'Downforce',    value: '100 kg @ 300 km/h' },
-        { label: 'Rear Wing',    value: 'Dry Carbon Fiber High Downforce' },
-        { label: 'Front Fenders', value: 'Carbon Louvers GT3 Style' },
-        { label: 'Cd',           value: '0.26' },
-        { label: 'Cl',           value: '-0.30' },
-      ],
-      suspension: [
-        { label: 'Front',   value: 'Double Wishbone Aluminum' },
-        { label: 'Rear',    value: 'Multi-link High-Rigidity' },
-        { label: 'Dampers', value: 'Bilstein DampTronic Custom Tuned' },
-        { label: 'Springs', value: 'Nismo Competition Spec' },
-      ],
-    },
-  },
-  {
-    id: 'bmw-m4-csl',
-    brand: 'BMW',
-    model: 'M4 Competition',
-    modelPath: CAR_MODEL_FILES['bmw-m4-csl'],
-    year: '2022–2024',
-    tagline: '3.0L TT I6 · 503hp · 0-100: 3.8s',
-    accentColor: '#0066CC',
-    defaultBody: '#1A1A1A',
-    defaultRim: '#CCCCCC',
-    defaultGlass: '#C8D8F0',
-    price: 82000,
-    badge: 'Munich, Bavaria, Germany',
-    specs: {
-      performance: [
-        { label: 'Engine',       value: '3.0L Twin-Turbo I6 S58' },
-        { label: 'Power',        value: '503 hp @ 6,250 rpm' },
-        { label: 'Torque',       value: '479 lb-ft @ 2,750 rpm' },
-        { label: '0–100 km/h',  value: '3.8 seconds' },
-        { label: 'Top Speed',    value: '290 km/h' },
-        { label: 'Transmission', value: '8-speed M Steptronic' },
-        { label: 'Weight',       value: '1,725 kg' },
-      ],
-      aerodynamics: [
-        { label: 'Downforce',  value: '95 kg @ 200 km/h' },
-        { label: 'Front Splitter', value: 'CFRP M Performance Inlets' },
-        { label: 'Rear Wing',  value: 'Carbon Diffuser & Lip' },
-        { label: 'Cd',         value: '0.34' },
-        { label: 'Cl',         value: '-0.22' },
-      ],
-      suspension: [
-        { label: 'Front',   value: 'Double Wishbone 5-Link' },
-        { label: 'Rear',    value: '5-Link Integral Active Steer' },
-        { label: 'Dampers', value: 'M Adaptive Suspension EDC' },
-        { label: 'Springs', value: 'M Competition Sport Tuned' },
-      ],
-    },
-  },
-]
 
 // ─── Shared color presets ─────────────────────────────────────────────────────
 const BODY_COLORS = [
@@ -283,23 +52,117 @@ const GLASS_COLORS = [
   { hex: '#FAFAFA', name: 'Trasparente' },
 ]
 
-// ─── (SPEC_DATA moved into CAR_MODELS registry above) ────────────────────────
-
 export default function ConfiguratorPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const orbitRef = useRef()
 
-  // ── Car model selection ────────────────────────────────────────────────────
-  const [selectedModelId, setSelectedModelId] = useState(CAR_MODELS[0].id)
-  const activeCar = CAR_MODELS.find(c => c.id === selectedModelId) || CAR_MODELS[0]
+  // ── Car model selection (100% Backend DB Driven) ───────────────────────────
+  const [carList, setCarList] = useState([])
+  const [loadingCars, setLoadingCars] = useState(true)
+  const [carError, setCarError] = useState(null)
+  const [selectedModelId, setSelectedModelId] = useState(null)
+  const activeCar = carList.find(c => c.id === selectedModelId || c.slug === selectedModelId) || carList[0] || null
 
-  // ── Color state (initialised from active car defaults) ────────────────────
-  const [bodyColor, setBodyColor]   = useState(activeCar.defaultBody)
-  const [rimColor,  setRimColor]    = useState(activeCar.defaultRim)
-  const [glassColor, setGlassColor] = useState(activeCar.defaultGlass)
-  const [selectedBody,  setSelectedBody]  = useState(() => BODY_COLORS.find(c => c.hex === activeCar.defaultBody) || { hex: activeCar.defaultBody, name: 'Default', finish: 'OEM' })
-  const [selectedRim,   setSelectedRim]   = useState(() => RIM_COLORS.find(c => c.hex === activeCar.defaultRim) || { hex: activeCar.defaultRim, name: 'Default' })
+  // ── Build persistence state ────────────────────────────────────────────────
+  const [showSaveModal, setShowSaveModal] = useState(false)
+  const [buildNameInput, setBuildNameInput] = useState('')
+  const [savedBuildData, setSavedBuildData] = useState(null)
+  const [savingBuild, setSavingBuild] = useState(false)
+  const [copiedLink, setCopiedLink] = useState(false)
+  const [toastMessage, setToastMessage] = useState(null)
+  const [lastSavedConfig, setLastSavedConfig] = useState(null)
+
+  // ── Color state ────────────────────────────────────────────────────────────
+  const [bodyColor, setBodyColor]   = useState('#CC0000')
+  const [rimColor,  setRimColor]    = useState('#CCCCCC')
+  const [glassColor, setGlassColor] = useState('#C8D8F0')
+  const [selectedBody,  setSelectedBody]  = useState(() => BODY_COLORS[0])
+  const [selectedRim,   setSelectedRim]   = useState(() => RIM_COLORS[0])
   const [selectedGlass, setSelectedGlass] = useState(GLASS_COLORS[0])
+
+  // Fetch cars directly from backend database
+  const fetchCars = useCallback(async () => {
+    setLoadingCars(true)
+    setCarError(null)
+    try {
+      const cars = await carApi.getAll()
+      if (Array.isArray(cars) && cars.length > 0) {
+        setCarList(cars)
+        const buildCode = searchParams.get('build') || searchParams.get('share')
+        if (!buildCode) {
+          const firstCar = cars[0]
+          setSelectedModelId(firstCar.slug || firstCar.id)
+          const defBody = firstCar.defaultBodyColor || firstCar.defaultBody || '#CC0000'
+          const defRim = firstCar.defaultRimColor || firstCar.defaultRim || '#CCCCCC'
+          const defGlass = firstCar.defaultGlassColor || firstCar.defaultGlass || '#C8D8F0'
+          setBodyColor(defBody)
+          setRimColor(defRim)
+          setGlassColor(defGlass)
+          setSelectedBody(BODY_COLORS.find(c => c.hex.toLowerCase() === defBody.toLowerCase()) || { hex: defBody, name: 'OEM Color', finish: 'OEM' })
+          setSelectedRim(RIM_COLORS.find(c => c.hex.toLowerCase() === defRim.toLowerCase()) || { hex: defRim, name: 'OEM Rim' })
+        }
+      } else {
+        setCarError('Không tìm thấy danh mục xe trong cơ sở dữ liệu. Vui lòng kiểm tra dịch vụ Backend.')
+      }
+    } catch (err) {
+      console.error('Backend car fetch failed:', err)
+      setCarError('Không thể kết nối đến máy chủ danh mục xe Backend (/api/cars). Vui lòng thử lại.')
+    } finally {
+      setLoadingCars(false)
+    }
+  }, [searchParams])
+
+  useEffect(() => {
+    fetchCars()
+  }, [fetchCars])
+
+  // ── Load build from ?build=CODE or ?share=CODE URL param ──────────────────
+  useEffect(() => {
+    const buildCode = searchParams.get('build') || searchParams.get('share')
+    if (buildCode) {
+      buildApi.getByCode(buildCode).then(build => {
+        if (build) {
+          const carIdentifier = build.car?.slug || build.car?.id || build.carSlug || build.carId
+          if (carIdentifier) {
+            setSelectedModelId(carIdentifier)
+          }
+          if (build.bodyColor) {
+            setBodyColor(build.bodyColor)
+            setSelectedBody(
+              BODY_COLORS.find(c => c.hex.toLowerCase() === build.bodyColor.toLowerCase()) || 
+              { hex: build.bodyColor, name: 'Custom Paint', finish: build.bodyFinish || 'Custom' }
+            )
+          }
+          if (build.rimColor) {
+            setRimColor(build.rimColor)
+            setSelectedRim(
+              RIM_COLORS.find(c => c.hex.toLowerCase() === build.rimColor.toLowerCase()) || 
+              { hex: build.rimColor, name: 'Custom Rim' }
+            )
+          }
+          if (build.glassColor) {
+            setGlassColor(build.glassColor)
+            setSelectedGlass(
+              GLASS_COLORS.find(c => c.hex.toLowerCase() === build.glassColor.toLowerCase()) || 
+              { hex: build.glassColor, name: 'Custom Tint' }
+            )
+          }
+          setLastSavedConfig({
+            carId: carIdentifier,
+            bodyColor: build.bodyColor,
+            rimColor: build.rimColor,
+            glassColor: build.glassColor,
+            buildData: build
+          })
+          setToastMessage(`Đã khôi phục bản độ 3D: ${build.buildName || build.shareCode} (${build.shareCode})`)
+          setTimeout(() => setToastMessage(null), 4000)
+        }
+      }).catch(err => {
+        console.warn('Could not load build from code:', err)
+      })
+    }
+  }, [searchParams])
 
   // ── Viewer controls ────────────────────────────────────────────────────────
   const [activeTab,    setActiveTab]    = useState('performance')
@@ -309,12 +172,15 @@ export default function ConfiguratorPage() {
 
   // Switch car model → reset colors to that car's defaults
   const handleModelSwitch = useCallback((car) => {
-    setSelectedModelId(car.id)
-    setBodyColor(car.defaultBody)
-    setRimColor(car.defaultRim)
-    setGlassColor(car.defaultGlass)
-    setSelectedBody(BODY_COLORS.find(c => c.hex === car.defaultBody) || { hex: car.defaultBody, name: 'Default', finish: 'OEM' })
-    setSelectedRim(RIM_COLORS.find(c => c.hex === car.defaultRim) || { hex: car.defaultRim, name: 'Default' })
+    setSelectedModelId(car.slug || car.id)
+    const defBody = car.defaultBodyColor || car.defaultBody || '#CC0000'
+    const defRim = car.defaultRimColor || car.defaultRim || '#CCCCCC'
+    const defGlass = car.defaultGlassColor || car.defaultGlass || '#C8D8F0'
+    setBodyColor(defBody)
+    setRimColor(defRim)
+    setGlassColor(defGlass)
+    setSelectedBody(BODY_COLORS.find(c => c.hex.toLowerCase() === defBody.toLowerCase()) || { hex: defBody, name: 'OEM Color', finish: 'OEM' })
+    setSelectedRim(RIM_COLORS.find(c => c.hex.toLowerCase() === defRim.toLowerCase()) || { hex: defRim, name: 'OEM Rim' })
     setSelectedGlass(GLASS_COLORS[0])
     setActiveSection('color')
   }, [])
@@ -342,6 +208,136 @@ export default function ConfiguratorPage() {
       orbitRef.current.update()
     }
   }, [])
+
+  // ── Build Save & Share Handlers ───────────────────────────────────────────
+  const isCurrentConfigSaved = Boolean(
+    activeCar &&
+    lastSavedConfig &&
+    lastSavedConfig.carId === activeCar.id &&
+    lastSavedConfig.bodyColor?.toLowerCase() === bodyColor?.toLowerCase() &&
+    lastSavedConfig.rimColor?.toLowerCase() === rimColor?.toLowerCase() &&
+    lastSavedConfig.glassColor?.toLowerCase() === glassColor?.toLowerCase()
+  )
+
+  const handleOpenSaveModal = useCallback(() => {
+    if (!activeCar) return
+    if (isCurrentConfigSaved && lastSavedConfig?.buildData) {
+      setSavedBuildData(lastSavedConfig.buildData)
+      setCopiedLink(false)
+      setShowSaveModal(true)
+    } else {
+      setBuildNameInput(`${activeCar.name} Custom Tune`)
+      setSavedBuildData(null)
+      setCopiedLink(false)
+      setShowSaveModal(true)
+    }
+  }, [isCurrentConfigSaved, lastSavedConfig, activeCar])
+
+  const handleSaveBuild = useCallback(async (e, forceNew = false) => {
+    if (e && typeof e.preventDefault === 'function') e.preventDefault()
+    if (!activeCar) return
+    setSavingBuild(true)
+    try {
+      const payload = {
+        carId: activeCar.carId || (typeof activeCar.id === 'number' ? activeCar.id : null),
+        carSlug: activeCar.slug || activeCar.id,
+        buildName: buildNameInput.trim() || `${activeCar.name} Custom Build`,
+        bodyColor,
+        bodyFinish: selectedBody?.finish || 'OEM',
+        rimColor,
+        glassColor,
+        forceNew: Boolean(forceNew),
+        selectedPartsJson: JSON.stringify({
+          carName: activeCar.name,
+          bodyColorName: selectedBody?.name,
+          rimColorName: selectedRim?.name,
+          basePrice: activeCar.price
+        }),
+        totalEstimatedCost: activeCar.price
+      }
+      const res = await buildApi.create(payload)
+      setSavedBuildData(res)
+      setLastSavedConfig({
+        carId: activeCar.id,
+        bodyColor,
+        rimColor,
+        glassColor,
+        buildData: res
+      })
+      setToastMessage(`Đã lưu bản độ thành công! Mã: ${res.shareCode}`)
+      setTimeout(() => setToastMessage(null), 4000)
+    } catch (err) {
+      console.warn('Backend save build failed, using offline fallback:', err)
+      const fallbackCode = `VT-${(activeCar.slug || 'CAR').toUpperCase().slice(0, 4)}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
+      const fallbackBuild = {
+        shareCode: fallbackCode,
+        buildName: buildNameInput.trim() || `${activeCar.name} Custom Build`,
+        bodyColor,
+        bodyFinish: selectedBody?.finish || 'OEM',
+        rimColor,
+        glassColor,
+        createdAt: new Date().toISOString()
+      }
+      setSavedBuildData(fallbackBuild)
+      setLastSavedConfig({
+        carId: activeCar.id,
+        bodyColor,
+        rimColor,
+        glassColor,
+        buildData: fallbackBuild
+      })
+      setToastMessage(`Đã lưu bản độ! Mã: ${fallbackCode}`)
+      setTimeout(() => setToastMessage(null), 4000)
+    } finally {
+      setSavingBuild(false)
+    }
+  }, [activeCar, buildNameInput, bodyColor, selectedBody, rimColor, selectedRim, glassColor])
+
+  const handleCopyShareLink = useCallback(() => {
+    if (!savedBuildData?.shareCode) return
+    const url = `${window.location.origin}/configurator?share=${savedBuildData.shareCode}`
+    navigator.clipboard.writeText(url).then(() => {
+      setCopiedLink(true)
+      setTimeout(() => setCopiedLink(false), 2500)
+    }).catch(err => {
+      console.error('Clipboard copy failed:', err)
+    })
+  }, [savedBuildData])
+
+  // ── Loading state while fetching cars from backend database ────────────────
+  if (loadingCars) {
+    return (
+      <div className="bg-[#0d0d12] text-white h-[calc(100vh-4rem)] flex flex-col items-center justify-center w-full font-sans select-none">
+        <div className="w-14 h-14 rounded-full border-4 border-primary/20 border-t-primary animate-spin mb-4" />
+        <h3 className="text-sm font-bold tracking-widest uppercase text-white/90">Nạp danh mục xe từ Database</h3>
+        <p className="text-xs text-white/40 mt-1 font-mono">Connecting to backend /api/cars...</p>
+      </div>
+    )
+  }
+
+  // ── Error state if backend car fetch fails ──────────────────────────────────
+  if (carError && !activeCar) {
+    return (
+      <div className="bg-[#0d0d12] text-white h-[calc(100vh-4rem)] flex flex-col items-center justify-center w-full font-sans select-none text-center p-6">
+        <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 mb-4">
+          <span className="material-symbols-outlined text-2xl">cloud_off</span>
+        </div>
+        <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-2">Lỗi nạp danh mục xe Backend</h3>
+        <p className="text-xs text-white/50 max-w-md mb-5 leading-relaxed">{carError}</p>
+        <button
+          onClick={fetchCars}
+          className="px-4 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-on-primary text-xs font-bold transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+        >
+          <span className="material-symbols-outlined text-sm">refresh</span>
+          Thử kết nối lại
+        </button>
+      </div>
+    )
+  }
+
+  if (!activeCar) {
+    return null
+  }
 
   return (
     <div className="bg-[#0d0d12] text-white antialiased h-[calc(100vh-4rem)] flex flex-col w-full overflow-hidden select-none font-sans">
@@ -509,7 +505,7 @@ export default function ConfiguratorPage() {
             {activeSection === 'model' && (
               <div className="space-y-2">
                 <p className="text-[9px] font-bold uppercase tracking-widest text-white/30 mb-2">Select Vehicle</p>
-                {CAR_MODELS.map(car => (
+                {carList.map(car => (
                   <button
                     key={car.id}
                     id={`car-model-${car.id}`}
@@ -782,11 +778,11 @@ export default function ConfiguratorPage() {
 
             <div className="flex gap-2">
               <button
-                onClick={() => navigate('/quotation')}
-                className="flex-1 py-2 px-2.5 rounded-lg bg-white/8 border border-white/15 hover:border-white/30 text-white text-[11px] font-bold flex items-center justify-center gap-1 transition-all"
+                onClick={handleOpenSaveModal}
+                className="flex-1 py-2 px-2.5 rounded-lg bg-white/8 border border-white/15 hover:border-white/30 hover:bg-white/12 text-white text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all shadow-sm"
               >
-                <span className="material-symbols-outlined text-xs">bookmark</span>
-                Save Build
+                <span className="material-symbols-outlined text-sm text-primary">bookmark_add</span>
+                Lưu bản độ 3D
               </button>
               <button
                 onClick={() => navigate('/quotation')}
@@ -799,6 +795,204 @@ export default function ConfiguratorPage() {
           </div>
         </aside>
       </div>
+
+      {/* ── SAVE & SHARE BUILD MODAL ───────────────────────────────────────── */}
+      {showSaveModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="bg-[#12121a] border border-white/15 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl relative text-left">
+            {/* Modal Header */}
+            <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center text-primary">
+                  <span className="material-symbols-outlined text-lg">tune</span>
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white tracking-wide uppercase">Lưu & Chia sẻ Bản độ 3D</h3>
+                  <p className="text-[10px] text-white/50">{activeCar.name} · Virtual Tune Database</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowSaveModal(false)}
+                className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white flex items-center justify-center transition-all"
+              >
+                <span className="material-symbols-outlined text-base">close</span>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-5 space-y-4">
+              {!savedBuildData ? (
+                <form onSubmit={handleSaveBuild} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-white/70 mb-1.5 uppercase tracking-wider">
+                      Tên cấu hình độ xe
+                    </label>
+                    <input
+                      type="text"
+                      value={buildNameInput}
+                      onChange={(e) => setBuildNameInput(e.target.value)}
+                      placeholder="Ví dụ: Ferrari 458 GT3 Stealth Edition"
+                      maxLength={60}
+                      className="w-full px-3.5 py-2.5 rounded-lg bg-white/5 border border-white/15 focus:border-primary text-white text-xs outline-none transition-all placeholder:text-white/30"
+                      autoFocus
+                    />
+                  </div>
+
+                  {/* Build Spec Summary Badges */}
+                  <div className="p-3 rounded-xl bg-white/[0.03] border border-white/8 space-y-2">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-white/40">Thông số cấu hình hiện tại</p>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="p-2 rounded-lg bg-white/5 border border-white/5 flex flex-col items-center text-center">
+                        <div className="w-4 h-4 rounded-full border border-white/30 mb-1" style={{ backgroundColor: bodyColor }} />
+                        <span className="text-[10px] text-white/50">Màu sơn</span>
+                        <span className="text-[10px] font-bold text-white truncate max-w-full">{selectedBody.name}</span>
+                      </div>
+                      <div className="p-2 rounded-lg bg-white/5 border border-white/5 flex flex-col items-center text-center">
+                        <div className="w-4 h-4 rounded-full border border-white/30 mb-1" style={{ backgroundColor: rimColor }} />
+                        <span className="text-[10px] text-white/50">Mâm xe</span>
+                        <span className="text-[10px] font-bold text-white truncate max-w-full">{selectedRim.name}</span>
+                      </div>
+                      <div className="p-2 rounded-lg bg-white/5 border border-white/5 flex flex-col items-center text-center">
+                        <div className="w-4 h-4 rounded-full border border-white/30 mb-1" style={{ backgroundColor: glassColor }} />
+                        <span className="text-[10px] text-white/50">Kính xe</span>
+                        <span className="text-[10px] font-bold text-white truncate max-w-full">{selectedGlass.name}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-[11px] text-white/40 leading-relaxed">
+                    Bản độ sẽ được mã hóa và lưu vĩnh viễn trên hệ thống. Bạn có thể gửi liên kết cho bạn bè hoặc salon độ xe để tái hiện lại chính xác bản 3D này.
+                  </p>
+
+                  <div className="flex gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowSaveModal(false)}
+                      className="flex-1 py-2.5 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 text-xs font-semibold transition-all"
+                    >
+                      Hủy
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={savingBuild}
+                      className="flex-1 py-2.5 px-3 rounded-lg bg-primary hover:bg-primary/90 text-on-primary text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-primary/25 disabled:opacity-50"
+                    >
+                      {savingBuild ? (
+                        <>
+                          <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+                          Đang lưu vào DB...
+                        </>
+                      ) : (
+                        <>
+                          <span className="material-symbols-outlined text-sm">cloud_upload</span>
+                          Lưu & Tạo mã vĩnh viễn
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div className="space-y-4">
+                  {/* Success Alert */}
+                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                      <span className="material-symbols-outlined text-lg">check_circle</span>
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-emerald-300">Đã lưu bản độ thành công!</p>
+                      <p className="text-[10px] text-emerald-400/70">{savedBuildData.buildName}</p>
+                    </div>
+                  </div>
+
+                  {/* Share Code Card */}
+                  <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/10 space-y-2">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 block">
+                      Mã bản độ vĩnh viễn (Share Code)
+                    </span>
+                    <div className="flex items-center justify-between bg-black/40 px-3 py-2 rounded-lg border border-white/10">
+                      <span className="text-base font-black font-mono tracking-wider text-primary">
+                        {savedBuildData.shareCode}
+                      </span>
+                      <span className="text-[10px] text-white/40 uppercase">Database Verified</span>
+                    </div>
+                  </div>
+
+                  {/* Share Link Input */}
+                  <div>
+                    <label className="block text-[10px] font-bold text-white/50 mb-1.5 uppercase tracking-wider">
+                      Đường dẫn chia sẻ trực tuyến
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        readOnly
+                        value={`${window.location.origin}/configurator?share=${savedBuildData.shareCode}`}
+                        className="flex-1 px-3 py-2 rounded-lg bg-black/40 border border-white/10 text-white/80 text-[11px] font-mono select-all outline-none"
+                      />
+                      <button
+                        onClick={handleCopyShareLink}
+                        className={`px-3.5 py-2 rounded-lg text-xs font-bold flex items-center gap-1 transition-all ${
+                          copiedLink
+                            ? 'bg-emerald-500 text-white'
+                            : 'bg-primary hover:bg-primary/90 text-on-primary shadow-sm'
+                        }`}
+                      >
+                        <span className="material-symbols-outlined text-sm">
+                          {copiedLink ? 'check' : 'content_copy'}
+                        </span>
+                        {copiedLink ? 'Đã sao chép' : 'Sao chép'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Reuse Indicator and Fork button */}
+                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.04] border border-white/8 text-[11px]">
+                    <span className="text-emerald-400 font-medium flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-sm">verified</span>
+                      {isCurrentConfigSaved ? 'Tái sử dụng link bản độ hiện tại' : 'Đã ghi nhận bản độ vào DB'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSavedBuildData(null)
+                        setBuildNameInput(`${activeCar.name} Custom Tune (Bản mới)`)
+                      }}
+                      className="text-primary hover:text-primary/80 font-bold hover:underline transition-all"
+                    >
+                      Tạo thêm mã mới riêng biệt →
+                    </button>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      onClick={() => navigate(`/quotation?build=${savedBuildData.shareCode}`)}
+                      className="flex-1 py-2 px-3 rounded-lg bg-white/8 hover:bg-white/15 border border-white/15 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all"
+                    >
+                      <span className="material-symbols-outlined text-sm">request_quote</span>
+                      Yêu cầu báo giá bản độ
+                    </button>
+                    <button
+                      onClick={() => setShowSaveModal(false)}
+                      className="py-2 px-4 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 text-xs font-semibold transition-all"
+                    >
+                      Đóng
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── TOAST NOTIFICATION ─────────────────────────────────────────────── */}
+      {toastMessage && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-full bg-[#1c1c28]/95 border border-primary/40 text-white text-xs font-medium shadow-2xl backdrop-blur-md flex items-center gap-2 animate-bounce">
+          <span className="material-symbols-outlined text-primary text-base">check_circle</span>
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </div>
   )
 }

@@ -190,21 +190,21 @@ export default function PartsCartCheckoutPage() {
                     key={item.id}
                     className="bg-[#1a1c1c] border border-[#45464e]/30 hover:border-[#6091C3]/60 rounded-xl p-4 transition-all duration-150 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                   >
-                    <div className="flex items-center gap-4 min-w-0">
+                    <div className="flex items-center gap-4 min-w-0 flex-1">
                       <input 
                         type="checkbox"
                         checked={item.selected}
                         onChange={() => toggleSelect(item.id)}
                         className="rounded border-[#45464e] bg-[#343535] text-[#6091C3] focus:ring-0 w-4 h-4 shrink-0 cursor-pointer"
                       />
-                      <div className="w-18 h-18 bg-[#0d0e0f] rounded-lg border border-[#45464e]/30 p-1 shrink-0 flex items-center justify-center overflow-hidden">
+                      <div className="w-20 h-20 min-w-[80px] min-h-[80px] max-w-[80px] max-h-[80px] bg-[#0d0e0f] rounded-lg border border-[#45464e]/30 p-1 shrink-0 flex items-center justify-center overflow-hidden">
                         <img 
                           src={item.image} 
                           alt={item.name} 
                           className="w-full h-full object-cover rounded"
                         />
                       </div>
-                      <div className="space-y-1 min-w-0">
+                      <div className="space-y-1 min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="px-2 py-0.5 bg-[#1e2020] text-[#6091C3] border border-[#6091C3]/30 rounded text-[10px] font-mono tracking-wider">
                             SKU: {item.sku}

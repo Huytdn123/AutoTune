@@ -1,10 +1,12 @@
 package com.virtualtune.config;
 
+import com.virtualtune.model.Car;
 import com.virtualtune.model.Garage;
 import com.virtualtune.model.Part;
 import com.virtualtune.model.Permission;
 import com.virtualtune.model.Role;
 import com.virtualtune.model.User;
+import com.virtualtune.repository.CarRepository;
 import com.virtualtune.repository.GarageRepository;
 import com.virtualtune.repository.PartRepository;
 import com.virtualtune.repository.PermissionRepository;
@@ -37,6 +39,9 @@ public class DataInitializer implements CommandLineRunner {
     private PartRepository partRepository;
 
     @Autowired
+    private CarRepository carRepository;
+
+    @Autowired
     private PermissionRepository permissionRepository;
 
     @Autowired
@@ -46,6 +51,7 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
         try {
             seedDatabase();
+            seedCars();
             syncTestAccounts();
         } catch (Exception e) {
             System.err.println(">>> DataInitializer notice: " + e.getMessage());
@@ -87,6 +93,12 @@ public class DataInitializer implements CommandLineRunner {
         List<Permission> allPerms = permissionRepository.findAll();
 
         // 3. Roles
+        Role adminRole = roleRepository.findByRoleCode("ADMIN").orElseGet(() -> {
+            Role r = new Role(null, "ADMIN", "System Administrator", "Full system access, audit, security and multi-tenant management", "#EF4444");
+            r.setPermissions(new HashSet<>(allPerms));
+            return roleRepository.save(r);
+        });
+
         Role garageOwnerRole = roleRepository.findByRoleCode("GARAGE_OWNER").orElseGet(() -> {
             Role r = new Role(null, "GARAGE_OWNER", "Garage Owner (B2B)", "Executive management, bay dispatch, quotation approvals, team administration", "#6091C3");
             r.setPermissions(new HashSet<>(allPerms));
@@ -95,6 +107,23 @@ public class DataInitializer implements CommandLineRunner {
 
         Role techLeadRole = roleRepository.findByRoleCode("LEAD_TECHNICIAN").orElseGet(() -> {
             Role r = new Role(null, "LEAD_TECHNICIAN", "Master Technician", "Work order execution, kinematic alignment, 3D CAD fitment & tolerance appraisal", "#10B981");
+            Set<Permission> techPerms = new HashSet<>();
+            allPerms.forEach(p -> {
+                if (p.getPermissionCode().equals("VIEW_DASHBOARD") ||
+                    p.getPermissionCode().equals("DISPATCH_BAY") ||
+                    p.getPermissionCode().equals("EXECUTE_WORK_ORDER") ||
+                    p.getPermissionCode().equals("VALIDATE_FITMENT") ||
+                    p.getPermissionCode().equals("CUSTOMIZE_3D") ||
+                    p.getPermissionCode().equals("VIEW_WARRANTY")) {
+                    techPerms.add(p);
+                }
+            });
+            r.setPermissions(techPerms);
+            return roleRepository.save(r);
+        });
+
+        Role technicianRole = roleRepository.findByRoleCode("TECHNICIAN").orElseGet(() -> {
+            Role r = new Role(null, "TECHNICIAN", "Service Technician", "Work order execution, kinematic alignment, fitment inspection", "#10B981");
             Set<Permission> techPerms = new HashSet<>();
             allPerms.forEach(p -> {
                 if (p.getPermissionCode().equals("VIEW_DASHBOARD") ||
@@ -124,8 +153,37 @@ public class DataInitializer implements CommandLineRunner {
             return roleRepository.save(r);
         });
 
+        Role customerRole = roleRepository.findByRoleCode("CUSTOMER").orElseGet(() -> {
+            Role r = new Role(null, "CUSTOMER", "Customer", "3D exterior studio staging, instant quotation request, digital warranty passport", "#F59E0B");
+            Set<Permission> carPerms = new HashSet<>();
+            allPerms.forEach(p -> {
+                if (p.getPermissionCode().equals("CUSTOMIZE_3D") ||
+                    p.getPermissionCode().equals("REQUEST_QUOTE") ||
+                    p.getPermissionCode().equals("VIEW_WARRANTY")) {
+                    carPerms.add(p);
+                }
+            });
+            r.setPermissions(carPerms);
+            return roleRepository.save(r);
+        });
+
         // 4. Users
         String defaultBcrypt = passwordEncoder.encode("password123");
+
+        if (userRepository.findByUsername("admin").isEmpty()) {
+            userRepository.save(new User(
+                    null,
+                    "admin",
+                    defaultBcrypt,
+                    "System Administrator",
+                    "admin@virtualtune.com",
+                    "+84 901 000 001",
+                    adminRole,
+                    garage,
+                    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
+                    "ACTIVE"
+            ));
+        }
 
         if (userRepository.findByUsername("admin_garage").isEmpty()) {
             userRepository.save(new User(
@@ -189,17 +247,18 @@ public class DataInitializer implements CommandLineRunner {
 
         // 5. Parts (Wheels & Rims, Brake Systems, Exhaust Systems, Coilovers & Shocks, Carbon Aero Kits)
         if (partRepository.count() == 0) {
-            partRepository.save(new Part(null, "BBS-FIR-992-TITAN", "BBS FI-R Forged Monoblock Wheel Set 20\"/21\"", "Wheels & Rims", "BBS Germany", "Ultra-lightweight aerospace forged aluminum • PCD 5x112 / ET35 • 7.8 kg/wheel", 215000000L, 8, "PASS"));
-            partRepository.save(new Part(null, "RAYS-TE37-ULTRA-20", "Volk Racing TE37 Ultra M-Spec Forged 20\"", "Wheels & Rims", "Rays Japan", "Motorsport-grade forged monoblock • PCD 5x114.3 • Bronze Anodized finish", 185000000L, 6, "PASS"));
-            partRepository.save(new Part(null, "AKR-EVO-TITAN-992", "Akrapovič Evolution Line Titanium Exhaust System", "Exhaust Systems", "Akrapovič", "Full Titanium construction • Bluetooth active flap control • -11.4 kg weight savings", 185000000L, 3, "PASS"));
-            partRepository.save(new Part(null, "KW-35271842-V4CS", "KW Suspensions V4 Clubsport 3-Way Coilover Kit", "Coilovers & Shocks", "KW Automotive", "16-click rebound & independent high/low speed compression • Uniball camber plates", 123000000L, 4, "PASS"));
-            partRepository.save(new Part(null, "BRM-1N1.9042A2", "Brembo GT-S 6-Piston Big Brake Kit 380x34mm", "Brake Systems", "Brembo Racing", "Radial monoblock caliper • 2-piece Type 3 slotted disc • 800°C thermal endurance", 96250000L, 5, "PASS"));
-            partRepository.save(new Part(null, "VOR-CF-AERO-992", "Vorsteiner Aero Carbon Wing & Rear Diffuser Package", "Carbon Aero Kits", "Vorsteiner USA", "Pre-preg 2x2 weave vacuum autoclave carbon • Aerodynamic downforce profile", 145000000L, 2, "PASS"));
+            partRepository.save(new Part(null, "BBS-FIR-992-TITAN", "BBS FI-R Forged Monoblock Wheel Set 20\"/21\"", "Wheels & Rims", "BBS Germany", "Ultra-lightweight aerospace forged aluminum • PCD 5x112 / ET35 • 7.8 kg/wheel", 215000000L, 8, "PASS", "/images/wheel-titanium.jpg", "Porsche 911 GT3 (992), BMW M3/M4 (G80/G82)", new BigDecimal("4.90"), "HOT / BESTSELLER"));
+            partRepository.save(new Part(null, "RAYS-TE37-ULTRA-20", "Volk Racing TE37 Ultra M-Spec Forged 20\"", "Wheels & Rims", "Rays Japan", "Motorsport-grade forged monoblock • PCD 5x114.3 • Bronze Anodized finish", 185000000L, 6, "PASS", "/images/wheel-volk-te37.jpg", "Ferrari 458, Nissan GT-R R35, Honda Civic Type R", new BigDecimal("5.00"), "TRACK LEGEND"));
+            partRepository.save(new Part(null, "AKR-EVO-TITAN-992", "Akrapovič Evolution Line Titanium Exhaust System", "Exhaust Systems", "Akrapovič", "Full Titanium construction • Bluetooth active flap control • -11.4 kg weight savings", 185000000L, 3, "PASS", "/images/exhaust-akrapovic.jpg", "Porsche 992 GT3 / GT3 RS, Carrera S", new BigDecimal("4.95"), "SIGNATURE SOUND"));
+            partRepository.save(new Part(null, "KW-35271842-V4CS", "KW Suspensions V4 Clubsport 3-Way Coilover Kit", "Coilovers & Shocks", "KW Automotive", "16-click rebound & independent high/low speed compression • Uniball camber plates", 123000000L, 4, "PASS", "/images/suspension-kw.jpg", "BMW M4, Porsche 911 GT3, McLaren 720S", new BigDecimal("4.85"), "TRACK READY"));
+            partRepository.save(new Part(null, "BRM-1N1.9042A2", "Brembo GT-S 6-Piston Big Brake Kit 380x34mm", "Brake Systems", "Brembo Racing", "Radial monoblock caliper • 2-piece Type 3 slotted disc • 800°C thermal endurance", 96250000L, 5, "PASS", "/images/brake-brembo.jpg", "Porsche GT3, Ferrari 458, Nissan GT-R", new BigDecimal("4.98"), "RACING SPEC"));
+            partRepository.save(new Part(null, "VOR-CF-AERO-992", "Vorsteiner Aero Carbon Wing & Rear Diffuser Package", "Carbon Aero Kits", "Vorsteiner USA", "Pre-preg 2x2 weave vacuum autoclave carbon • Aerodynamic downforce profile", 145000000L, 2, "PASS", "/images/aero-carbon.jpg", "Porsche 911 GT3 (992), McLaren 720S", new BigDecimal("4.90"), "ULTRA LIGHTWEIGHT"));
         }
     }
 
     private void syncTestAccounts() {
         Map<String, String> englishNames = Map.of(
+                "admin", "System Administrator",
                 "admin_garage", "Tuan Tran",
                 "tech_lead", "Long Nguyen",
                 "customer_vip", "Khoi Dang",
@@ -223,14 +282,14 @@ public class DataInitializer implements CommandLineRunner {
             });
         });
 
-        // Ensure 6 official parts exist and match Image 1
+        // Ensure 6 official parts exist and match catalog with media
         List<Part> targetParts = List.of(
-                new Part(null, "BBS-FIR-992-TITAN", "BBS FI-R Forged Monoblock Wheel Set 20\"/21\"", "Wheels & Rims", "BBS Germany", "Ultra-lightweight aerospace forged aluminum • PCD 5x112 / ET35 • 7.8 kg/wheel", 215000000L, 8, "PASS"),
-                new Part(null, "RAYS-TE37-ULTRA-20", "Volk Racing TE37 Ultra M-Spec Forged 20\"", "Wheels & Rims", "Rays Japan", "Motorsport-grade forged monoblock • PCD 5x114.3 • Bronze Anodized finish", 185000000L, 6, "PASS"),
-                new Part(null, "AKR-EVO-TITAN-992", "Akrapovič Evolution Line Titanium Exhaust System", "Exhaust Systems", "Akrapovič", "Full Titanium construction • Bluetooth active flap control • -11.4 kg weight savings", 185000000L, 3, "PASS"),
-                new Part(null, "KW-35271842-V4CS", "KW Suspensions V4 Clubsport 3-Way Coilover Kit", "Coilovers & Shocks", "KW Automotive", "16-click rebound & independent high/low speed compression • Uniball camber plates", 123000000L, 4, "PASS"),
-                new Part(null, "BRM-1N1.9042A2", "Brembo GT-S 6-Piston Big Brake Kit 380x34mm", "Brake Systems", "Brembo Racing", "Radial monoblock caliper • 2-piece Type 3 slotted disc • 800°C thermal endurance", 96250000L, 5, "PASS"),
-                new Part(null, "VOR-CF-AERO-992", "Vorsteiner Aero Carbon Wing & Rear Diffuser Package", "Carbon Aero Kits", "Vorsteiner USA", "Pre-preg 2x2 weave vacuum autoclave carbon • Aerodynamic downforce profile", 145000000L, 2, "PASS")
+                new Part(null, "BBS-FIR-992-TITAN", "BBS FI-R Forged Monoblock Wheel Set 20\"/21\"", "Wheels & Rims", "BBS Germany", "Ultra-lightweight aerospace forged aluminum • PCD 5x112 / ET35 • 7.8 kg/wheel", 215000000L, 8, "PASS", "/images/wheel-titanium.jpg", "Porsche 911 GT3 (992), BMW M3/M4 (G80/G82)", new BigDecimal("4.90"), "HOT / BESTSELLER"),
+                new Part(null, "RAYS-TE37-ULTRA-20", "Volk Racing TE37 Ultra M-Spec Forged 20\"", "Wheels & Rims", "Rays Japan", "Motorsport-grade forged monoblock • PCD 5x114.3 • Bronze Anodized finish", 185000000L, 6, "PASS", "/images/wheel-volk-te37.jpg", "Ferrari 458, Nissan GT-R R35, Honda Civic Type R", new BigDecimal("5.00"), "TRACK LEGEND"),
+                new Part(null, "AKR-EVO-TITAN-992", "Akrapovič Evolution Line Titanium Exhaust System", "Exhaust Systems", "Akrapovič", "Full Titanium construction • Bluetooth active flap control • -11.4 kg weight savings", 185000000L, 3, "PASS", "/images/exhaust-akrapovic.jpg", "Porsche 992 GT3 / GT3 RS, Carrera S", new BigDecimal("4.95"), "SIGNATURE SOUND"),
+                new Part(null, "KW-35271842-V4CS", "KW Suspensions V4 Clubsport 3-Way Coilover Kit", "Coilovers & Shocks", "KW Automotive", "16-click rebound & independent high/low speed compression • Uniball camber plates", 123000000L, 4, "PASS", "/images/suspension-kw.jpg", "BMW M4, Porsche 911 GT3, McLaren 720S", new BigDecimal("4.85"), "TRACK READY"),
+                new Part(null, "BRM-1N1.9042A2", "Brembo GT-S 6-Piston Big Brake Kit 380x34mm", "Brake Systems", "Brembo Racing", "Radial monoblock caliper • 2-piece Type 3 slotted disc • 800°C thermal endurance", 96250000L, 5, "PASS", "/images/brake-brembo.jpg", "Porsche GT3, Ferrari 458, Nissan GT-R", new BigDecimal("4.98"), "RACING SPEC"),
+                new Part(null, "VOR-CF-AERO-992", "Vorsteiner Aero Carbon Wing & Rear Diffuser Package", "Carbon Aero Kits", "Vorsteiner USA", "Pre-preg 2x2 weave vacuum autoclave carbon • Aerodynamic downforce profile", 145000000L, 2, "PASS", "/images/aero-carbon.jpg", "Porsche 911 GT3 (992), McLaren 720S", new BigDecimal("4.90"), "ULTRA LIGHTWEIGHT")
         );
 
         targetParts.forEach(tp -> {
@@ -243,10 +302,178 @@ public class DataInitializer implements CommandLineRunner {
                 p.setSpecifications(tp.getSpecifications());
                 p.setPriceVnd(tp.getPriceVnd());
                 p.setStockQuantity(tp.getStockQuantity());
+                p.setImageUrl(tp.getImageUrl());
+                p.setCompatibleVehicles(tp.getCompatibleVehicles());
+                p.setRating(tp.getRating());
+                p.setBadge(tp.getBadge());
                 partRepository.save(p);
             } else {
                 partRepository.save(tp);
             }
+        });
+    }
+
+    private void seedCars() {
+        List<Car> initialCars = List.of(
+            new Car(
+                null,
+                "ferrari-458",
+                "Ferrari",
+                "458 Italia",
+                "2009–2015",
+                "Supercar Coupé",
+                "4.5L V8 · 562hp · 0-100: 3.4s",
+                "5x114.3",
+                new BigDecimal("20.0"),
+                1380,
+                562,
+                328000L,
+                "Maranello, Italy",
+                "#CC0000",
+                "#CC0000",
+                "#CCCCCC",
+                "#C8D8F0",
+                "/models/ferrari.glb",
+                "READY_FOR_3D",
+                "{\"performance\":[{\"label\":\"Engine\",\"value\":\"4.5L V8 Naturally Aspirated\"},{\"label\":\"Power\",\"value\":\"562 hp @ 9,000 rpm\"},{\"label\":\"Torque\",\"value\":\"398 lb-ft @ 6,000 rpm\"},{\"label\":\"0–100 km/h\",\"value\":\"3.4 seconds\"},{\"label\":\"Top Speed\",\"value\":\"325 km/h\"},{\"label\":\"Transmission\",\"value\":\"7-speed Dual Clutch\"},{\"label\":\"Weight\",\"value\":\"1,380 kg\"}],\"aerodynamics\":[{\"label\":\"Downforce\",\"value\":\"140 kg @ 200 km/h\"},{\"label\":\"Front Splitter\",\"value\":\"Carbon Fibre Fixed\"},{\"label\":\"Diffuser\",\"value\":\"Active Variable\"},{\"label\":\"Cd\",\"value\":\"0.33\"},{\"label\":\"Cl\",\"value\":\"-0.26\"}],\"suspension\":[{\"label\":\"Front\",\"value\":\"Double Wishbone MagneRide\"},{\"label\":\"Rear\",\"value\":\"Multi-Link Adaptive\"},{\"label\":\"Dampers\",\"value\":\"Magneto-rheological\"},{\"label\":\"Springs\",\"value\":\"Coilover Adjustable\"}]}"
+            ),
+            new Car(
+                null,
+                "lamborghini-aventador",
+                "Lamborghini",
+                "Aventador LP700",
+                "2011–2021",
+                "Supercar Coupé",
+                "6.5L V12 · 700hp · 0-100: 2.9s",
+                "5x112",
+                new BigDecimal("20.0"),
+                1575,
+                700,
+                393000L,
+                "Sant'Agata Bolognese, Italy",
+                "#F5C400",
+                "#F5C400",
+                "#1A1A1A",
+                "#1A1A1A",
+                "/models/lamborghini.glb",
+                "READY_FOR_3D",
+                "{\"performance\":[{\"label\":\"Engine\",\"value\":\"6.5L L539 60° V12\"},{\"label\":\"Power\",\"value\":\"700 hp @ 8,250 rpm\"},{\"label\":\"Torque\",\"value\":\"509 lb-ft @ 5,500 rpm\"},{\"label\":\"0–100 km/h\",\"value\":\"2.9 seconds\"},{\"label\":\"Top Speed\",\"value\":\"350 km/h\"},{\"label\":\"Transmission\",\"value\":\"7-speed ISR Independent Shifting\"},{\"label\":\"Weight\",\"value\":\"1,575 kg\"}],\"aerodynamics\":[{\"label\":\"Downforce\",\"value\":\"220 kg @ 250 km/h\"},{\"label\":\"Front Splitter\",\"value\":\"Carbon Aero Inlets\"},{\"label\":\"Rear Wing\",\"value\":\"Active 3-Position Electronically Managed\"},{\"label\":\"Cd\",\"value\":\"0.33\"},{\"label\":\"Cl\",\"value\":\"-0.35\"}],\"suspension\":[{\"label\":\"Front\",\"value\":\"Formula 1 Style Pushrod Magneto\"},{\"label\":\"Rear\",\"value\":\"Pushrod Horizontal Damper\"},{\"label\":\"Dampers\",\"value\":\"Magneto-rheological Pushrod\"},{\"label\":\"Springs\",\"value\":\"Öhlins Race Coilover\"}]}"
+            ),
+            new Car(
+                null,
+                "porsche-gt3",
+                "Porsche",
+                "911 GT3 RS",
+                "2022–2025",
+                "Track Coupé",
+                "4.0L Flat-6 · 525hp · 0-100: 3.2s",
+                "5x130",
+                new BigDecimal("20.0"),
+                1450,
+                525,
+                224000L,
+                "Stuttgart-Zuffenhausen, Germany",
+                "#0A1A6E",
+                "#FAFAFA",
+                "#CCCCCC",
+                "#C8D8F0",
+                "/models/porsche.glb",
+                "READY_FOR_3D",
+                "{\"performance\":[{\"label\":\"Engine\",\"value\":\"4.0L Flat-6 Natural Aspirated\"},{\"label\":\"Power\",\"value\":\"525 hp @ 8,500 rpm\"},{\"label\":\"Torque\",\"value\":\"343 lb-ft @ 6,300 rpm\"},{\"label\":\"0–100 km/h\",\"value\":\"3.2 seconds\"},{\"label\":\"Top Speed\",\"value\":\"296 km/h\"},{\"label\":\"Transmission\",\"value\":\"7-speed PDK\"},{\"label\":\"Weight\",\"value\":\"1,450 kg\"}],\"aerodynamics\":[{\"label\":\"Downforce\",\"value\":\"860 kg @ 285 km/h\"},{\"label\":\"Swan-Neck Wing\",\"value\":\"2-Position Manual DRS Active\"},{\"label\":\"Front Lid\",\"value\":\"Carbon Aero Package With Vents\"},{\"label\":\"Cd\",\"value\":\"0.36\"},{\"label\":\"Cl\",\"value\":\"-1.25\"}],\"suspension\":[{\"label\":\"Front\",\"value\":\"Double Wishbone Pushrod\"},{\"label\":\"Rear\",\"value\":\"Multi-link Lightweight\"},{\"label\":\"Dampers\",\"value\":\"PASM Sport 20mm Lowered\"},{\"label\":\"Springs\",\"value\":\"GT3 RS Race-Tuned\"}]}"
+            ),
+            new Car(
+                null,
+                "mclaren-720s",
+                "McLaren",
+                "720S / P1",
+                "2018–2023",
+                "Supercar Coupé",
+                "4.0L TT V8 · 720hp · 0-100: 2.8s",
+                "5x112",
+                new BigDecimal("19.0"),
+                1332,
+                720,
+                312000L,
+                "Woking, United Kingdom",
+                "#FF6B00",
+                "#FF6B00",
+                "#CCCCCC",
+                "#1A1A1A",
+                "/models/mclaren.glb",
+                "READY_FOR_3D",
+                "{\"performance\":[{\"label\":\"Engine\",\"value\":\"4.0L Twin-Turbo V8 M840T\"},{\"label\":\"Power\",\"value\":\"720 hp @ 7,500 rpm\"},{\"label\":\"Torque\",\"value\":\"568 lb-ft @ 5,500 rpm\"},{\"label\":\"0–100 km/h\",\"value\":\"2.8 seconds\"},{\"label\":\"Top Speed\",\"value\":\"341 km/h\"},{\"label\":\"Transmission\",\"value\":\"7-speed SSG Dual Clutch\"},{\"label\":\"Weight\",\"value\":\"1,332 kg\"}],\"aerodynamics\":[{\"label\":\"Downforce\",\"value\":\"1,000+ kg @ 250 km/h\"},{\"label\":\"Active Wing\",\"value\":\"Integrated Active Airbrake\"},{\"label\":\"Front\",\"value\":\"Carbon MonoCell II Front Sub\"},{\"label\":\"Cd\",\"value\":\"0.32\"},{\"label\":\"Cl\",\"value\":\"-0.46\"}],\"suspension\":[{\"label\":\"Front\",\"value\":\"Proactive Chassis Control II\"},{\"label\":\"Rear\",\"value\":\"Wishbone Hydraulic Interconnect\"},{\"label\":\"Dampers\",\"value\":\"3-Stage Variable PCC II\"},{\"label\":\"Springs\",\"value\":\"High-Performance GTR Race\"}]}"
+            ),
+            new Car(
+                null,
+                "nissan-gtr",
+                "Nissan",
+                "GT-R Nismo (R35)",
+                "2020–2024",
+                "Supercar AWD",
+                "3.8L TT V6 · 600hp · 0-100: 2.7s",
+                "5x114.3",
+                new BigDecimal("20.0"),
+                1725,
+                600,
+                215000L,
+                "Tochigi, Kanto, Japan",
+                "#E60012",
+                "#E60012",
+                "#1A1A1A",
+                "#1A1A1A",
+                "/models/nissan_gtr.glb",
+                "READY_FOR_3D",
+                "{\"performance\":[{\"label\":\"Engine\",\"value\":\"3.8L Twin-Turbo V6 VR38DETT\"},{\"label\":\"Power\",\"value\":\"600 hp @ 6,800 rpm\"},{\"label\":\"Torque\",\"value\":\"481 lb-ft @ 3,600–5,600 rpm\"},{\"label\":\"0–100 km/h\",\"value\":\"2.7 seconds\"},{\"label\":\"Top Speed\",\"value\":\"330 km/h\"},{\"label\":\"Transmission\",\"value\":\"6-speed Dual Clutch ATTESA E-TS AWD\"},{\"label\":\"Weight\",\"value\":\"1,725 kg\"}],\"aerodynamics\":[{\"label\":\"Downforce\",\"value\":\"100 kg @ 300 km/h\"},{\"label\":\"Rear Wing\",\"value\":\"Dry Carbon Fiber High Downforce\"},{\"label\":\"Front Fenders\",\"value\":\"Carbon Louvers GT3 Style\"},{\"label\":\"Cd\",\"value\":\"0.26\"},{\"label\":\"Cl\",\"value\":\"-0.30\"}],\"suspension\":[{\"label\":\"Front\",\"value\":\"Double Wishbone Aluminum\"},{\"label\":\"Rear\",\"value\":\"Multi-link High-Rigidity\"},{\"label\":\"Dampers\",\"value\":\"Bilstein DampTronic Custom Tuned\"},{\"label\":\"Springs\",\"value\":\"Nismo Competition Spec\"}]}"
+            ),
+            new Car(
+                null,
+                "bmw-m4-csl",
+                "BMW",
+                "M4 Competition",
+                "2022–2024",
+                "Performance Coupé",
+                "3.0L TT I6 · 503hp · 0-100: 3.8s",
+                "5x112",
+                new BigDecimal("19.0"),
+                1725,
+                503,
+                82000L,
+                "Munich, Bavaria, Germany",
+                "#0066CC",
+                "#1A1A1A",
+                "#CCCCCC",
+                "#C8D8F0",
+                "/models/bmw.glb",
+                "READY_FOR_3D",
+                "{\"performance\":[{\"label\":\"Engine\",\"value\":\"3.0L Twin-Turbo I6 S58\"},{\"label\":\"Power\",\"value\":\"503 hp @ 6,250 rpm\"},{\"label\":\"Torque\",\"value\":\"479 lb-ft @ 2,750 rpm\"},{\"label\":\"0–100 km/h\",\"value\":\"3.8 seconds\"},{\"label\":\"Top Speed\",\"value\":\"290 km/h\"},{\"label\":\"Transmission\",\"value\":\"8-speed M Steptronic\"},{\"label\":\"Weight\",\"value\":\"1,725 kg\"}],\"aerodynamics\":[{\"label\":\"Downforce\",\"value\":\"95 kg @ 200 km/h\"},{\"label\":\"Front Splitter\",\"value\":\"CFRP M Performance Inlets\"},{\"label\":\"Rear Wing\",\"value\":\"Carbon Diffuser & Lip\"},{\"label\":\"Cd\",\"value\":\"0.34\"},{\"label\":\"Cl\",\"value\":\"-0.22\"}],\"suspension\":[{\"label\":\"Front\",\"value\":\"Double Wishbone 5-Link\"},{\"label\":\"Rear\",\"value\":\"5-Link Integral Active Steer\"},{\"label\":\"Dampers\",\"value\":\"M Adaptive Suspension EDC\"},{\"label\":\"Springs\",\"value\":\"M Competition Sport Tuned\"}]}"
+            )
+        );
+
+        initialCars.forEach(car -> {
+            carRepository.findBySlug(car.getSlug()).ifPresentOrElse(
+                existing -> {
+                    existing.setBrand(car.getBrand());
+                    existing.setModel(car.getModel());
+                    existing.setYearManufactured(car.getYearManufactured());
+                    existing.setBodyType(car.getBodyType());
+                    existing.setTagline(car.getTagline());
+                    existing.setStockBoltPattern(car.getStockBoltPattern());
+                    existing.setStockWheelSizeInch(car.getStockWheelSizeInch());
+                    existing.setCurbWeightKg(car.getCurbWeightKg());
+                    existing.setHorsepower(car.getHorsepower());
+                    existing.setPriceUsd(car.getPriceUsd());
+                    existing.setBadge(car.getBadge());
+                    existing.setAccentColor(car.getAccentColor());
+                    existing.setDefaultBodyColor(car.getDefaultBodyColor());
+                    existing.setDefaultRimColor(car.getDefaultRimColor());
+                    existing.setDefaultGlassColor(car.getDefaultGlassColor());
+                    existing.setModel3dPath(car.getModel3dPath());
+                    existing.setStatus(car.getStatus());
+                    existing.setSpecsJson(car.getSpecsJson());
+                    carRepository.save(existing);
+                },
+                () -> carRepository.save(car)
+            );
         });
     }
 }

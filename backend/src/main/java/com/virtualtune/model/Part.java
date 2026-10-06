@@ -1,6 +1,7 @@
 package com.virtualtune.model;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "Parts")
@@ -35,6 +36,18 @@ public class Part {
     @Column(name = "legal_compliance_status", length = 20)
     private String legalComplianceStatus = "PASS";
 
+    @Column(name = "image_url", length = 255)
+    private String imageUrl;
+
+    @Column(name = "compatible_vehicles", length = 255)
+    private String compatibleVehicles;
+
+    @Column(name = "rating", precision = 3, scale = 2)
+    private BigDecimal rating = new BigDecimal("4.90");
+
+    @Column(name = "badge", length = 50)
+    private String badge;
+
     public Part() {}
 
     public Part(Long partId, String sku, String partName, String category, String brand,
@@ -48,6 +61,24 @@ public class Part {
         this.priceVnd = priceVnd;
         this.stockQuantity = stockQuantity;
         this.legalComplianceStatus = legalComplianceStatus;
+    }
+
+    public Part(Long partId, String sku, String partName, String category, String brand,
+                String specifications, Long priceVnd, Integer stockQuantity, String legalComplianceStatus,
+                String imageUrl, String compatibleVehicles, BigDecimal rating, String badge) {
+        this.partId = partId;
+        this.sku = sku;
+        this.partName = partName;
+        this.category = category;
+        this.brand = brand;
+        this.specifications = specifications;
+        this.priceVnd = priceVnd;
+        this.stockQuantity = stockQuantity;
+        this.legalComplianceStatus = legalComplianceStatus;
+        this.imageUrl = imageUrl;
+        this.compatibleVehicles = compatibleVehicles;
+        this.rating = rating;
+        this.badge = badge;
     }
 
     public Long getPartId() { return partId; }
@@ -76,4 +107,16 @@ public class Part {
 
     public String getLegalComplianceStatus() { return legalComplianceStatus; }
     public void setLegalComplianceStatus(String legalComplianceStatus) { this.legalComplianceStatus = legalComplianceStatus; }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public String getCompatibleVehicles() { return compatibleVehicles; }
+    public void setCompatibleVehicles(String compatibleVehicles) { this.compatibleVehicles = compatibleVehicles; }
+
+    public BigDecimal getRating() { return rating; }
+    public void setRating(BigDecimal rating) { this.rating = rating; }
+
+    public String getBadge() { return badge; }
+    public void setBadge(String badge) { this.badge = badge; }
 }
