@@ -44,4 +44,45 @@ public class CarBuildController {
         }
         return ResponseEntity.ok(carBuildService.getUserBuilds(authentication.getName()));
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<CarBuild>> getMyBuildsAlias(Authentication authentication) {
+        return getMyBuilds(authentication);
+    }
+
+    @PatchMapping("/{shareCode}/rename")
+    public ResponseEntity<CarBuild> renameBuild(@PathVariable String shareCode,
+                                                @RequestBody com.virtualtune.dto.RenameBuildRequest request,
+                                                Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(401).build();
+        }
+        boolean isAdminOrGarageOwner = authentication.getAuthorities().stream()
+                .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()) || "ROLE_GARAGE_OWNER".equals(a.getAuthority()));
+        CarBuild updated = carBuildService.renameBuild(shareCode,
+                request != null ? request.getBuildName() : null,
+                authentication.getName(),
+                isAdminOrGarageOwner);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PostMapping("/{shareCode}/fork")
+    public ResponseEntity<CarBuild> forkBuild(@PathVariable String shareCode, Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(401).build();
+        }
+        CarBuild forked = carBuildService.forkBuild(shareCode, authentication.getName());
+        return ResponseEntity.ok(forked);
+    }
+
+    @DeleteMapping("/{shareCode}")
+    public ResponseEntity<Void> deleteBuild(@PathVariable String shareCode, Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(401).build();
+        }
+        boolean isAdminOrGarageOwner = authentication.getAuthorities().stream()
+                .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()) || "ROLE_GARAGE_OWNER".equals(a.getAuthority()));
+        carBuildService.deleteBuild(shareCode, authentication.getName(), isAdminOrGarageOwner);
+        return ResponseEntity.noContent().build();
+    }
 }

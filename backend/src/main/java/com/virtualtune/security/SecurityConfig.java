@@ -106,8 +106,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login", "/api/auth/logout").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/parts/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/cars/**").permitAll()
+                        .requestMatchers("/api/builds/my", "/api/builds/me").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/builds/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/builds").permitAll()
+                        .requestMatchers("/api/fitment", "/api/fitment/**").permitAll()
                         .requestMatchers("/models/**", "/assets/**", "/error", "/h2-console/**").permitAll()
                         // All other API endpoints require authentication
                         .requestMatchers("/api/**").authenticated()

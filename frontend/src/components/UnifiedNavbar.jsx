@@ -40,10 +40,17 @@ export const NAVIGATION_GROUPS = [
       },
       {
         path: '/shop',
-        label: 'Performance Store & Inventory',
-        desc: 'Curated performance parts, live SKU inventory & B2B procurement',
+        label: 'Performance Store',
+        desc: 'Curated performance parts catalog and tuning components',
         icon: 'storefront',
-        badge: 'Store & Stock'
+        badge: 'Store'
+      },
+      {
+        path: '/inventory',
+        label: 'Warehouse Inventory',
+        desc: 'Live SKU depot stock levels, ERP valuation & OEM procurement',
+        icon: 'inventory_2',
+        badge: 'Depot'
       },
     ]
   },
@@ -101,9 +108,9 @@ export default function UnifiedNavbar() {
     } else if (role === 'CAR_OWNER') {
       items = items.filter(it => ['/configurator', '/sales', '/quotation', '/warranty', '/shop'].includes(it.path))
     } else if (role === 'LEAD_TECHNICIAN') {
-      items = items.filter(it => ['/configurator', '/fitment', '/shop', '/warranty', '/dashboard'].includes(it.path))
+      items = items.filter(it => ['/configurator', '/fitment', '/shop', '/inventory', '/warranty', '/dashboard'].includes(it.path))
     }
-    // GARAGE_OWNER retains all items
+    // GARAGE_OWNER and ADMIN retain all items
     return { ...group, items }
   }).filter((group) => group.items.length > 0)
 
@@ -391,13 +398,24 @@ export default function UnifiedNavbar() {
                   </div>
 
                   <Link
-                    to="/dashboard"
+                    to="/account"
                     onClick={() => setUserMenuOpen(false)}
                     className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium text-white/80 hover:bg-white/10 hover:text-white transition-colors"
                   >
-                    <span className="material-symbols-outlined text-base" style={{ color: '#6091C3' }}>dashboard</span>
-                    <span>Dashboard</span>
+                    <span className="material-symbols-outlined text-base" style={{ color: '#6091C3' }}>account_circle</span>
+                    <span>My Account & Builds</span>
                   </Link>
+
+                  {currentUser && ['GARAGE_OWNER', 'LEAD_TECHNICIAN', 'ADMIN'].includes(role) && (
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-base" style={{ color: '#6091C3' }}>dashboard</span>
+                      <span>Dashboard</span>
+                    </Link>
+                  )}
 
                   <button
                     type="button"
@@ -560,6 +578,21 @@ export default function UnifiedNavbar() {
             <span className="material-symbols-outlined" style={{ fontSize: '17px', color: '#6091C3' }}>menu_book</span>
             <span>Knowledge Hub</span>
           </Link>
+
+          {currentUser && (
+            <Link
+              to="/account"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold"
+              style={{
+                fontFamily: "'Montserrat', sans-serif",
+                ...navLinkStyle(location.pathname === '/account'),
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '17px', color: '#6091C3' }}>account_circle</span>
+              <span>My Account & Builds</span>
+            </Link>
+          )}
         </div>
       )}
     </header>

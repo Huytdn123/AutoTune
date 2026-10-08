@@ -23,6 +23,7 @@ export default function FitmentMatrixPage() {
     setTimeout(() => setToastMessage(null), 3500)
   }
 
+  // Load cars, parts, overview and run initial check
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,18 +32,40 @@ export default function FitmentMatrixPage() {
           partApi.getAll(),
           fitmentApi.getOverview()
         ])
+
+        let activeCar = null
+        let activePart = null
+
         if (carsRes.status === 'fulfilled' && carsRes.value) {
           const list = Array.isArray(carsRes.value) ? carsRes.value : (carsRes.value.data || [])
           setCars(list)
-          if (list.length > 0) setSelectedCar(list[0])
+          if (list.length > 0) activeCar = list[0]
         }
         if (partsRes.status === 'fulfilled' && partsRes.value) {
           const list = Array.isArray(partsRes.value) ? partsRes.value : (partsRes.value.data || [])
           setParts(list)
-          if (list.length > 0) setSelectedPart(list[0])
+          if (list.length > 0) activePart = list[0]
         }
         if (overviewRes.status === 'fulfilled' && overviewRes.value) {
           setOverview(overviewRes.value)
+        }
+
+        if (activeCar) setSelectedCar(activeCar)
+        if (activePart) setSelectedPart(activePart)
+
+        // Automatically run initial verification with live engine
+        if (activeCar && activePart) {
+          try {
+            const initialResult = await fitmentApi.check({
+              carId: activeCar.carId || activeCar.id,
+              carSlug: activeCar.slug,
+              partId: activePart.partId || activePart.id,
+              partSku: activePart.sku
+            })
+            setCheckResult(initialResult)
+          } catch (checkErr) {
+            console.error('Initial fitment check error:', checkErr)
+          }
         }
       } catch (err) {
         console.error('Fitment data error:', err)
@@ -53,30 +76,84 @@ export default function FitmentMatrixPage() {
     fetchData()
   }, [])
 
-  const handleRunCheck = async () => {
-    if (!selectedCar || !selectedPart) return
+  const executeCheck = async (car, part) => {
+    if (!car || !part) return
     setChecking(true)
     try {
       const res = await fitmentApi.check({
-        carId: selectedCar.carId || selectedCar.id,
-        partId: selectedPart.partId || selectedPart.id
+        carId: car.carId || car.id,
+        carSlug: car.slug,
+        partId: part.partId || part.id,
+        partSku: part.sku
       })
       setCheckResult(res)
-      showToast(`Fitment Verified: ${selectedPart.partName} is 100% COMPATIBLE with ${selectedCar.modelName}!`)
+      if (res.status === 'PASS') {
+        showToast(`Fitment Verified: ${part.partName} is COMPATIBLE with ${car.modelName || car.model}!`)
+      } else if (res.status === 'WARNING') {
+        showToast(`Advisory: ${part.partName} conditionally fits with technical notes.`)
+      } else {
+        showToast(`Incompatible: ${part.partName} does not fit ${car.modelName || car.model}.`)
+      }
     } catch (err) {
       console.error('Fitment check error:', err)
-      setCheckResult({
-        status: 'PASS',
-        compatible: true,
-        toleranceMm: 0.05,
-        pcdMatch: true,
-        caliperGap: '+6.2mm',
-        regulation: 'TÜV §21 / StVZO & ECE R124 Compliant',
-        message: 'Dimensional tolerances verified via CAD staging geometry.'
-      })
-      showToast('Fitment verification gate completed.')
+      showToast('Error connecting to backend verification engine.')
     } finally {
       setChecking(false)
+    }
+  }
+
+  const handleRunCheck = () => {
+    executeCheck(selectedCar, selectedPart)
+  }
+
+  const handleCarChange = (carId) => {
+    const found = cars.find(c => (c.carId || c.id) === Number(carId))
+    if (found) {
+      setSelectedCar(found)
+      executeCheck(found, selectedPart)
+    }
+  }
+
+  const handlePartChange = (partId) => {
+    const found = parts.find(p => (p.partId || p.id) === Number(partId))
+    if (found) {
+      setSelectedPart(found)
+      executeCheck(selectedCar, found)
+    }
+  }
+
+  const getGateIcon = (gateId) => {
+    switch (gateId) {
+      case 1: return 'radio_button_checked'
+      case 2: return 'disc_full'
+      case 3: return 'height'
+      case 4: return 'verified_user'
+      default: return 'check_circle'
+    }
+  }
+
+  const getGateStatusStyles = (status) => {
+    if (status === 'PASS') {
+      return {
+        cardBorder: 'border-emerald-500/30 hover:border-emerald-500/70',
+        badgeBg: 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400',
+        textValue: 'text-emerald-400',
+        iconColor: 'text-emerald-400'
+      }
+    }
+    if (status === 'WARNING') {
+      return {
+        cardBorder: 'border-amber-500/30 hover:border-amber-500/70',
+        badgeBg: 'bg-amber-500/10 border-amber-500/40 text-amber-400',
+        textValue: 'text-amber-400',
+        iconColor: 'text-amber-400'
+      }
+    }
+    return {
+      cardBorder: 'border-rose-500/30 hover:border-rose-500/70',
+      badgeBg: 'bg-rose-500/10 border-rose-500/40 text-rose-400',
+      textValue: 'text-rose-400',
+      iconColor: 'text-rose-400'
     }
   }
 
@@ -97,7 +174,7 @@ export default function FitmentMatrixPage() {
         <section className="border-b border-[#45464e]/30 bg-[#162447] px-6 py-4 shadow-lg">
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-4">
               {/* Vehicle Select */}
               <div className="flex flex-col">
                 <label className="text-[10px] font-mono text-[#8f9099] uppercase font-bold tracking-wider mb-1">
@@ -106,16 +183,12 @@ export default function FitmentMatrixPage() {
                 <div className="relative">
                   <select
                     value={selectedCar?.carId || selectedCar?.id || ''}
-                    onChange={(e) => {
-                      const found = cars.find(c => (c.carId || c.id) === Number(e.target.value))
-                      setSelectedCar(found)
-                      setCheckResult(null)
-                    }}
+                    onChange={(e) => handleCarChange(e.target.value)}
                     className="bg-[#0d131f] text-white border border-[#6091c3]/40 rounded-lg px-3 py-2 text-xs font-semibold focus:border-[#6091c3] focus:outline-none pr-8 cursor-pointer font-['Montserrat']"
                   >
                     {cars.map(c => (
                       <option key={c.carId || c.id} value={c.carId || c.id}>
-                        {c.modelName} ({c.year || '2024'})
+                        {c.modelName || c.model} ({c.yearManufactured || c.year || '2024'})
                       </option>
                     ))}
                   </select>
@@ -130,11 +203,7 @@ export default function FitmentMatrixPage() {
                 <div className="relative">
                   <select
                     value={selectedPart?.partId || selectedPart?.id || ''}
-                    onChange={(e) => {
-                      const found = parts.find(p => (p.partId || p.id) === Number(e.target.value))
-                      setSelectedPart(found)
-                      setCheckResult(null)
-                    }}
+                    onChange={(e) => handlePartChange(e.target.value)}
                     className="bg-[#0d131f] text-white border border-[#6091c3]/40 rounded-lg px-3 py-2 text-xs font-semibold focus:border-[#6091c3] focus:outline-none pr-8 cursor-pointer font-['Montserrat']"
                   >
                     {parts.map(p => (
@@ -145,9 +214,24 @@ export default function FitmentMatrixPage() {
                   </select>
                 </div>
               </div>
+
+              {/* Engineering Database Metrics */}
+              {overview && (
+                <div className="hidden xl:flex items-center gap-3 pl-4 border-l border-white/10 text-[11px] font-mono text-[#8f9099]">
+                  <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white">
+                    {overview.totalCars} Chassis
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[#6091c3]">
+                    {overview.totalParts} Parts
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold">
+                    {overview.accuracyRate} Accurate
+                  </span>
+                </div>
+              )}
             </div>
 
-            {/* Run Verification Button */}
+            {/* Actions Toolbar */}
             <div className="flex items-center gap-3">
               <button
                 onClick={handleRunCheck}
@@ -157,7 +241,7 @@ export default function FitmentMatrixPage() {
                 {checking ? (
                   <>
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Analyzing Tolerances...</span>
+                    <span>Evaluating Gates...</span>
                   </>
                 ) : (
                   <>
@@ -189,25 +273,43 @@ export default function FitmentMatrixPage() {
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="font-['Montserrat'] text-base md:text-lg font-bold text-white tracking-wide">
-                    {selectedCar?.modelName || 'Porsche 911 GT3 (992)'}
+                    {selectedCar?.modelName || selectedCar?.model || 'Porsche 911 GT3 RS'}
                   </h1>
                   <span className="px-2 py-0.5 rounded bg-[#6091c3]/20 border border-[#6091c3]/40 text-[#6091c3] font-mono font-bold text-[10px]">
-                    {selectedCar?.chassisCode || 'CHASSIS-992'}
+                    {selectedCar?.stockBoltPattern || '5x112'} • ET{selectedCar?.stockOffsetEt || '35'}
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-[#8f9099] text-xs font-mono mt-0.5">
-                  <span>VIN: <strong className="text-white">VT-CHASSIS-{selectedCar?.carId || '99201'}</strong></span>
+                  <span>VIN: <strong className="text-white">VT-CHASSIS-{selectedCar?.carId || '01'}</strong></span>
                   <span>•</span>
-                  <span>Target: <strong className="text-[#6091c3]">{selectedPart?.partName || 'BBS FI-R Monoblock'}</strong></span>
+                  <span>Target: <strong className="text-[#6091c3]">{selectedPart?.partName || 'Selected Part'}</strong></span>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-lg font-bold">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                {checkResult ? 'CAD FITMENT CHECK COMPLETE' : 'READY FOR VERIFICATION'}
-              </span>
+              {checkResult ? (
+                <span className={`inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-lg font-bold ${
+                  checkResult.status === 'PASS' 
+                    ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/30'
+                    : checkResult.status === 'WARNING'
+                    ? 'text-amber-400 bg-amber-500/10 border border-amber-500/30'
+                    : 'text-rose-400 bg-rose-500/10 border border-rose-500/30'
+                }`}>
+                  <span className={`w-2 h-2 rounded-full animate-pulse ${
+                    checkResult.status === 'PASS' ? 'bg-emerald-400' : checkResult.status === 'WARNING' ? 'bg-amber-400' : 'bg-rose-400'
+                  }`} />
+                  {checkResult.status === 'PASS' 
+                    ? 'CAD FITMENT: 100% PASS' 
+                    : checkResult.status === 'WARNING' 
+                    ? 'CAD FITMENT: ADVISORY WARNING' 
+                    : 'CAD FITMENT: INCOMPATIBLE FAIL'}
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 text-xs font-mono text-[#8f9099] bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg font-bold">
+                  READY FOR VERIFICATION
+                </span>
+              )}
             </div>
           </div>
         </section>
@@ -216,89 +318,49 @@ export default function FitmentMatrixPage() {
         <section className="px-6 py-6 max-w-7xl mx-auto w-full space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             
-            {/* Gate 1 */}
-            <div className="bg-[#162447] border border-[#6091c3]/30 rounded-xl p-4 flex flex-col justify-between hover:border-[#6091c3] transition-colors shadow">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-mono text-[#8f9099] uppercase font-bold">01 / WHEEL ARCH FIT</span>
-                  <span className="material-symbols-outlined text-[#6091c3] text-base">radio_button_checked</span>
+            {checkResult?.checks && checkResult.checks.length > 0 ? (
+              checkResult.checks.map((gate) => {
+                const styles = getGateStatusStyles(gate.status)
+                return (
+                  <div 
+                    key={gate.gateId} 
+                    className={`bg-[#162447] border ${styles.cardBorder} rounded-xl p-4 flex flex-col justify-between transition-all shadow`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-mono text-[#8f9099] uppercase font-bold">
+                          0{gate.gateId} / {gate.gateName}
+                        </span>
+                        <span className={`material-symbols-outlined ${styles.iconColor} text-base`}>
+                          {getGateIcon(gate.gateId)}
+                        </span>
+                      </div>
+                      <h3 className="font-['Montserrat'] font-bold text-sm text-white mb-1">
+                        {gate.value}
+                      </h3>
+                      <p className="font-mono text-xs text-[#c8d4ea] leading-relaxed">
+                        {gate.message}
+                      </p>
+                    </div>
+                    <div className="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-xs">
+                      <span className="text-[10px] font-mono text-[#8f9099]">Tolerance Spec:</span>
+                      <span className={`px-2 py-0.5 rounded ${styles.badgeBg} font-mono text-[10px] font-bold`}>
+                        {gate.status} ({gate.tolerance || 'OEM Spec'})
+                      </span>
+                    </div>
+                  </div>
+                )
+              })
+            ) : (
+              // Default Gates Placeholder
+              [1, 2, 3, 4].map(id => (
+                <div key={id} className="bg-[#162447] border border-[#6091c3]/30 rounded-xl p-4 animate-pulse">
+                  <div className="h-4 bg-white/10 rounded w-1/2 mb-3" />
+                  <div className="h-6 bg-white/10 rounded w-3/4 mb-2" />
+                  <div className="h-10 bg-white/5 rounded w-full" />
                 </div>
-                <h3 className="font-['Montserrat'] font-bold text-sm text-white mb-1">Axle Clearance & PCD</h3>
-                <p className="font-mono text-xs text-[#c8d4ea]">
-                  PCD Bolt Pattern: <strong className="text-white">5x112 / 5x114.3</strong><br />
-                  Offset Tolerance: <strong className="text-emerald-400">&plusmn; 0.05 mm</strong>
-                </p>
-              </div>
-              <div className="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-xs">
-                <span className="text-[10px] font-mono text-[#8f9099]">CAD Mesh Gate:</span>
-                <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 font-mono text-[10px] font-bold">
-                  PASS (0.05mm)
-                </span>
-              </div>
-            </div>
-
-            {/* Gate 2 */}
-            <div className="bg-[#162447] border border-[#6091c3]/30 rounded-xl p-4 flex flex-col justify-between hover:border-[#6091c3] transition-colors shadow">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-mono text-[#8f9099] uppercase font-bold">02 / CALIPER ENVELOPE</span>
-                  <span className="material-symbols-outlined text-[#6091c3] text-base">disc_full</span>
-                </div>
-                <h3 className="font-['Montserrat'] font-bold text-sm text-white mb-1">Brembo 380mm Envelope</h3>
-                <p className="font-mono text-xs text-[#c8d4ea]">
-                  Radial Barrel Gap: <strong className="text-emerald-400">+6.2mm Safe</strong><br />
-                  No Spacers Required
-                </p>
-              </div>
-              <div className="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-xs">
-                <span className="text-[10px] font-mono text-[#8f9099]">Brake Clearance:</span>
-                <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 font-mono text-[10px] font-bold">
-                  DIRECT FIT
-                </span>
-              </div>
-            </div>
-
-            {/* Gate 3 */}
-            <div className="bg-[#162447] border border-[#6091c3]/30 rounded-xl p-4 flex flex-col justify-between hover:border-[#6091c3] transition-colors shadow">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-mono text-[#8f9099] uppercase font-bold">03 / SUSPENSION TRAVEL</span>
-                  <span className="material-symbols-outlined text-[#6091c3] text-base">height</span>
-                </div>
-                <h3 className="font-['Montserrat'] font-bold text-sm text-white mb-1">KW V4 Coilovers Compression</h3>
-                <p className="font-mono text-xs text-[#c8d4ea]">
-                  Max Jounce Travel: <strong className="text-white">65 mm</strong><br />
-                  Camber Margin: <strong className="text-emerald-400">-2.5&deg; Track</strong>
-                </p>
-              </div>
-              <div className="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-xs">
-                <span className="text-[10px] font-mono text-[#8f9099]">Bumpstop Clearance:</span>
-                <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 font-mono text-[10px] font-bold">
-                  PASS (18mm)
-                </span>
-              </div>
-            </div>
-
-            {/* Gate 4 */}
-            <div className="bg-[#162447] border border-[#6091c3]/30 rounded-xl p-4 flex flex-col justify-between hover:border-[#6091c3] transition-colors shadow">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-mono text-[#8f9099] uppercase font-bold">04 / HOMOLOGATION</span>
-                  <span className="material-symbols-outlined text-[#6091c3] text-base">verified_user</span>
-                </div>
-                <h3 className="font-['Montserrat'] font-bold text-sm text-white mb-1">TÜV StVZO & ECE R124</h3>
-                <p className="font-mono text-xs text-[#c8d4ea]">
-                  Regulation: <strong className="text-white">ECE R124 / TÜV §21</strong><br />
-                  Road Legal Status: <strong className="text-emerald-400">Approved</strong>
-                </p>
-              </div>
-              <div className="mt-4 pt-3 border-t border-white/10 flex justify-between items-center text-xs">
-                <span className="text-[10px] font-mono text-[#8f9099]">Compliance:</span>
-                <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 font-mono text-[10px] font-bold">
-                  CERTIFIED
-                </span>
-              </div>
-            </div>
+              ))
+            )}
 
           </div>
 
@@ -320,20 +382,35 @@ export default function FitmentMatrixPage() {
               <div className="space-y-3 text-xs font-mono bg-[#0d131f] p-4 rounded-xl border border-white/10">
                 <div className="flex justify-between py-1 border-b border-white/10">
                   <span className="text-[#8f9099]">Vehicle Profile:</span>
-                  <span className="text-white font-bold">{selectedCar?.modelName || 'Porsche 911 GT3'}</span>
+                  <span className="text-white font-bold">{selectedCar?.modelName || selectedCar?.model || 'Supercar Chassis'}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-white/10">
                   <span className="text-[#8f9099]">Component SKU:</span>
-                  <span className="text-[#6091c3] font-bold">{selectedPart?.sku || 'BBS-FIR-992'}</span>
+                  <span className="text-[#6091c3] font-bold">{selectedPart?.sku || 'VT-PART'}</span>
                 </div>
                 <div className="flex justify-between py-1 border-b border-white/10">
-                  <span className="text-[#8f9099]">Compatibility Result:</span>
-                  <span className="text-emerald-400 font-bold">100% PASS (Full Mechanical Clearance)</span>
+                  <span className="text-[#8f9099]">Overall Compatibility:</span>
+                  <span className={`font-bold ${
+                    checkResult?.status === 'PASS' ? 'text-emerald-400' : checkResult?.status === 'WARNING' ? 'text-amber-400' : 'text-rose-400'
+                  }`}>
+                    {checkResult ? `${checkResult.status} (${checkResult.compatible ? 'Mechanically Feasible' : 'Blocked Interference'})` : 'PENDING'}
+                  </span>
                 </div>
                 <div className="flex justify-between py-1">
-                  <span className="text-[#8f9099]">Regulatory Compliance:</span>
-                  <span className="text-white">Thông tư 30/2026/TT-BXD & TÜV Rheinland</span>
+                  <span className="text-[#8f9099]">Standard Homologation:</span>
+                  <span className="text-white">{checkResult?.regulation || 'DIN 70020 / TÜV §19.3 & ECE R124'}</span>
                 </div>
+
+                {checkResult?.reasons && checkResult.reasons.length > 0 && (
+                  <div className="pt-2 border-t border-white/10">
+                    <span className="text-[#8f9099] block mb-1">Engineering Notes:</span>
+                    <ul className="list-disc list-inside space-y-0.5 text-amber-300">
+                      {checkResult.reasons.map((r, i) => (
+                        <li key={i}>{r}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
 
               <div className="flex flex-col justify-between space-y-3 bg-[#0d131f] p-4 rounded-xl border border-white/10">
@@ -342,14 +419,29 @@ export default function FitmentMatrixPage() {
                     Next Recommended Actions:
                   </p>
                   <p className="text-xs text-[#c8d4ea] leading-relaxed">
-                    This specification is verified for commercial quotation and work order dispatch. No body arch rolling or spacer adapters needed.
+                    {checkResult?.status === 'PASS' && (
+                      'This specification is verified for commercial quotation and workshop dispatch. Direct bolt-on fitment with zero arch rolling or spigot adapters required.'
+                    )}
+                    {checkResult?.status === 'WARNING' && (
+                      'This setup is conditionally feasible for installation. Verify spigot hub rings or heavy bump fender clearance during bay dry-fitting.'
+                    )}
+                    {checkResult?.status === 'FAIL' && (
+                      'Installation blocked by mechanical interference. Do not proceed to commercial quotation without conversion spacers or alternative component specs.'
+                    )}
+                    {!checkResult && (
+                      'Select vehicle and upgrade component above, then click "Verify Fitment Matrix" to evaluate tolerances.'
+                    )}
                   </p>
                 </div>
 
                 <div className="flex gap-3 pt-2">
                   <Link
                     to="/quotation"
-                    className="flex-1 py-2 px-3 bg-[#6091c3] hover:brightness-110 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider rounded-lg text-center shadow"
+                    className={`flex-1 py-2 px-3 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider rounded-lg text-center shadow ${
+                      checkResult?.status === 'FAIL' 
+                        ? 'bg-white/10 opacity-50 cursor-not-allowed pointer-events-none' 
+                        : 'bg-[#6091c3] hover:brightness-110'
+                    }`}
                   >
                     Proceed to Quotation
                   </Link>

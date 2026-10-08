@@ -202,6 +202,13 @@ export function AuthProvider({ children }) {
     setLoginModalOpen(false)
   }
 
+  const updateCurrentUser = (updatedUser) => {
+    if (!updatedUser) return
+    const normalized = normalizeUser(updatedUser)
+    setCurrentUser(normalized)
+    localStorage.setItem('vt_auth_user', JSON.stringify(normalized))
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -212,6 +219,7 @@ export function AuthProvider({ children }) {
         login,
         logout,
         switchPersona,
+        updateCurrentUser,
         loginModalOpen,
         setLoginModalOpen,
         demoPersonas: DEMO_PERSONAS

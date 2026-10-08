@@ -48,6 +48,27 @@ public class Part {
     @Column(name = "badge", length = 50)
     private String badge;
 
+    @Column(name = "bolt_pattern", length = 30)
+    private String boltPattern;
+
+    @Column(name = "wheel_diameter_inch", precision = 4, scale = 1)
+    private BigDecimal wheelDiameterInch;
+
+    @Column(name = "wheel_width_inch", precision = 4, scale = 1)
+    private BigDecimal wheelWidthInch;
+
+    @Column(name = "offset_et")
+    private Integer offsetEt;
+
+    @Column(name = "center_bore_mm", precision = 4, scale = 1)
+    private BigDecimal centerBoreMm;
+
+    @Column(name = "min_wheel_diameter_inch", precision = 4, scale = 1)
+    private BigDecimal minWheelDiameterInch;
+
+    @Column(name = "brake_disc_diameter_mm")
+    private Integer brakeDiscDiameterMm;
+
     public Part() {}
 
     public Part(Long partId, String sku, String partName, String category, String brand,
@@ -119,4 +140,25 @@ public class Part {
 
     public String getBadge() { return badge; }
     public void setBadge(String badge) { this.badge = badge; }
+
+    public String getBoltPattern() { return boltPattern; }
+    public void setBoltPattern(String boltPattern) { this.boltPattern = boltPattern; }
+
+    public BigDecimal getWheelDiameterInch() { return wheelDiameterInch; }
+    public void setWheelDiameterInch(BigDecimal wheelDiameterInch) { this.wheelDiameterInch = wheelDiameterInch; }
+
+    public BigDecimal getWheelWidthInch() { return wheelWidthInch; }
+    public void setWheelWidthInch(BigDecimal wheelWidthInch) { this.wheelWidthInch = wheelWidthInch; }
+
+    public Integer getOffsetEt() { return offsetEt; }
+    public void setOffsetEt(Integer offsetEt) { this.offsetEt = offsetEt; }
+
+    public BigDecimal getCenterBoreMm() { return centerBoreMm; }
+    public void setCenterBoreMm(BigDecimal centerBoreMm) { this.centerBoreMm = centerBoreMm; }
+
+    public BigDecimal getMinWheelDiameterInch() { return minWheelDiameterInch; }
+    public void setMinWheelDiameterInch(BigDecimal minWheelDiameterInch) { this.minWheelDiameterInch = minWheelDiameterInch; }
+
+    public Integer getBrakeDiscDiameterMm() { return brakeDiscDiameterMm; }
+    public void setBrakeDiscDiameterMm(Integer brakeDiscDiameterMm) { this.brakeDiscDiameterMm = brakeDiscDiameterMm; }
 }

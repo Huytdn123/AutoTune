@@ -125,22 +125,12 @@ export const partApi = {
 
 export const fitmentApi = {
   getOverview: async () => {
-    try {
-      const res = await client.get('/fitment')
-      return res.data
-    } catch (err) {
-      if (ENABLE_MOCK) return { totalCars: 5, totalParts: 6 }
-      throw err
-    }
+    const res = await client.get('/fitment')
+    return res.data
   },
   check: async (payload) => {
-    try {
-      const res = await client.post('/fitment/check', payload)
-      return res.data
-    } catch (err) {
-      if (ENABLE_MOCK) return { compatible: true, status: 'PASS', message: 'Tương thích' }
-      throw err
-    }
+    const res = await client.post('/fitment/check', payload)
+    return res.data
   }
 }
 
@@ -224,15 +214,8 @@ export const workOrderApi = {
 
 export const inventoryApi = {
   getAll: async () => {
-    try {
-      const res = await client.get('/inventory')
-      return res.data
-    } catch (err) {
-      if (ENABLE_MOCK) {
-        return { success: true, totalSKUs: 0, inStockCount: 0, data: [] }
-      }
-      throw err
-    }
+    const res = await client.get('/inventory')
+    return res.data
   },
   procure: async (req) => {
     const res = await client.post('/inventory/procure', req)
@@ -398,15 +381,40 @@ export const buildApi = {
   getMyBuilds: async () => {
     try {
       const res = await client.get('/builds/my')
-      if (Array.isArray(res.data) && res.data.length > 0) {
+      if (Array.isArray(res.data)) {
         return res.data
       }
-    } catch {}
-    try {
-      return JSON.parse(localStorage.getItem('vt_recent_builds') || '[]')
-    } catch {
-      return []
+    } catch (err) {
+      console.warn('Failed to fetch user builds from backend:', err)
     }
+    return []
+  },
+  rename: async (shareCode, buildName) => {
+    const res = await client.patch(`/builds/${shareCode}/rename`, { buildName })
+    return res.data
+  },
+  fork: async (shareCode) => {
+    const res = await client.post(`/builds/${shareCode}/fork`)
+    return res.data
+  },
+  delete: async (shareCode) => {
+    const res = await client.delete(`/builds/${shareCode}`)
+    return res.data
+  }
+}
+
+export const userApi = {
+  getProfile: async () => {
+    const res = await client.get('/user/profile')
+    return res.data
+  },
+  updateProfile: async (data) => {
+    const res = await client.put('/user/profile', data)
+    return res.data
+  },
+  changePassword: async (data) => {
+    const res = await client.post('/user/change-password', data)
+    return res.data
   }
 }
 

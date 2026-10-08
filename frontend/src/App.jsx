@@ -17,6 +17,7 @@ import GarageProfilePage from './pages/GarageProfilePage'
 import KnowledgeHubPage from './pages/KnowledgeHubPage'
 import PartsCartCheckoutPage from './pages/PartsCartCheckoutPage'
 import PartsStorePage from './pages/PartsStorePage'
+import AccountPage from './pages/AccountPage'
 
 // Replaces the old /login page — just opens the LoginModal overlay on the home screen
 function LoginRedirect() {
@@ -287,12 +288,16 @@ function InteractiveAppWrapper() {
           />
           <Route 
             path="/inventory" 
-            element={<Navigate to="/shop?tab=inventory" replace />} 
+            element={
+              <ProtectedRoute allowedRoles={['GARAGE_OWNER', 'LEAD_TECHNICIAN', 'ADMIN']}>
+                <PartsStorePage defaultTab="inventory" />
+              </ProtectedRoute>
+            } 
           />
           <Route 
             path="/fitment" 
             element={
-              <ProtectedRoute allowedRoles={['GARAGE_OWNER', 'LEAD_TECHNICIAN']}>
+              <ProtectedRoute allowedRoles={['GARAGE_OWNER', 'LEAD_TECHNICIAN', 'ADMIN']}>
                 <FitmentMatrixPage />
               </ProtectedRoute>
             } 
@@ -321,8 +326,17 @@ function InteractiveAppWrapper() {
               </ProtectedRoute>
             } 
           />
+          <Route 
+            path="/account" 
+            element={
+              <ProtectedRoute requireAuth={true}>
+                <AccountPage />
+              </ProtectedRoute>
+            } 
+          />
 
           {/* Legacy & Shortcut Aliases */}
+          <Route path="/my-builds" element={<Navigate to="/account" replace />} />
           <Route path="/compatibility" element={<Navigate to="/fitment" replace />} />
           <Route path="/data-mapping" element={<Navigate to="/fitment" replace />} />
           <Route path="/marketplace" element={<Navigate to="/profile" replace />} />

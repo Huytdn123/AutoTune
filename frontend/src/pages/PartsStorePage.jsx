@@ -13,11 +13,21 @@ const STORE_CATEGORIES = [
   { id: 'aero', label: 'Carbon Aero Kits', icon: 'speed' }
 ]
 
-export default function PartsStorePage() {
+export default function PartsStorePage({ defaultTab }) {
   const navigate = useNavigate()
   const location = useLocation()
-  const { currentUser, setLoginModalOpen } = useAuth()
-  const [activeTab, setActiveTab] = useState(location.search.includes('inventory') ? 'inventory' : 'store')
+  const { currentUser, role, setLoginModalOpen } = useAuth()
+  const isGarageStaff = currentUser && ['GARAGE_OWNER', 'LEAD_TECHNICIAN', 'ADMIN'].includes(role)
+
+  const determineActiveTab = () => {
+    if (!isGarageStaff) return 'store'
+    if (defaultTab === 'inventory') return 'inventory'
+    if (location.pathname === '/inventory') return 'inventory'
+    if (location.search.includes('inventory')) return 'inventory'
+    return 'store'
+  }
+
+  const [activeTab, setActiveTab] = useState(determineActiveTab)
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [toastMessage, setToastMessage] = useState(null)
@@ -67,10 +77,16 @@ export default function PartsStorePage() {
   }, [])
 
   useEffect(() => {
-    if (location.search.includes('inventory')) {
-      setActiveTab('inventory')
+    if (!isGarageStaff) {
+      setActiveTab('store')
+      return
     }
-  }, [location.search])
+    if (location.pathname === '/inventory' || defaultTab === 'inventory' || location.search.includes('inventory')) {
+      setActiveTab('inventory')
+    } else if (location.pathname === '/shop' && !location.search.includes('inventory')) {
+      setActiveTab('store')
+    }
+  }, [location.pathname, location.search, defaultTab, isGarageStaff])
 
   const showToast = (msg) => {
     setToastMessage(msg)
@@ -111,7 +127,7 @@ export default function PartsStorePage() {
         </div>
       )}
 
-      {/* STORE HERO BANNER */}
+      {/* STORE HERO BANNER (Preserved exactly from Image 1) */}
       <section 
         className="relative py-10 px-6 lg:px-12 border-b border-[#45464e]/30 overflow-hidden"
         style={{
@@ -131,53 +147,55 @@ export default function PartsStorePage() {
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-[#6091c3]/15 border border-[#6091c3]/30 text-[#6091c3] text-[10px] font-mono font-bold uppercase tracking-wider">
               <span className="w-1.5 h-1.5 rounded-full bg-[#6091c3] animate-pulse" />
-              OFFICIAL B2B PERFORMANCE STORE
+              {activeTab === 'inventory' ? 'OFFICIAL B2B WAREHOUSE DEPOT' : 'OFFICIAL B2B PERFORMANCE STORE'}
             </div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white font-['Montserrat'] tracking-tight">
-              High-Performance Parts & Tuning Store
+              {activeTab === 'inventory' ? 'Warehouse Inventory & Procurement' : 'High-Performance Parts & Tuning Store'}
             </h1>
             <p className="text-xs sm:text-sm text-[#c8d4ea] leading-relaxed">
-              Explore authentic OEM and aftermarket upgrades (BBS, Akrapovič, KW, Brembo, Rays, Vorsteiner). Verified CAD fitment matrix and seamless 3D Configurator staging.
+              {activeTab === 'inventory' 
+                ? 'Live OEM stock tracking, inventory valuation, depot compliance, and supplier replenishment.'
+                : 'Explore authentic OEM and aftermarket upgrades (BBS, Akrapovič, KW, Brembo, Rays, Vorsteiner). Verified CAD fitment matrix and seamless 3D Configurator staging.'}
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
-            {/* Unified Mode Toggle */}
-            <div className="flex items-center p-1 rounded-xl bg-[#0d131f]/90 border border-white/15 shadow-inner">
-              <button
-                type="button"
-                onClick={() => setActiveTab('store')}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-['Montserrat'] font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                  activeTab === 'store'
-                    ? 'bg-[#6091c3] text-white shadow-md'
-                    : 'text-[#c8d4ea] hover:text-white'
-                }`}
-              >
-                <span className="material-symbols-outlined text-sm">storefront</span>
-                <span>Storefront</span>
-              </button>
+            {/* Unified Mode Toggle: STRICTLY HIDDEN from guests and regular car owners */}
+            {isGarageStaff && (
+              <div className="flex items-center p-1 rounded-xl bg-[#0d131f]/90 border border-white/15 shadow-inner">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('store')
+                    navigate('/shop')
+                  }}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-['Montserrat'] font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                    activeTab === 'store'
+                      ? 'bg-[#6091c3] text-white shadow-md'
+                      : 'text-[#c8d4ea] hover:text-white'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-sm">storefront</span>
+                  <span>Storefront</span>
+                </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  if (!currentUser) {
-                    setLoginModalOpen(true)
-                    showToast('Sign in required to access Warehouse Inventory & Stock!')
-                    return
-                  }
-                  setActiveTab('inventory')
-                }}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-['Montserrat'] font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                  activeTab === 'inventory'
-                    ? 'bg-[#10b981] text-white shadow-md'
-                    : 'text-[#c8d4ea] hover:text-white'
-                }`}
-              >
-                <span className="material-symbols-outlined text-sm">inventory_2</span>
-                <span>Warehouse Inventory</span>
-                {!currentUser && <span className="material-symbols-outlined text-xs text-amber-400">lock</span>}
-              </button>
-            </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('inventory')
+                    navigate('/inventory')
+                  }}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-['Montserrat'] font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                    activeTab === 'inventory'
+                      ? 'bg-[#10b981] text-white shadow-md'
+                      : 'text-[#c8d4ea] hover:text-white'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-sm">inventory_2</span>
+                  <span>Warehouse Inventory</span>
+                </button>
+              </div>
+            )}
 
             <button
               type="button"
@@ -200,7 +218,7 @@ export default function PartsStorePage() {
       {/* RENDER INVENTORY TAB OR STOREFRONT */}
       {activeTab === 'inventory' ? (
         <div className="flex-1 flex flex-col">
-          <InventoryProcurementPage />
+          <InventoryProcurementPage isEmbedded={true} />
         </div>
       ) : (
         <>

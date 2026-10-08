@@ -122,7 +122,7 @@ public class DataInitializer implements CommandLineRunner {
             return roleRepository.save(r);
         });
 
-        Role technicianRole = roleRepository.findByRoleCode("TECHNICIAN").orElseGet(() -> {
+        roleRepository.findByRoleCode("TECHNICIAN").orElseGet(() -> {
             Role r = new Role(null, "TECHNICIAN", "Service Technician", "Work order execution, kinematic alignment, fitment inspection", "#10B981");
             Set<Permission> techPerms = new HashSet<>();
             allPerms.forEach(p -> {
@@ -153,7 +153,7 @@ public class DataInitializer implements CommandLineRunner {
             return roleRepository.save(r);
         });
 
-        Role customerRole = roleRepository.findByRoleCode("CUSTOMER").orElseGet(() -> {
+        roleRepository.findByRoleCode("CUSTOMER").orElseGet(() -> {
             Role r = new Role(null, "CUSTOMER", "Customer", "3D exterior studio staging, instant quotation request, digital warranty passport", "#F59E0B");
             Set<Permission> carPerms = new HashSet<>();
             allPerms.forEach(p -> {
@@ -294,22 +294,37 @@ public class DataInitializer implements CommandLineRunner {
 
         targetParts.forEach(tp -> {
             var existing = partRepository.findBySku(tp.getSku());
-            if (existing.isPresent()) {
-                Part p = existing.get();
-                p.setPartName(tp.getPartName());
-                p.setCategory(tp.getCategory());
-                p.setBrand(tp.getBrand());
-                p.setSpecifications(tp.getSpecifications());
-                p.setPriceVnd(tp.getPriceVnd());
-                p.setStockQuantity(tp.getStockQuantity());
-                p.setImageUrl(tp.getImageUrl());
-                p.setCompatibleVehicles(tp.getCompatibleVehicles());
-                p.setRating(tp.getRating());
-                p.setBadge(tp.getBadge());
-                partRepository.save(p);
-            } else {
-                partRepository.save(tp);
+            Part p = existing.orElse(tp);
+            p.setPartName(tp.getPartName());
+            p.setCategory(tp.getCategory());
+            p.setBrand(tp.getBrand());
+            p.setSpecifications(tp.getSpecifications());
+            p.setPriceVnd(tp.getPriceVnd());
+            p.setStockQuantity(tp.getStockQuantity());
+            p.setImageUrl(tp.getImageUrl());
+            p.setCompatibleVehicles(tp.getCompatibleVehicles());
+            p.setRating(tp.getRating());
+            p.setBadge(tp.getBadge());
+
+            // Engineering Fitment specifications
+            if ("BBS-FIR-992-TITAN".equals(tp.getSku())) {
+                p.setBoltPattern("5x112");
+                p.setWheelDiameterInch(new BigDecimal("20.0"));
+                p.setWheelWidthInch(new BigDecimal("9.5"));
+                p.setOffsetEt(35);
+                p.setCenterBoreMm(new BigDecimal("66.6"));
+            } else if ("RAYS-TE37-ULTRA-20".equals(tp.getSku())) {
+                p.setBoltPattern("5x114.3");
+                p.setWheelDiameterInch(new BigDecimal("20.0"));
+                p.setWheelWidthInch(new BigDecimal("10.0"));
+                p.setOffsetEt(30);
+                p.setCenterBoreMm(new BigDecimal("66.1"));
+            } else if ("BRM-1N1.9042A2".equals(tp.getSku())) {
+                p.setBoltPattern("Universal");
+                p.setBrakeDiscDiameterMm(380);
+                p.setMinWheelDiameterInch(new BigDecimal("19.0"));
             }
+            partRepository.save(p);
         });
     }
 
@@ -450,6 +465,38 @@ public class DataInitializer implements CommandLineRunner {
         );
 
         initialCars.forEach(car -> {
+            if ("ferrari-458".equals(car.getSlug())) {
+                car.setStockWheelWidthInch(new BigDecimal("9.0"));
+                car.setStockOffsetEt(45);
+                car.setStockCenterBoreMm(new BigDecimal("67.1"));
+                car.setStockBrakeDiscMm(398);
+            } else if ("lamborghini-aventador".equals(car.getSlug())) {
+                car.setStockWheelWidthInch(new BigDecimal("9.0"));
+                car.setStockOffsetEt(35);
+                car.setStockCenterBoreMm(new BigDecimal("66.6"));
+                car.setStockBrakeDiscMm(400);
+            } else if ("porsche-gt3".equals(car.getSlug())) {
+                car.setStockWheelWidthInch(new BigDecimal("10.0"));
+                car.setStockOffsetEt(45);
+                car.setStockCenterBoreMm(new BigDecimal("71.6"));
+                car.setStockBrakeDiscMm(408);
+            } else if ("mclaren-720s".equals(car.getSlug())) {
+                car.setStockWheelWidthInch(new BigDecimal("9.0"));
+                car.setStockOffsetEt(38);
+                car.setStockCenterBoreMm(new BigDecimal("66.6"));
+                car.setStockBrakeDiscMm(390);
+            } else if ("nissan-gtr".equals(car.getSlug())) {
+                car.setStockWheelWidthInch(new BigDecimal("10.0"));
+                car.setStockOffsetEt(41);
+                car.setStockCenterBoreMm(new BigDecimal("66.1"));
+                car.setStockBrakeDiscMm(390);
+            } else if ("bmw-m4-csl".equals(car.getSlug())) {
+                car.setStockWheelWidthInch(new BigDecimal("9.5"));
+                car.setStockOffsetEt(20);
+                car.setStockCenterBoreMm(new BigDecimal("66.6"));
+                car.setStockBrakeDiscMm(380);
+            }
+
             carRepository.findBySlug(car.getSlug()).ifPresentOrElse(
                 existing -> {
                     existing.setBrand(car.getBrand());
@@ -459,6 +506,10 @@ public class DataInitializer implements CommandLineRunner {
                     existing.setTagline(car.getTagline());
                     existing.setStockBoltPattern(car.getStockBoltPattern());
                     existing.setStockWheelSizeInch(car.getStockWheelSizeInch());
+                    existing.setStockWheelWidthInch(car.getStockWheelWidthInch());
+                    existing.setStockOffsetEt(car.getStockOffsetEt());
+                    existing.setStockCenterBoreMm(car.getStockCenterBoreMm());
+                    existing.setStockBrakeDiscMm(car.getStockBrakeDiscMm());
                     existing.setCurbWeightKg(car.getCurbWeightKg());
                     existing.setHorsepower(car.getHorsepower());
                     existing.setPriceUsd(car.getPriceUsd());

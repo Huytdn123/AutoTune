@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { inventoryApi, partApi } from '../services/api'
+import { useAuth } from '../contexts/AuthContext'
+import ProtectedRoute from '../components/ProtectedRoute'
 
 const PART_IMAGES = {
   'BBS-FIR-992-TITAN': '/images/wheel-titanium.jpg',
@@ -23,9 +25,13 @@ const INVENTORY_CATEGORIES = [
 /**
  * InventoryProcurementPage - Parts Inventory & B2B Procurement
  * Fully connected to Spring Boot /api/inventory & /api/parts
+ * Strictly protected for GARAGE_OWNER, LEAD_TECHNICIAN, and ADMIN roles.
  */
 export default function InventoryProcurementPage() {
   const navigate = useNavigate()
+  const { currentUser, role } = useAuth()
+  const isAuthorized = currentUser && ['GARAGE_OWNER', 'LEAD_TECHNICIAN', 'ADMIN'].includes(role)
+
   const [parts, setParts] = useState([])
   const [inventoryStats, setInventoryStats] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -58,8 +64,18 @@ export default function InventoryProcurementPage() {
   }
 
   useEffect(() => {
-    fetchInventory()
-  }, [])
+    if (isAuthorized) {
+      fetchInventory()
+    }
+  }, [isAuthorized])
+
+  if (!isAuthorized) {
+    return (
+      <ProtectedRoute allowedRoles={['GARAGE_OWNER', 'LEAD_TECHNICIAN', 'ADMIN']} requireAuth={true}>
+        <div />
+      </ProtectedRoute>
+    )
+  }
 
   const handleProcure = async (partId, qty = 2) => {
     try {
@@ -120,45 +136,6 @@ export default function InventoryProcurementPage() {
       )}
 
       <main className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        {/* Top Search & Real-time Integration Bar */}
-        <section className="border-b border-[#45464e]/30 bg-[#162447]/60 backdrop-blur-md px-6 py-4">
-          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 max-w-7xl mx-auto w-full">
-            <div className="relative flex-1 max-w-2xl">
-              <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8f9099] text-lg">search</span>
-              <input 
-                type="text"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search by SKU, Brand (BBS, Akrapovič, KW, Brembo), or Part Name..." 
-                className="w-full bg-[#0d131f] text-white placeholder-white/30 border border-[#45464e]/40 rounded-lg pl-10 pr-10 py-2 text-xs focus:border-[#6091C3] focus:outline-none transition-all shadow-inner font-mono"
-              />
-              {searchQuery && (
-                <button 
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white text-xs"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0d131f] border border-[#45464e]/30 text-xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="font-mono text-[#8f9099] uppercase">Spring Boot Live API</span>
-                <span className="text-[#6091c3] font-mono text-[11px] font-bold">Connected</span>
-              </div>
-              <Link 
-                to="/cart"
-                className="px-4 py-2 bg-[#6091C3] hover:brightness-110 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider rounded-lg flex items-center gap-1.5 shadow transition-all"
-              >
-                <span className="material-symbols-outlined text-sm">shopping_cart</span>
-                <span>Open Parts Cart (4)</span>
-              </Link>
-            </div>
-          </div>
-        </section>
-
         {/* 4 Real-time KPI Stats Cards */}
         <section className="px-6 py-6 max-w-7xl mx-auto w-full">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -228,31 +205,57 @@ export default function InventoryProcurementPage() {
         <section className="px-6 pb-12 max-w-7xl mx-auto w-full">
           <div className="bg-[#162447] rounded-xl border border-[#6091c3]/30 p-5 space-y-4 shadow-xl">
             
-            {/* Filter Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/10">
-              <div className="flex items-center gap-2">
+            {/* Filter Bar with Integrated Search & Live API Status */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/10">
+              <div className="flex flex-wrap items-center gap-3">
                 <span className="font-['Montserrat'] font-bold text-xs uppercase tracking-wider text-white">
                   Warehouse Stock & Procurement List
                 </span>
                 <span className="px-2 py-0.5 bg-[#0d131f] rounded text-[#6091C3] text-[11px] font-mono font-bold border border-[#6091C3]/30">
                   {filteredParts.length} Live Items
                 </span>
+                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#0d131f] border border-emerald-500/30 text-[11px]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="font-mono text-[#8f9099] uppercase text-[10px]">Spring Boot Live API</span>
+                </div>
               </div>
 
-              <div className="flex items-center gap-1.5 text-xs font-['Montserrat'] overflow-x-auto pb-1 sm:pb-0">
-                {INVENTORY_CATEGORIES.map(cat => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setActiveCategory(cat.id)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                      activeCategory === cat.id
-                        ? 'bg-[#6091C3] text-white shadow'
-                        : 'bg-white/5 text-[#c8d4ea] hover:bg-white/10 border border-white/10'
-                    }`}
-                  >
-                    {cat.label}
-                  </button>
-                ))}
+              {/* Right Side: Search Box & Category Filters */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <div className="relative w-full sm:w-64">
+                  <span className="material-symbols-outlined absolute left-2.5 top-2 text-[#8f9099] text-base">search</span>
+                  <input 
+                    type="text"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    placeholder="Search SKU, brand, name..." 
+                    className="w-full pl-8 pr-7 py-1.5 rounded-lg bg-[#0d131f] border border-[#45464e]/40 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#6091c3] font-mono shadow-inner"
+                  />
+                  {searchQuery && (
+                    <button 
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-2.5 top-2 text-[#8f9099] hover:text-white text-xs"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1.5 text-xs font-['Montserrat'] overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+                  {INVENTORY_CATEGORIES.map(cat => (
+                    <button
+                      key={cat.id}
+                      onClick={() => setActiveCategory(cat.id)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                        activeCategory === cat.id
+                          ? 'bg-[#6091C3] text-white shadow'
+                          : 'bg-white/5 text-[#c8d4ea] hover:bg-white/10 border border-white/10'
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 

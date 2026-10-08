@@ -1,6 +1,7 @@
 package com.virtualtune.service.impl;
 
 import com.virtualtune.dto.CreateBuildRequest;
+import com.virtualtune.exception.ForbiddenException;
 import com.virtualtune.exception.ResourceNotFoundException;
 import com.virtualtune.model.Car;
 import com.virtualtune.model.CarBuild;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 public class CarBuildServiceImpl implements CarBuildService {
@@ -117,6 +117,73 @@ public class CarBuildServiceImpl implements CarBuildService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
         return carBuildRepository.findByUser_UserIdOrderByCreatedAtDesc(user.getUserId());
+    }
+
+    @Override
+    @Transactional
+    public void deleteBuild(String shareCode, String username, boolean isAdminOrGarageOwner) {
+        CarBuild build = carBuildRepository.findByShareCode(shareCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Build not found with code: " + shareCode));
+
+        if (isAdminOrGarageOwner) {
+            carBuildRepository.delete(build);
+            return;
+        }
+
+        if (build.getUser() == null || username == null || !build.getUser().getUsername().equals(username)) {
+            throw new ForbiddenException("You do not have permission to delete this build. Ownership required.");
+        }
+
+        carBuildRepository.delete(build);
+    }
+
+    @Override
+    @Transactional
+    public CarBuild renameBuild(String shareCode, String newName, String username, boolean isAdminOrGarageOwner) {
+        CarBuild build = carBuildRepository.findByShareCode(shareCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Build not found with code: " + shareCode));
+
+        if (!isAdminOrGarageOwner) {
+            if (build.getUser() == null || username == null || !build.getUser().getUsername().equals(username)) {
+                throw new ForbiddenException("You do not have permission to modify this build. Ownership required.");
+            }
+        }
+
+        if (newName != null && !newName.trim().isEmpty()) {
+            build.setBuildName(newName.trim());
+        }
+
+        return carBuildRepository.save(build);
+    }
+
+    @Override
+    @Transactional
+    public CarBuild forkBuild(String shareCode, String username) {
+        if (username == null || username.isBlank()) {
+            throw new ForbiddenException("Authentication is required to fork a build.");
+        }
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+
+        CarBuild existing = carBuildRepository.findByShareCode(shareCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Build not found with code: " + shareCode));
+
+        String newShareCode = generateUniqueShareCode(existing.getCar().getSlug());
+
+        CarBuild cloned = new CarBuild();
+        cloned.setShareCode(newShareCode);
+        cloned.setBuildName(existing.getBuildName() + " (Fork)");
+        cloned.setCar(existing.getCar());
+        cloned.setUser(user);
+        cloned.setBodyColor(existing.getBodyColor());
+        cloned.setBodyFinish(existing.getBodyFinish());
+        cloned.setRimColor(existing.getRimColor());
+        cloned.setGlassColor(existing.getGlassColor());
+        cloned.setSelectedPartsJson(existing.getSelectedPartsJson());
+        cloned.setTotalEstimatedCost(existing.getTotalEstimatedCost());
+        cloned.setCreatedAt(LocalDateTime.now());
+
+        return carBuildRepository.save(cloned);
     }
 
     private String generateUniqueShareCode(String carSlug) {

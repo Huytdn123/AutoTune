@@ -36,6 +36,18 @@ public class Car {
     @Column(name = "stock_wheel_size_inch", precision = 4, scale = 1)
     private BigDecimal stockWheelSizeInch = new BigDecimal("20.0");
 
+    @Column(name = "stock_wheel_width_inch", precision = 4, scale = 1)
+    private BigDecimal stockWheelWidthInch = new BigDecimal("9.0");
+
+    @Column(name = "stock_offset_et")
+    private Integer stockOffsetEt = 45;
+
+    @Column(name = "stock_center_bore_mm", precision = 4, scale = 1)
+    private BigDecimal stockCenterBoreMm = new BigDecimal("67.1");
+
+    @Column(name = "stock_brake_disc_mm")
+    private Integer stockBrakeDiscMm = 380;
+
     @Column(name = "curb_weight_kg")
     private Integer curbWeightKg;
 
@@ -108,6 +120,7 @@ public class Car {
     public void setBrand(String brand) { this.brand = brand; }
 
     public String getModel() { return model; }
+    public String getModelName() { return model; }
     public void setModel(String model) { this.model = model; }
 
     public String getYearManufactured() { return yearManufactured; }
@@ -154,6 +167,18 @@ public class Car {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public BigDecimal getStockWheelWidthInch() { return stockWheelWidthInch; }
+    public void setStockWheelWidthInch(BigDecimal stockWheelWidthInch) { this.stockWheelWidthInch = stockWheelWidthInch; }
+
+    public Integer getStockOffsetEt() { return stockOffsetEt; }
+    public void setStockOffsetEt(Integer stockOffsetEt) { this.stockOffsetEt = stockOffsetEt; }
+
+    public BigDecimal getStockCenterBoreMm() { return stockCenterBoreMm; }
+    public void setStockCenterBoreMm(BigDecimal stockCenterBoreMm) { this.stockCenterBoreMm = stockCenterBoreMm; }
+
+    public Integer getStockBrakeDiscMm() { return stockBrakeDiscMm; }
+    public void setStockBrakeDiscMm(Integer stockBrakeDiscMm) { this.stockBrakeDiscMm = stockBrakeDiscMm; }
 
     public String getSpecsJson() { return specsJson; }
     public void setSpecsJson(String specsJson) { this.specsJson = specsJson; }
