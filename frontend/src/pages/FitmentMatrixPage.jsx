@@ -373,8 +373,9 @@ export default function FitmentMatrixPage() {
                   Technical Fitment Analysis Package
                 </h2>
               </div>
-              <span className="text-xs font-mono text-[#8f9099]">
-                Backend Service: <code className="text-[#6091c3]">FitmentServiceImpl.java</code>
+              <span className="text-xs font-mono text-[#8f9099] flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span>Engineering Fitment Verification</span>
               </span>
             </div>
 
@@ -398,7 +399,7 @@ export default function FitmentMatrixPage() {
                 </div>
                 <div className="flex justify-between py-1">
                   <span className="text-[#8f9099]">Standard Homologation:</span>
-                  <span className="text-white">{checkResult?.regulation || 'DIN 70020 / TÜV §19.3 & ECE R124'}</span>
+                  <span className="text-white">{checkResult?.regulation || 'Engineering Fitment Verification (PCD • Offset • Clearance)'}</span>
                 </div>
 
                 {checkResult?.reasons && checkResult.reasons.length > 0 && (
@@ -445,12 +446,24 @@ export default function FitmentMatrixPage() {
                   >
                     Proceed to Quotation
                   </Link>
-                  <Link
-                    to="/cart"
-                    className="py-2 px-3 bg-white/10 hover:bg-white/15 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider rounded-lg text-center"
-                  >
-                    Add to Cart
-                  </Link>
+                  {checkResult?.status === 'FAIL' ? (
+                    <button
+                      disabled
+                      title="Không thể thêm vào giỏ: Linh kiện bị xung đột kỹ thuật (FAIL)"
+                      className="py-2 px-3 bg-rose-500/15 border border-rose-500/40 text-rose-300 font-['Montserrat'] font-bold text-xs uppercase tracking-wider rounded-lg text-center cursor-not-allowed flex items-center gap-1 opacity-70"
+                    >
+                      <span className="material-symbols-outlined text-sm">block</span>
+                      Chặn thêm vào Giỏ (FAIL)
+                    </button>
+                  ) : (
+                    <Link
+                      to="/cart"
+                      className="py-2 px-3 bg-emerald-600 hover:bg-emerald-500 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider rounded-lg text-center flex items-center gap-1 shadow-sm transition-all"
+                    >
+                      <span className="material-symbols-outlined text-sm">add_shopping_cart</span>
+                      Add to Cart
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>

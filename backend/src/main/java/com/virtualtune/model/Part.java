@@ -39,6 +39,12 @@ public class Part {
     @Column(name = "image_url", length = 255)
     private String imageUrl;
 
+    @Column(name = "asset_url", length = 255)
+    private String assetUrl;
+
+    @Column(name = "material", length = 100)
+    private String material;
+
     @Column(name = "compatible_vehicles", length = 255)
     private String compatibleVehicles;
 
@@ -131,6 +137,12 @@ public class Part {
 
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public String getAssetUrl() { return assetUrl; }
+    public void setAssetUrl(String assetUrl) { this.assetUrl = assetUrl; }
+
+    public String getMaterial() { return material; }
+    public void setMaterial(String material) { this.material = material; }
 
     public String getCompatibleVehicles() { return compatibleVehicles; }
     public void setCompatibleVehicles(String compatibleVehicles) { this.compatibleVehicles = compatibleVehicles; }

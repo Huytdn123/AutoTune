@@ -290,7 +290,7 @@ export default function ModificationWarrantyPage() {
             <form onSubmit={handleVerify} className="space-y-3">
               <div>
                 <label className="block text-[10px] font-mono uppercase tracking-wider text-[#8f9099] mb-1">
-                  Verify Warranty Token (Backend Check)
+                  Verify Warranty Certificate (Online Verification)
                 </label>
                 <div className="relative">
                   <input
@@ -316,7 +316,7 @@ export default function ModificationWarrantyPage() {
                 ) : (
                   <>
                     <span className="material-symbols-outlined text-sm">shield</span>
-                    <span>Verify with Spring Boot</span>
+                    <span>Verify Certificate</span>
                   </>
                 )}
               </button>
@@ -331,7 +331,7 @@ export default function ModificationWarrantyPage() {
 
             <div className="pt-2 border-t border-white/10 text-[10px] font-mono text-[#8f9099] flex items-center justify-center gap-2">
               <span className="material-symbols-outlined text-xs text-emerald-400">lock</span>
-              <span>Cryptographically Secured via Spring Security</span>
+              <span>Cryptographically Secured Digital Certificate</span>
             </div>
           </div>
 

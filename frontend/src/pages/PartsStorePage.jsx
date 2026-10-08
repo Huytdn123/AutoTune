@@ -292,7 +292,7 @@ export default function PartsStorePage({ defaultTab }) {
           <div className="py-24 text-center flex flex-col items-center justify-center space-y-4 bg-[#162447]/40 rounded-2xl border border-white/10">
             <div className="w-12 h-12 rounded-full border-4 border-[#6091c3]/20 border-t-[#6091c3] animate-spin" />
             <h3 className="text-sm font-bold uppercase tracking-wider text-white">Loading Parts Catalog</h3>
-            <p className="text-xs text-[#8f9099] font-mono">Connecting to backend /api/parts...</p>
+            <p className="text-xs text-[#8f9099] font-mono">Synchronizing verified parts inventory...</p>
           </div>
         ) : partsError && partsList.length === 0 ? (
           <div className="py-20 text-center space-y-4 bg-[#162447]/40 rounded-2xl border border-rose-500/30">

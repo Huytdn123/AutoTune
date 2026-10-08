@@ -4,20 +4,27 @@ import com.virtualtune.model.Car;
 import com.virtualtune.model.Garage;
 import com.virtualtune.model.Part;
 import com.virtualtune.model.Permission;
+import com.virtualtune.model.Quotation;
+import com.virtualtune.model.QuotationItem;
 import com.virtualtune.model.Role;
 import com.virtualtune.model.User;
+import com.virtualtune.model.WorkOrder;
 import com.virtualtune.repository.CarRepository;
 import com.virtualtune.repository.GarageRepository;
 import com.virtualtune.repository.PartRepository;
 import com.virtualtune.repository.PermissionRepository;
+import com.virtualtune.repository.QuotationRepository;
 import com.virtualtune.repository.RoleRepository;
 import com.virtualtune.repository.UserRepository;
+import com.virtualtune.repository.WorkOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +52,12 @@ public class DataInitializer implements CommandLineRunner {
     private PermissionRepository permissionRepository;
 
     @Autowired
+    private QuotationRepository quotationRepository;
+
+    @Autowired
+    private WorkOrderRepository workOrderRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -53,6 +66,7 @@ public class DataInitializer implements CommandLineRunner {
             seedDatabase();
             seedCars();
             syncTestAccounts();
+            seedQuotationsAndWorkOrders();
         } catch (Exception e) {
             System.err.println(">>> DataInitializer notice: " + e.getMessage());
         }
@@ -282,15 +296,22 @@ public class DataInitializer implements CommandLineRunner {
             });
         });
 
-        // Ensure 6 official parts exist and match catalog with media
+        // Ensure official parts exist and match catalog with media
         List<Part> targetParts = List.of(
                 new Part(null, "BBS-FIR-992-TITAN", "BBS FI-R Forged Monoblock Wheel Set 20\"/21\"", "Wheels & Rims", "BBS Germany", "Ultra-lightweight aerospace forged aluminum • PCD 5x112 / ET35 • 7.8 kg/wheel", 215000000L, 8, "PASS", "/images/wheel-titanium.jpg", "Porsche 911 GT3 (992), BMW M3/M4 (G80/G82)", new BigDecimal("4.90"), "HOT / BESTSELLER"),
-                new Part(null, "RAYS-TE37-ULTRA-20", "Volk Racing TE37 Ultra M-Spec Forged 20\"", "Wheels & Rims", "Rays Japan", "Motorsport-grade forged monoblock • PCD 5x114.3 • Bronze Anodized finish", 185000000L, 6, "PASS", "/images/wheel-volk-te37.jpg", "Ferrari 458, Nissan GT-R R35, Honda Civic Type R", new BigDecimal("5.00"), "TRACK LEGEND"),
+                new Part(null, "RAYS-TE37-ULTRA-20", "Volk Racing TE37 Ultra M-Spec Forged 20\"", "Wheels & Rims", "Rays Japan", "Motorsport-grade forged monoblock • PCD 5x114.3 • Bronze Anodized finish", 185000000L, 6, "PASS", "/images/wheel-volk-te37.jpg", "Nissan GT-R R35, Honda Civic Type R", new BigDecimal("5.00"), "TRACK LEGEND"),
+                new Part(null, "WORK-VSXX-19-F458", "WORK VS-XX 19\" Aftermarket Wheel", "Wheels & Rims", "WORK Wheels", "19-inch 3-piece modular forged construction • Classic mesh design • PCD 5x114.3", 105000000L, 8, "PASS", "/images/wheel-volk-te37.jpg", "Ferrari 458 Italia, Ferrari 458 Spider", new BigDecimal("4.95"), "CC BY 4.0 VERIFIED"),
+                new Part(null, "GEN-GTWING-F458", "Carbon Aero GT Wing", "Rear Spoilers", "Track Aerodynamics", "Gloss carbon fiber airfoil blade • Twin CNC aluminum uprights • High-downforce track profile", 61250000L, 5, "PASS", "/images/aero-carbon.jpg", "Ferrari 458 Italia, Ferrari 458 Spider", new BigDecimal("4.92"), "TRACK SPEC"),
+                new Part(null, "CARB-AERO-F458", "Carbon Fiber Aerodynamics Package", "Carbon Aero Kits", "Track Aerodynamics", "Pre-preg carbon fiber front splitter extensions • Side skirts • Rear diffuser aero fins", 80000000L, 4, "PASS", "/images/aero-carbon.jpg", "Ferrari 458 Italia, Ferrari 458 Spider", new BigDecimal("4.93"), "TRACK SPEC"),
                 new Part(null, "AKR-EVO-TITAN-992", "Akrapovič Evolution Line Titanium Exhaust System", "Exhaust Systems", "Akrapovič", "Full Titanium construction • Bluetooth active flap control • -11.4 kg weight savings", 185000000L, 3, "PASS", "/images/exhaust-akrapovic.jpg", "Porsche 992 GT3 / GT3 RS, Carrera S", new BigDecimal("4.95"), "SIGNATURE SOUND"),
                 new Part(null, "KW-35271842-V4CS", "KW Suspensions V4 Clubsport 3-Way Coilover Kit", "Coilovers & Shocks", "KW Automotive", "16-click rebound & independent high/low speed compression • Uniball camber plates", 123000000L, 4, "PASS", "/images/suspension-kw.jpg", "BMW M4, Porsche 911 GT3, McLaren 720S", new BigDecimal("4.85"), "TRACK READY"),
                 new Part(null, "BRM-1N1.9042A2", "Brembo GT-S 6-Piston Big Brake Kit 380x34mm", "Brake Systems", "Brembo Racing", "Radial monoblock caliper • 2-piece Type 3 slotted disc • 800°C thermal endurance", 96250000L, 5, "PASS", "/images/brake-brembo.jpg", "Porsche GT3, Ferrari 458, Nissan GT-R", new BigDecimal("4.98"), "RACING SPEC"),
                 new Part(null, "VOR-CF-AERO-992", "Vorsteiner Aero Carbon Wing & Rear Diffuser Package", "Carbon Aero Kits", "Vorsteiner USA", "Pre-preg 2x2 weave vacuum autoclave carbon • Aerodynamic downforce profile", 145000000L, 2, "PASS", "/images/aero-carbon.jpg", "Porsche 911 GT3 (992), McLaren 720S", new BigDecimal("4.90"), "ULTRA LIGHTWEIGHT")
         );
+
+        // Clean up obsolete unverified parts
+        List<String> obsoleteSkus = List.of("NOV-NF4-21-F458", "LB-WORKS-458-AERO-CFRP", "LB-458-GT-WING-CFRP", "LB-458-DUCKTAIL-CFRP");
+        obsoleteSkus.forEach(sku -> partRepository.findBySku(sku).ifPresent(partRepository::delete));
 
         targetParts.forEach(tp -> {
             var existing = partRepository.findBySku(tp.getSku());
@@ -306,7 +327,7 @@ public class DataInitializer implements CommandLineRunner {
             p.setRating(tp.getRating());
             p.setBadge(tp.getBadge());
 
-            // Engineering Fitment specifications
+            // Engineering Fitment specifications & 3D Assets
             if ("BBS-FIR-992-TITAN".equals(tp.getSku())) {
                 p.setBoltPattern("5x112");
                 p.setWheelDiameterInch(new BigDecimal("20.0"));
@@ -319,6 +340,17 @@ public class DataInitializer implements CommandLineRunner {
                 p.setWheelWidthInch(new BigDecimal("10.0"));
                 p.setOffsetEt(30);
                 p.setCenterBoreMm(new BigDecimal("66.1"));
+            } else if ("WORK-VSXX-19-F458".equals(tp.getSku())) {
+                p.setAssetUrl("/models/parts/ferrari-458/wheels/work-vs-xx.glb");
+                p.setMaterial("3-Piece Modular Forged Alloy");
+                p.setBoltPattern("5x114.3");
+                p.setWheelDiameterInch(new BigDecimal("19.0"));
+                p.setWheelWidthInch(new BigDecimal("10.0"));
+                p.setOffsetEt(30);
+                p.setCenterBoreMm(new BigDecimal("67.1"));
+            } else if ("GEN-GTWING-F458".equals(tp.getSku())) {
+                p.setAssetUrl("/models/parts/ferrari-458/spoilers/carbon-gt-wing.glb");
+                p.setMaterial("Gloss Carbon Fiber & CNC Aluminum");
             } else if ("BRM-1N1.9042A2".equals(tp.getSku())) {
                 p.setBoltPattern("Universal");
                 p.setBrakeDiscDiameterMm(380);
@@ -400,8 +432,8 @@ public class DataInitializer implements CommandLineRunner {
                 null,
                 "mclaren-720s",
                 "McLaren",
-                "720S / P1",
-                "2018–2023",
+                "720S",
+                "2017–2023",
                 "Supercar Coupé",
                 "4.0L TT V8 · 720hp · 0-100: 2.8s",
                 "5x112",
@@ -526,5 +558,87 @@ public class DataInitializer implements CommandLineRunner {
                 () -> carRepository.save(car)
             );
         });
+    }
+
+    private void seedQuotationsAndWorkOrders() {
+        if (quotationRepository.count() > 0) {
+            return;
+        }
+
+        User customer = userRepository.findByUsername("customer_vip").orElse(null);
+        User techLead = userRepository.findByUsername("tech_lead").orElse(null);
+        Garage garage = garageRepository.findAll().stream().findFirst().orElse(null);
+
+        if (customer == null || garage == null) {
+            return;
+        }
+
+        // Quotation 1: Approved quote with active work order
+        Quotation q1 = new Quotation();
+        q1.setQuotationNumber("VT-QTE-2026-089");
+        q1.setCustomer(customer);
+        q1.setCarModel("Porsche 911 GT3 RS");
+        q1.setCustomerName(customer.getFullName());
+        q1.setCustomerPhone(customer.getPhone());
+        q1.setGarage(garage);
+        q1.setGarageName(garage.getGarageName());
+        q1.setPartsTotal(345000000L);
+        q1.setLaborTotal(15000000L);
+        q1.setDiscountAmount(20000000L);
+        q1.setTaxAmount(0L);
+        q1.setFinalTotal(340000000L);
+        q1.setStatus("APPROVED");
+        q1.setLegalStatus("PASS");
+        q1.setNotes("High-downforce aero pack + BBS Forged Titanium wheels & Akrapovič Evolution Line exhaust");
+
+        List<QuotationItem> q1Items = new ArrayList<>();
+        QuotationItem item1 = new QuotationItem(null, q1, null, "BBS FI-R Forged Titanium Wheels (Set of 4)", "BBS-FIR-992-TITAN", "Wheels", 1, 185000000L, 185000000L);
+        QuotationItem item2 = new QuotationItem(null, q1, null, "Akrapovič Evolution Line Titanium Exhaust", "AKR-EVO-TITAN-992", "Exhaust", 1, 160000000L, 160000000L);
+        q1Items.add(item1);
+        q1Items.add(item2);
+        q1.setItems(q1Items);
+
+        Quotation savedQ1 = quotationRepository.save(q1);
+
+        // WorkOrder 1: Dispatched from approved Quotation 1
+        WorkOrder wo1 = new WorkOrder();
+        wo1.setWorkOrderNumber("WO-2026-001");
+        wo1.setQuotation(savedQ1);
+        wo1.setCustomer(customer);
+        wo1.setTechnician(techLead);
+        wo1.setVehicleModel("Porsche 911 GT3 RS");
+        wo1.setGarage(garage);
+        wo1.setBayNumber("Bay 02 - Dyno & Performance Alignment");
+        wo1.setStatus("IN_PROGRESS");
+        wo1.setProgress(65);
+        wo1.setPriority("HIGH");
+        wo1.setNotes("BBS wheel balance & fitment inspection completed. Akrapovič titanium exhaust fitment in progress on lift 2.");
+        wo1.setStartedAt(LocalDateTime.now().minusHours(4));
+        workOrderRepository.save(wo1);
+
+        // Quotation 2: Pending Sent quotation
+        Quotation q2 = new Quotation();
+        q2.setQuotationNumber("VT-QTE-2026-092");
+        q2.setCustomer(customer);
+        q2.setCarModel("Ferrari 458 Italia");
+        q2.setCustomerName(customer.getFullName());
+        q2.setCustomerPhone(customer.getPhone());
+        q2.setGarage(garage);
+        q2.setGarageName(garage.getGarageName());
+        q2.setPartsTotal(145000000L);
+        q2.setLaborTotal(10000000L);
+        q2.setDiscountAmount(5000000L);
+        q2.setTaxAmount(0L);
+        q2.setFinalTotal(150000000L);
+        q2.setStatus("SENT");
+        q2.setLegalStatus("PASS");
+        q2.setNotes("Brembo GT Big Brake Kit conversion package with 6-piston monobloc calipers");
+
+        List<QuotationItem> q2Items = new ArrayList<>();
+        QuotationItem item3 = new QuotationItem(null, q2, null, "Brembo GT 6-Piston BBK Monobloc Front Kit", "BRM-1N1.9042A2", "Brakes", 1, 145000000L, 145000000L);
+        q2Items.add(item3);
+        q2.setItems(q2Items);
+
+        quotationRepository.save(q2);
     }
 }

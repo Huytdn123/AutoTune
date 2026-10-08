@@ -214,10 +214,6 @@ export default function InventoryProcurementPage() {
                 <span className="px-2 py-0.5 bg-[#0d131f] rounded text-[#6091C3] text-[11px] font-mono font-bold border border-[#6091C3]/30">
                   {filteredParts.length} Live Items
                 </span>
-                <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#0d131f] border border-emerald-500/30 text-[11px]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="font-mono text-[#8f9099] uppercase text-[10px]">Spring Boot Live API</span>
-                </div>
               </div>
 
               {/* Right Side: Search Box & Category Filters */}
@@ -263,7 +259,7 @@ export default function InventoryProcurementPage() {
             {loading ? (
               <div className="py-16 text-center text-xs font-mono text-[#8f9099] flex items-center justify-center gap-2">
                 <span className="w-4 h-4 border-2 border-[#6091c3] border-t-transparent rounded-full animate-spin" />
-                <span>Loading parts from SQL Server /api/parts...</span>
+                <span>Loading warehouse inventory...</span>
               </div>
             ) : filteredParts.length === 0 ? (
               <div className="py-16 text-center text-xs font-mono text-[#8f9099] space-y-2">

@@ -105,6 +105,8 @@ export const normalizePart = (p) => {
     compatible: compatible,
     rating,
     badge,
+    assetUrl: p.assetUrl || p.model3dPath || null,
+    material: p.material || 'Carbon Fiber / Aerospace Alloy',
     stockQuantity: p.stockQuantity ?? p.stock ?? 0,
     stock: p.stockQuantity ?? p.stock ?? 0,
     legalComplianceStatus: p.legalComplianceStatus || 'PASS'
@@ -136,26 +138,19 @@ export const fitmentApi = {
 
 export const quotationApi = {
   calculate: async (data) => {
-    try {
-      const res = await client.post('/quotations/calculate', data)
-      return res.data
-    } catch (err) {
-      if (ENABLE_MOCK) {
-        return {
-          quotationNumber: 'VT-QTE-2026-ONLINE',
-          workOrderNumber: 'WO-2026-001',
-          partsTotal: 45000000,
-          laborTotal: 3500000,
-          discountAmount: 2000000,
-          finalTotal: 46500000,
-          legalStatus: 'PASS'
-        }
-      }
-      throw err
-    }
+    const res = await client.post('/quotations/calculate', data)
+    return res.data
+  },
+  create: async (data) => {
+    const res = await client.post('/quotations', data)
+    return res.data
   },
   getAll: async () => {
     const res = await client.get('/quotations')
+    return res.data
+  },
+  getMy: async () => {
+    const res = await client.get('/quotations/my')
     return res.data
   },
   getById: async (id) => {
@@ -188,26 +183,31 @@ export const legalCheckApi = {
 
 export const workOrderApi = {
   getAll: async () => {
-    try {
-      const res = await client.get('/work-orders')
-      return res.data
-    } catch (err) {
-      if (ENABLE_MOCK) {
-        return { success: true, totalBays: 4, activeWorkOrders: 0, data: [] }
-      }
-      throw err
-    }
+    const res = await client.get('/work-orders')
+    return res.data
+  },
+  getMy: async () => {
+    const res = await client.get('/work-orders/my')
+    return res.data
   },
   getById: async (id) => {
     const res = await client.get(`/work-orders/${id}`)
+    return res.data
+  },
+  create: async (req) => {
+    const res = await client.post('/work-orders', req)
     return res.data
   },
   dispatch: async (req) => {
     const res = await client.post('/work-orders/dispatch', req)
     return res.data
   },
-  updateStatus: async (id, status, progress) => {
-    const res = await client.put(`/work-orders/${id}/status`, null, { params: { status, progress } })
+  assignTechnician: async (id, technicianId, bayNumber) => {
+    const res = await client.put(`/work-orders/${id}/assign`, { technicianId, bayNumber })
+    return res.data
+  },
+  updateStatus: async (id, status, progress, notes) => {
+    const res = await client.put(`/work-orders/${id}/status`, { status, progress, notes }, { params: { status, progress } })
     return res.data
   }
 }

@@ -110,6 +110,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/builds/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/builds").permitAll()
                         .requestMatchers("/api/fitment", "/api/fitment/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/quotations/calculate").permitAll()
                         .requestMatchers("/models/**", "/assets/**", "/error", "/h2-console/**").permitAll()
                         // All other API endpoints require authentication
                         .requestMatchers("/api/**").authenticated()

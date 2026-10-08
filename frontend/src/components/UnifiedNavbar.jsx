@@ -74,13 +74,6 @@ export const NAVIGATION_GROUPS = [
         badge: 'Warranty'
       },
       {
-        path: '/dashboard',
-        label: 'Diagnostics Telemetry',
-        desc: 'Workshop operations dashboard, throughput & bay metrics',
-        icon: 'speed',
-        badge: 'Analytics'
-      },
-      {
         path: '/profile',
         label: 'Workshop Profile',
         desc: 'Certified garage credentials, facility & B2B marketplace',

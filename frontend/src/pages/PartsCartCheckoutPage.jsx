@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { quotationApi } from '../services/api'
 
 const INITIAL_CART_ITEMS = [
   {
@@ -100,6 +101,43 @@ export default function PartsCartCheckoutPage() {
 
   const formatCurrency = (val) => {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val)
+  }
+
+  const [requestingQuote, setRequestingQuote] = useState(false)
+
+  const handleRequestQuotation = async () => {
+    if (selectedItems.length === 0) return
+    setRequestingQuote(true)
+    try {
+      const itemsPayload = selectedItems.map(item => ({
+        partName: item.name,
+        partSku: item.sku,
+        category: 'Performance Component',
+        quantity: item.quantity,
+        unitPriceVnd: Math.round(item.unitPrice * 25000),
+      }))
+      const laborVnd = Math.round(800 * 25000)
+      const discountVnd = Math.round(b2bDiscount * 25000)
+
+      const payload = {
+        carModel: 'Porsche 911 GT3 (992)',
+        customerName: 'Alexander von Berg',
+        notes: `B2B Tuning Package generated from Performance Store Cart (${selectedItems.length} items)`,
+        laborFee: laborVnd,
+        discountAmount: discountVnd,
+        items: itemsPayload
+      }
+      const created = await quotationApi.create(payload)
+      showToast(`Đã tạo Báo giá chính thức #${created.quotationNumber} từ giỏ hàng!`)
+      setTimeout(() => {
+        navigate('/quotation')
+      }, 700)
+    } catch (err) {
+      console.warn('Backend quotation creation fallback:', err)
+      navigate('/quotation')
+    } finally {
+      setRequestingQuote(false)
+    }
   }
 
   const handleAuthorizePO = () => {
@@ -339,9 +377,27 @@ export default function PartsCartCheckoutPage() {
               {/* Action Buttons */}
               <div className="space-y-2.5 pt-2">
                 <button 
+                  onClick={handleRequestQuotation}
+                  disabled={selectedItems.length === 0 || requestingQuote}
+                  className="w-full py-3.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 active:scale-98 shadow-lg cursor-pointer"
+                >
+                  {requestingQuote ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Đang tạo Báo giá...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-base">request_quote</span>
+                      <span>Request Official Quotation</span>
+                    </>
+                  )}
+                </button>
+
+                <button 
                   onClick={handleAuthorizePO}
                   disabled={selectedItems.length === 0}
-                  className="w-full py-3.5 px-4 rounded-lg bg-[#6091C3] hover:brightness-110 disabled:opacity-50 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 active:scale-98 shadow-lg cursor-pointer"
+                  className="w-full py-3 px-4 rounded-lg bg-[#6091C3] hover:brightness-110 disabled:opacity-50 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 active:scale-98 shadow-md cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-base">lock</span>
                   <span>Authorize & Dispatch PO</span>

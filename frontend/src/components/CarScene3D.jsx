@@ -13,12 +13,31 @@ export const CAR_MODEL_FILES = {
   'nissan-gtr':            '/models/nissan_gtr.glb',
 }
 
+// ─── Official Real-Life Aftermarket 3D Part Assets ───────────────────────────
+export const PART_MODEL_FILES = {
+  'wheel-work-vsxx-19': '/models/parts/ferrari-458/wheels/work-vs-xx.glb',
+  'spoiler-bcl-wing':   '/models/parts/ferrari-458/spoilers/big-country-labs-style-wing.glb',
+}
+
+// ─── Dynamic Aftermarket Wheel Finishes ───────────────────────────────────────
+export const WHEEL_FINISH_PRESETS = {
+  'GLOSS_BLACK': { id: 'GLOSS_BLACK', name: 'Gloss Black', hex: '#111111', metalness: 0.85, roughness: 0.15 },
+  'SATIN_BLACK': { id: 'SATIN_BLACK', name: 'Satin Black', hex: '#222222', metalness: 0.60, roughness: 0.45 },
+  'SILVER':      { id: 'SILVER',      name: 'Silver',      hex: '#d8d8d8', metalness: 0.90, roughness: 0.25 },
+  'GUNMETAL':    { id: 'GUNMETAL',    name: 'Gunmetal',    hex: '#3e4146', metalness: 0.85, roughness: 0.30 },
+}
+
 const DRACO_PATH = '/draco/gltf/'
 const FERRARI_AO = '/models/ferrari_ao.png'
 
 // Preload all real car models for seamless zero-latency switching
 Object.values(CAR_MODEL_FILES).forEach(url => {
   useGLTF.preload(url, DRACO_PATH)
+})
+
+// Preload real physical customization part assets
+Object.values(PART_MODEL_FILES).forEach(url => {
+  useGLTF.preload(url)
 })
 
 // ─── Universal Vehicle 3D Model Component ─────────────────────────────────────
@@ -28,12 +47,17 @@ export function VehicleModel3D({
   bodyColor = '#CC0000',
   detailsColor = '#CCCCCC',
   glassColor = '#C8D8F0',
-  isAnimating = false,
+  interiorColor = '#1A1A1A',
+  selectedWheel = null,
+  wheelFinish = 'GLOSS_BLACK',
+  selectedBodykit = null,
+  selectedSpoiler = null,
   autoRotate = false,
   autoRotateSpeed = 0.4
 }) {
   const { scene } = useGLTF(modelPath || CAR_MODEL_FILES['ferrari-458'], DRACO_PATH)
-  const wheelsRef = useRef([])
+  const workVsxxGLB = useGLTF(PART_MODEL_FILES['wheel-work-vsxx-19'])
+  const bclWingGLB  = useGLTF(PART_MODEL_FILES['spoiler-bcl-wing'])
   const groupRef = useRef()
 
   // Clone scene deep so each model instance is isolated from the global cache
@@ -53,20 +77,30 @@ export function VehicleModel3D({
   // Wheel Rims & Metal Trim Material
   const detailsMaterial = useMemo(() => new THREE.MeshStandardMaterial({
     name: 'custom_rim_details',
-    color: new THREE.Color(detailsColor),
-    metalness: 0.9,
-    roughness: 0.35,
+    color: new THREE.Color(detailsColor || '#CCCCCC'),
+    metalness: 0.88,
+    roughness: 0.28,
+    envMapIntensity: 1.5,
   }), [])
 
-  // Automotive Glass Material with Realistic Optical Transmission
+  // Realistic Automotive Glass Material (tinted, transparent, anti-blowout)
   const glassMaterial = useMemo(() => new THREE.MeshPhysicalMaterial({
     name: 'custom_automotive_glass',
-    color: new THREE.Color(glassColor || '#ffffff'),
+    color: new THREE.Color(glassColor || '#141c24'),
     metalness: 0.1,
-    roughness: 0.0,
-    transmission: 0.96,
-    ior: 1.5,
-    thickness: 0.3,
+    roughness: 0.05,
+    transparent: true,
+    opacity: 0.38,
+    depthWrite: false,
+    envMapIntensity: 1.8,
+  }), [])
+
+  // Luxury Cockpit & Interior Leather Material (applied strictly to seats & steering leather)
+  const interiorMaterial = useMemo(() => new THREE.MeshStandardMaterial({
+    name: 'custom_interior_leather',
+    color: new THREE.Color(interiorColor || '#1A1A1A'),
+    roughness: 0.7,
+    metalness: 0.1,
   }), [])
 
   // Reactively update material colors
@@ -76,14 +110,24 @@ export function VehicleModel3D({
   }, [bodyColor, bodyMaterial])
 
   useEffect(() => {
-    detailsMaterial.color.set(detailsColor)
-    detailsMaterial.needsUpdate = true
+    if (detailsColor) {
+      detailsMaterial.color.set(detailsColor)
+      detailsMaterial.needsUpdate = true
+    }
   }, [detailsColor, detailsMaterial])
 
   useEffect(() => {
-    glassMaterial.color.set(glassColor)
+    glassMaterial.color.set(glassColor || '#141c24')
+    // Dark tint options receive higher opacity for realistic privacy tint
+    const isDarkTint = glassColor === '#0a0d12' || glassColor === '#1A1A1A'
+    glassMaterial.opacity = isDarkTint ? 0.78 : 0.38
     glassMaterial.needsUpdate = true
   }, [glassColor, glassMaterial])
+
+  useEffect(() => {
+    interiorMaterial.color.set(interiorColor || '#1A1A1A')
+    interiorMaterial.needsUpdate = true
+  }, [interiorColor, interiorMaterial])
 
   // Setup scene: remove license plates, apply materials, auto-orient and scale
   useEffect(() => {
@@ -101,11 +145,9 @@ export function VehicleModel3D({
     const isBMW     = modelPath.includes('bmw')
     const isNissan  = modelPath.includes('nissan')
 
-    const wheels = []
-
     const platesToRemove = []
 
-    // 1. Remove all license plates ("xóa hết biển số xe đi" - front & rear) + Apply custom materials
+    // 1. Precise mesh classification & material assignment
     clonedScene.traverse(child => {
       if (child.isMesh) {
         child.castShadow = true
@@ -115,8 +157,41 @@ export function VehicleModel3D({
         const matName = mat ? (mat.name || '').toLowerCase() : ''
         const nodeName = (child.name || '').toLowerCase()
 
-        // Hide and strip license plate meshes/materials across all cars
-        const isLicensePlate = 
+        // ── 1. FERRARI 458 ITALIA: EXPLICIT ZERO-GUESSWORK CLASSIFICATION ──
+        if (isFerrari) {
+          if (nodeName === 'body') {
+            // Body paint: strictly painted exterior body panels only
+            child.material = bodyMaterial
+          } else if (nodeName === 'glass') {
+            // Glass: windshield, side windows, rear engine bay glass
+            child.material = glassMaterial
+          } else if (nodeName === 'leather' || nodeName === 'steering_leather') {
+            // Interior upholstery: bucket seats & steering wheel leather grip
+            child.material = interiorMaterial
+          } else if (['rim_fl', 'rim_fr', 'rim_rr', 'rim_rl', 'wheel', 'trim'].includes(nodeName)) {
+            // OEM Wheel rims & 5-spoke star assemblies: 4 alloy wheels
+            child.material = detailsMaterial
+          }
+          // ALL OTHER 53 MESHES PRESERVE AUTHENTIC OEM GLB MATERIALS:
+          // - yellow_trim, centre (x4), steering_centre: Ferrari_Yellow (#F8CC00 Scuderia shields & center caps)
+          // - carbon fibre, carbon_fibre_trim, steering_carbon: Carbon_Fiber (front winglets & diffuser)
+          // - interior_dark, interior_light, steering_column: dark cockpit structure/plastics
+          // - carpet: floor carpet
+          // - lights: Projector_Glass
+          // - lights_red, brakes, steering_red_lights: Taillight_Glass (red)
+          // - leds: Turn_Signal_LED
+          // - chrome: metal_chrome (Cavallino Rampante horse & exhaust)
+          // - grills, wipers, tire (x4): Tires (rubber & aero mesh)
+          // - brake (x4): metal_gray (brake calipers & discs)
+          // - nuts (x4): Interior_dark (lug nuts)
+          // - wheel (x4): metal_gray (inner wheel barrel)
+          // - trim, steering_trim: Leather_red (accent stitching)
+          return
+        }
+
+        // ── 2. OTHER CAR BRANDS ──
+        // Hide and strip license plate meshes/materials across other cars
+        const isLicensePlate =
           /license|registar|numberplate|number_plate|license_plate|targa|matricula/i.test(matName) ||
           /license|registar|numberplate|number_plate|license_plate|targa|matricula|chamferbox01|chamferbox04|plane\.005|plane\.006/i.test(nodeName)
 
@@ -125,26 +200,29 @@ export function VehicleModel3D({
           return
         }
 
-        // Apply custom paint / materials per car brand
-        if (isFerrari) {
-          if (nodeName === 'body' || nodeName.includes('mirror')) child.material = bodyMaterial
-          if (['rim_fl', 'rim_fr', 'rim_rr', 'rim_rl', 'trim'].includes(nodeName)) child.material = detailsMaterial
-          if (nodeName === 'glass') child.material = glassMaterial
-        } else if (isLambo) {
+        // Check for Interior & Cockpit Leather for other models
+        const isInterior =
+          /interior|seat|cockpit|cabin|leather|salon|chair|wheel_int|interier/i.test(nodeName) ||
+          /interior|seat|cockpit|cabin|leather|salon|interier/i.test(matName)
+        if (isInterior) {
+          child.material = interiorMaterial
+          return
+        }
+
+        if (isLambo) {
           // Hide secondary overlapping rims if present (keep primary T0A rims)
           if (nodeName.includes('_t0b_')) {
             child.visible = false
             return
           }
-          // Side mirrors (Obj_ORVM / Mt_MirrorCover) and body panels inherit bodyMaterial
+          // Side mirrors and body panels
           if (matName.includes('mt_body') || matName.includes('mt_mirrorcover') || nodeName.includes('orvm') || nodeName.includes('mirror')) {
             child.material = bodyMaterial
           }
           if (matName.includes('mt_alloywheels') || matName.includes('mt_brakecaliper')) child.material = detailsMaterial
           if (matName.includes('mt_windscreens') || matName.includes('mt_glass')) child.material = glassMaterial
         } else if (isPorsche) {
-          // 1. ALL Windows & Glass FIRST (Side windows boot004_0, rear window, windshield, headlight lenses)
-          const isGlass = 
+          const isGlass =
             nodeName.includes('boot004') ||
             nodeName.includes('boot.004') ||
             nodeName.includes('window') ||
@@ -154,17 +232,12 @@ export function VehicleModel3D({
 
           if (isGlass) {
             child.material = glassMaterial
-          }
-          // 2. Wheel Rims (Cylinder meshes with silver material)
-          else if (
+          } else if (
             (nodeName.includes('cylinder') || nodeName.includes('wheel') || nodeName.includes('rim')) &&
             matName === 'silver'
           ) {
             child.material = detailsMaterial
-          }
-          // 3. Body Paint Panels & Side Mirrors ONLY
-          // Meshes: boot001_0 (rear bumper), boot002_0 (roof/rear body), boot005_0 (doors/sides), boot008_0 (hood/front), plane002/003/004 (mirrors)
-          else if (
+          } else if (
             matName === 'paint' ||
             /^(boot\.?00[1258]|plane\.?00[234])/i.test(nodeName)
           ) {
@@ -186,7 +259,7 @@ export function VehicleModel3D({
       }
     })
 
-    // Permanently detach and hide all license plates (both front and rear)
+    // Permanently detach and hide all license plates
     platesToRemove.forEach(mesh => {
       mesh.visible = false
       if (mesh.material) {
@@ -199,11 +272,8 @@ export function VehicleModel3D({
       }
     })
 
-    // 2. Auto-orient: if length was modeled along X axis, rotate 90 deg around Y so front faces Z.
-    //    Ferrari has a baked quaternion [-0.5,-0.5,-0.5,0.5] in its root node that causes it to
-    //    end up oriented along Z after Three.js parsing — rear facing +Z. Fix with explicit PI flip.
+    // 2. Auto-orient: Ferrari has baked quaternion causing rear to face camera — fix with PI flip
     if (isFerrari) {
-      // Ferrari: parsed along Z but rear faces camera → rotate 180° to bring front forward
       clonedScene.rotation.y = Math.PI
     } else {
       const rawBox = new THREE.Box3().setFromObject(clonedScene)
@@ -227,9 +297,211 @@ export function VehicleModel3D({
     clonedScene.position.x = -center.x
     clonedScene.position.z = -center.z
     clonedScene.position.y = -finalBox.min.y
-  }, [clonedScene, modelPath, bodyMaterial, detailsMaterial, glassMaterial])
+  }, [clonedScene, modelPath, bodyMaterial, detailsMaterial, glassMaterial, interiorMaterial])
 
-  // Turntable Auto-Rotate (Stationary car on rotating platform)
+  // ── 5. Real Physical Aftermarket Parts Swapping Engine ───────────────────────
+  // Handles OEM ↔ Aftermarket wheels, bodykits, and mutually exclusive spoilers.
+  // When OEM is selected, aftermarket meshes are cleanly removed and disposed.
+  useEffect(() => {
+    if (!clonedScene) return
+    const isFerrariCar = (modelPath || '').includes('ferrari')
+    if (!isFerrariCar) return
+
+    // Find or create dedicated Custom Parts Group attached to car root
+    let customGroup = clonedScene.getObjectByName('VirtualTune_Custom_Parts')
+    if (customGroup) {
+      clonedScene.remove(customGroup)
+      // Traverse and dispose old temporary resources
+      customGroup.traverse(child => {
+        if (child.isMesh) {
+          if (child.geometry) child.geometry.dispose()
+        }
+      })
+    }
+    customGroup = new THREE.Group()
+    customGroup.name = 'VirtualTune_Custom_Parts'
+    clonedScene.add(customGroup)
+
+    // ── A. WHEEL SWAP: OEM ↔ WORK VS-XX 19" AFTERMARKET WHEELS ──
+    const isAftermarketWheel = Boolean(
+      selectedWheel && (
+        selectedWheel === 'work-vsxx-19' ||
+        selectedWheel?.sku === 'WORK-VSXX-19-F458' ||
+        (selectedWheel?.assetUrl || '').includes('work-vs-xx') ||
+        (typeof selectedWheel === 'string' && (
+          selectedWheel.toLowerCase().includes('work') ||
+          selectedWheel.toLowerCase().includes('vsxx') ||
+          selectedWheel.toLowerCase().includes('vs-xx')
+        ))
+      )
+    )
+
+    // Toggle OEM rim meshes, disc, and center caps (leaving rubber tire and brake caliper intact)
+    // 1. Traverse all nodes in clonedScene matching OEM rim part names (case-insensitive)
+    clonedScene.traverse(child => {
+      const name = (child.name || '').toLowerCase()
+      const isOemRimComponent =
+        name.startsWith('rim_') ||
+        name === 'wheel' ||
+        name === 'centre' ||
+        name === 'nuts'
+      if (isOemRimComponent) {
+        child.visible = !isAftermarketWheel
+      }
+    })
+
+    // 2. Explicitly ensure all non-tire, non-brake children of the 4 wheel groups are hidden
+    const wheelGroupNames = ['wheel_fl', 'wheel_fr', 'wheel_rl', 'wheel_rr']
+    wheelGroupNames.forEach(groupName => {
+      const groupObj = clonedScene.getObjectByName(groupName)
+      if (groupObj) {
+        groupObj.traverse(child => {
+          if (child === groupObj) return
+          const name = (child.name || '').toLowerCase()
+          const isTire = name.includes('tire') || name.includes('tyre')
+          const isBrake = name.includes('brake') || name.includes('caliper') || name.includes('disc')
+          if (!isTire && !isBrake) {
+            child.visible = !isAftermarketWheel
+          }
+        })
+      }
+    })
+
+    // Mount 4 calibrated WORK VS-XX 19" wheels if aftermarket is active
+    if (isAftermarketWheel && workVsxxGLB?.scene) {
+      const finishPreset = WHEEL_FINISH_PRESETS[wheelFinish] || WHEEL_FINISH_PRESETS['GLOSS_BLACK']
+      const wheelMounts = [
+        { name: 'FL', pos: [-0.956, 0.358, -1.155], rotY: -Math.PI / 2 },
+        { name: 'FR', pos: [0.943, 0.360, -1.154],  rotY: Math.PI / 2 },
+        { name: 'RL', pos: [-0.947, 0.358, 1.495],  rotY: -Math.PI / 2 },
+        { name: 'RR', pos: [0.950, 0.358, 1.496],   rotY: Math.PI / 2 },
+      ]
+
+      wheelMounts.forEach(mount => {
+        const wheelClone = workVsxxGLB.scene.clone(true)
+        wheelClone.name = `custom_work_vsxx_${mount.name}`
+        wheelClone.position.set(...mount.pos)
+        wheelClone.rotation.set(0, mount.rotY, 0)
+        wheelClone.scale.set(1.15, 1.15, 1.15)
+        wheelClone.traverse(c => {
+          if (c.isMesh) {
+            c.castShadow = true
+            c.receiveShadow = true
+            // Apply selected rim color dynamically to rim spoke face
+            if (c.material && (c.material.name === 'paint' || c.material.name === 'material')) {
+              c.material = c.material.clone()
+              c.material.color.set(detailsColor || finishPreset.hex)
+              c.material.metalness = finishPreset.metalness
+              c.material.roughness = finishPreset.roughness
+              c.material.needsUpdate = true
+            }
+          }
+        })
+        customGroup.add(wheelClone)
+      })
+    }
+
+    // ── B. REAR SPOILER: OEM ↔ REAL BIG COUNTRY LABS STYLE GT WING ──
+    const isBCLWing = Boolean(
+      selectedSpoiler && (
+        selectedSpoiler === 'bcl-gt-wing' ||
+        selectedSpoiler === 'big-country-labs-style-wing' ||
+        selectedSpoiler === 'carbon-gt-wing' ||
+        selectedSpoiler?.sku === 'GEN-GTWING-F458' ||
+        (selectedSpoiler?.assetUrl || '').includes('big-country-labs') ||
+        (typeof selectedSpoiler === 'string' && (
+          selectedSpoiler.toLowerCase().includes('wing') ||
+          selectedSpoiler.toLowerCase().includes('spoiler') ||
+          selectedSpoiler.toLowerCase().includes('bcl') ||
+          selectedSpoiler.toLowerCase().includes('country')
+        ))
+      )
+    )
+
+    if (isBCLWing && bclWingGLB?.scene) {
+      const wingMountGroup = new THREE.Group()
+      wingMountGroup.name = 'custom_spoiler_bcl_wing'
+
+      const wingClone = bclWingGLB.scene.clone(true)
+
+      // Filter out alternative showcase posts from the Sketchfab asset pack
+      const UNWANTED_POST_NODES = [
+        'Box003_6', 'Box007_7', 'Box001_9', 'bcl_type_wing004_4',
+        'Object_12', 'Object_14', 'Object_18', 'Object_8'
+      ]
+
+      wingClone.traverse(child => {
+        if (UNWANTED_POST_NODES.includes(child.name)) {
+          child.visible = false
+          return
+        }
+
+        if (child.isMesh) {
+          child.castShadow = true
+          child.receiveShadow = true
+          // Apply dark carbon / gloss black finish so the wing never appears white
+          if (child.material) {
+            child.material = child.material.clone()
+            child.material.color.set('#18181c')
+            child.material.metalness = 0.82
+            child.material.roughness = 0.22
+            child.material.needsUpdate = true
+          }
+        }
+      })
+
+      // Rotate 180 deg around Y so uprights slant rearward and blade extends over deck
+      wingClone.rotation.y = Math.PI
+      const scale = 0.22
+      wingClone.scale.set(scale, scale, scale)
+
+      wingMountGroup.add(wingClone)
+
+      // Mount precisely on Ferrari 458 rear engine decklid:
+      // Centered at X=0, feet resting firmly on decklid at Y=0.915, Z=1.25
+      wingMountGroup.position.set(0, 0.915, 1.25)
+      customGroup.add(wingMountGroup)
+    }
+
+    // ── C. BODY & AERO: OEM ↔ CARBON AERO PACKAGE ──
+    const isCarbonAero = Boolean(selectedBodykit)
+    clonedScene.traverse(child => {
+      if (child.isMesh && (child.name === 'carbon fibre' || child.name === 'carbon_fibre_trim')) {
+        if (!child.userData.origMaterial) {
+          child.userData.origMaterial = child.material
+        }
+        if (isCarbonAero) {
+          child.material = new THREE.MeshStandardMaterial({
+            color: new THREE.Color('#141416'),
+            metalness: 0.85,
+            roughness: 0.22,
+            name: 'custom_carbon_aero_spec'
+          })
+        } else if (child.userData.origMaterial) {
+          child.material = child.userData.origMaterial
+        }
+      }
+    })
+
+    return () => {
+      if (customGroup && clonedScene) {
+        clonedScene.remove(customGroup)
+      }
+    }
+  }, [
+    clonedScene,
+    modelPath,
+    selectedWheel,
+    wheelFinish,
+    selectedBodykit,
+    selectedSpoiler,
+    workVsxxGLB,
+    bclWingGLB,
+    detailsMaterial,
+    detailsColor
+  ])
+
+  // Turntable Auto-Rotate
   useFrame((_, delta) => {
     if (autoRotate && groupRef.current) {
       groupRef.current.rotation.y += delta * autoRotateSpeed
@@ -247,6 +519,7 @@ export function VehicleModel3D({
   return (
     <group ref={groupRef}>
       <primitive object={clonedScene} />
+
       {isFerrari && aoTexture && (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]} renderOrder={2}>
           <planeGeometry args={[0.655 * 4, 1.3 * 4]} />

@@ -96,9 +96,15 @@ export default function SalesWorkspacePage() {
 <button className="px-3 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 transition">Rear Aero</button>
 </div>
 </div>
-<div className="flex items-center gap-2 text-xs text-slate-400">
-<span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-<span>Photorealistic 3D Stage</span>
+<div className="flex items-center gap-3 text-xs text-slate-400">
+  <Link to="/configurator" className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-mono text-slate-300 border border-white/10 transition-colors">
+    <span className="material-symbols-outlined text-sm text-primary">view_in_ar</span>
+    <span>3D CAD Studio Mode</span>
+  </Link>
+  <div className="flex items-center gap-1.5">
+    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+    <span>Showroom Presentation</span>
+  </div>
 </div>
 </div>
 
@@ -213,7 +219,11 @@ export default function SalesWorkspacePage() {
             €23,401.35
           </div>
 </div>
-<button className="w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary-hover text-[#0d0e12] font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition duration-150 shadow-lg shadow-primary/10">
+<button
+  type="button"
+  onClick={() => navigate('/quotation')}
+  className="w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary-hover text-[#0d0e12] font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition duration-150 shadow-lg shadow-primary/10 cursor-pointer"
+>
 <span className="material-symbols-outlined text-base font-bold">request_quote</span>
 <span>Generate Customer Quote</span>
 </button>
