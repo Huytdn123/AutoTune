@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+﻿import React, { createContext, useContext, useState, useEffect } from 'react'
 import { authApi } from '../services/api'
 
 // Pre-defined demo account personas for quick testing (100% English)
@@ -11,7 +11,7 @@ export const DEMO_PERSONAS = [
     phone: '+84 908 112 345',
     role: 'GARAGE_OWNER',
     roleLabel: 'Garage Owner (B2B)',
-    badgeColor: '#6091C3',
+    badgeColor: '#3352E8',
     garageName: 'AutoTune Saigon Performance Hub',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
     status: 'ACTIVE',

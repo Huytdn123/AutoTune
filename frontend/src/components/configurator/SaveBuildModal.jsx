@@ -35,12 +35,12 @@ export default function SaveBuildModal({
         {/* Modal Header */}
         <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center text-primary">
+            <div className="w-8 h-8 rounded-lg bg-[#0213B2] flex items-center justify-center text-white shadow-sm">
               <span className="material-symbols-outlined text-lg">tune</span>
             </div>
             <div>
               <h3 className="text-sm font-bold text-white tracking-wide uppercase">Save & Share 3D Build</h3>
-              <p className="text-[10px] text-white/50">{activeCar.name} · Virtual Tune Database</p>
+              <p className="text-[10px] text-slate-300">{activeCar.name || `${activeCar.brand} ${activeCar.model}`} · Virtual Tune Database</p>
             </div>
           </div>
           <button
@@ -92,18 +92,18 @@ export default function SaveBuildModal({
                     </div>
                   </div>
                   <div className="p-2 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-sm text-primary shrink-0">adjust</span>
+                    <span className="material-symbols-outlined text-sm text-[#6091C3] shrink-0">adjust</span>
                     <div className="min-w-0">
-                      <span className="text-[8px] text-white/40 block leading-none">Wheels</span>
+                      <span className="text-[8px] text-slate-400 block leading-none">Wheels</span>
                       <span className="text-[10px] font-bold text-white truncate block mt-0.5">
                         {selectedWheel ? 'WORK VS-XX 19"' : 'Ferrari OEM 20"'}
                       </span>
                     </div>
                   </div>
                   <div className="p-2 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-sm text-primary shrink-0">air</span>
+                    <span className="material-symbols-outlined text-sm text-[#6091C3] shrink-0">air</span>
                     <div className="min-w-0">
-                      <span className="text-[8px] text-white/40 block leading-none">Aero & Wing</span>
+                      <span className="text-[8px] text-slate-400 block leading-none">Aero & Wing</span>
                       <span className="text-[10px] font-bold text-white truncate block mt-0.5">
                         {selectedSpoiler ? 'Carbon Aero GT Wing' : 'OEM Clean Decklid'}
                       </span>
@@ -162,16 +162,16 @@ export default function SaveBuildModal({
                   Permanent Share Code
                 </span>
                 <div className="flex items-center justify-between bg-black/40 px-3 py-2 rounded-lg border border-white/10">
-                  <span className="text-base font-black font-mono tracking-wider text-primary">
+                  <span className="text-base font-black font-mono tracking-wider text-[#93C5FD]">
                     {savedBuildData.shareCode}
                   </span>
-                  <span className="text-[10px] text-white/40 uppercase">Database Verified</span>
+                  <span className="text-[10px] text-slate-400 uppercase">Database Verified</span>
                 </div>
               </div>
 
               {/* Share Link Input */}
               <div>
-                <label className="block text-[10px] font-bold text-white/50 mb-1.5 uppercase tracking-wider">
+                <label className="block text-[10px] font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
                   Shareable 3D Build URL
                 </label>
                 <div className="flex gap-2">
@@ -179,14 +179,14 @@ export default function SaveBuildModal({
                     type="text"
                     readOnly
                     value={`${window.location.origin}/configurator?share=${savedBuildData.shareCode}`}
-                    className="flex-1 px-3 py-2 rounded-lg bg-black/40 border border-white/10 text-white/80 text-[11px] font-mono select-all outline-none"
+                    className="flex-1 px-3 py-2 rounded-lg bg-black/40 border border-white/10 text-white text-[11px] font-mono select-all outline-none"
                   />
                   <button
                     onClick={onCopyShareLink}
                     className={`px-3.5 py-2 rounded-lg text-xs font-bold flex items-center gap-1 transition-all ${
                       copiedLink
                         ? 'bg-emerald-500 text-white'
-                        : 'bg-primary hover:bg-primary/90 text-on-primary shadow-sm'
+                        : 'bg-[#0213B2] hover:bg-[#0115BC] text-white shadow-sm'
                     }`}
                   >
                     <span className="material-symbols-outlined text-sm">
@@ -206,7 +206,7 @@ export default function SaveBuildModal({
                 <button
                   type="button"
                   onClick={onCreateNewCode}
-                  className="text-primary hover:text-primary/80 font-bold hover:underline transition-all"
+                  className="text-[#93C5FD] hover:text-white font-bold hover:underline transition-all"
                 >
                   Create new code →
                 </button>

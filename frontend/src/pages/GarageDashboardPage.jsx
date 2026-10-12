@@ -65,31 +65,31 @@ export default function GarageDashboardPage() {
 
 <main className="flex-1 overflow-y-auto custom-scroll p-4 md:p-6 lg:p-8 space-y-6">
 
-<div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-2 border-b border-outline-variant/20">
+<div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 p-6 bg-[#E8EDFF] rounded-2xl border border-[#BCC7D8] shadow-xs">
 <div>
 <div className="flex items-center gap-2 mb-1">
-<span className="px-2 py-0.5 rounded-DEFAULT bg-primary-container/60 text-primary text-label-sm font-label-sm uppercase tracking-wider">Operational Overview</span>
-<span className="text-outline text-body-sm">•</span>
-<span className="text-on-surface-variant text-body-sm font-body-sm">Real-time sync: Active</span>
+<span className="px-2 py-0.5 rounded bg-white text-[#0213B2] text-label-sm font-label-sm uppercase font-bold tracking-wider border border-[#0213B2]/20 shadow-xs">Operational Overview</span>
+<span className="text-[#0213B2] text-body-sm font-bold">•</span>
+<span className="text-[#334155] text-body-sm font-body-sm font-medium">Real-time sync: Active</span>
 </div>
-<h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">Garage Operations Dashboard</h1>
-<p className="font-body-md text-body-md text-on-surface-variant mt-0.5">High-precision overview of ongoing vehicle builds, stage completions, and client pipelines.</p>
+<h1 className="font-headline-lg text-headline-lg text-[#06169B] tracking-tight font-extrabold">Garage Operations Dashboard</h1>
+<p className="font-body-md text-body-md text-[#334155] mt-0.5">High-precision overview of ongoing vehicle builds, stage completions, and client pipelines.</p>
 </div>
 
 <div className="flex flex-wrap items-center gap-2.5">
-<button className="inline-flex items-center gap-2 px-3.5 py-2 bg-primary text-on-primary font-label-lg rounded-xl shadow hover:bg-surface-tint transition-all active:scale-[0.98]">
+<button className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#0213B2] text-white font-label-lg rounded-xl shadow hover:bg-[#0115BC] active:bg-[#06169B] transition-all active:scale-[0.98] cursor-pointer">
 <span className="material-symbols-outlined text-lg" data-icon="assignment_add">assignment_add</span>
 <span>New Work Order</span>
 </button>
-<button className="inline-flex items-center gap-2 px-3.5 py-2 bg-surface-container-high text-primary border border-outline-variant/40 hover:border-primary font-label-md rounded-xl transition-all active:scale-[0.98]">
+<button className="inline-flex items-center gap-2 px-3.5 py-2 bg-white text-[#0213B2] border border-[#CBD5E1] hover:border-[#0213B2] hover:bg-[#EEF2FF] font-label-md rounded-xl transition-all active:scale-[0.98] shadow-xs cursor-pointer">
 <span className="material-symbols-outlined text-lg" data-icon="view_in_ar">view_in_ar</span>
 <span>Launch 3D Configurator</span>
 </button>
-<button className="inline-flex items-center gap-2 px-3.5 py-2 bg-surface-container-high text-on-surface border border-outline-variant/40 hover:bg-surface-container-highest font-label-md rounded-xl transition-all active:scale-[0.98]">
+<button className="inline-flex items-center gap-2 px-3.5 py-2 bg-white text-[#111827] border border-[#CBD5E1] hover:border-[#0213B2] hover:text-[#0213B2] hover:bg-[#EEF2FF] font-label-md rounded-xl transition-all active:scale-[0.98] shadow-xs cursor-pointer">
 <span className="material-symbols-outlined text-lg" data-icon="fact_check">fact_check</span>
 <span>Run Fitment Check</span>
 </button>
-<button className="inline-flex items-center gap-2 px-3 py-2 bg-surface-container-low text-on-surface-variant hover:text-on-surface border border-outline-variant/30 rounded-xl font-label-md transition-all active:scale-[0.98]">
+<button className="inline-flex items-center gap-2 px-3 py-2 bg-white text-[#475569] hover:text-[#111827] border border-[#CBD5E1] hover:border-[#94A3B8] hover:bg-[#F8FAFC] rounded-xl font-label-md transition-all active:scale-[0.98] shadow-xs cursor-pointer">
 <span className="material-symbols-outlined text-lg" data-icon="file_download">file_download</span>
 <span>Export P&L Report</span>
 </button>
@@ -98,36 +98,36 @@ export default function GarageDashboardPage() {
 
 <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
-<div className="bg-surface-container-low p-5 rounded-xl border border-outline-variant/30 relative overflow-hidden flex flex-col justify-between">
-<div className="flex items-center justify-between text-on-surface-variant mb-2">
-<span className="font-label-md text-label-md uppercase tracking-wider text-outline">Monthly Revenue</span>
-<div className="w-8 h-8 rounded-xl bg-surface-container-high flex items-center justify-center text-primary">
+<div className="bg-[#E8EDFF] p-5 rounded-xl border-2 border-[#0213B2]/30 relative overflow-hidden flex flex-col justify-between shadow-sm">
+<div className="flex items-center justify-between text-[#06169B] mb-2">
+<span className="font-label-md text-label-md uppercase tracking-wider font-bold">Monthly Revenue</span>
+<div className="w-8 h-8 rounded-xl bg-[#D7E1FF] border border-[#0213B2]/30 flex items-center justify-center text-[#0213B2]">
 <span className="material-symbols-outlined text-base" data-icon="payments">payments</span>
 </div>
 </div>
 <div>
 <div className="flex items-baseline gap-2">
-<span className="font-headline-lg text-headline-lg font-bold text-on-surface">
+<span className="font-headline-lg text-headline-lg font-bold text-[#06169B]">
   {formatVnd(metrics?.monthlyRevenueVnd || 845000000)}
 </span>
 </div>
 <div className="flex items-center gap-1.5 mt-2">
-<span className="inline-flex items-center text-label-sm font-label-sm text-primary px-1.5 py-0.5 rounded-DEFAULT bg-primary-container/50">
+<span className="inline-flex items-center text-label-sm font-label-sm text-[#0213B2] px-1.5 py-0.5 rounded bg-white border border-[#0213B2]/20 font-bold">
 <span className="material-symbols-outlined text-xs mr-0.5" data-icon="trending_up">trending_up</span>
                 +18.4%
               </span>
-<span className="text-body-sm font-body-sm text-on-surface-variant">Tháng 9/2026</span>
+<span className="text-body-sm font-body-sm text-[#334155]">Tháng 9/2026</span>
 </div>
 </div>
-<div className="w-full bg-surface-container-highest h-1 rounded-full mt-4 overflow-hidden">
-<div className="bg-primary h-full rounded-full" style={{ width: "82%" }}></div>
+<div className="w-full bg-[#D7E1FF] h-1.5 rounded-full mt-4 overflow-hidden">
+<div className="bg-[#0213B2] h-full rounded-full" style={{ width: "82%" }}></div>
 </div>
 </div>
 
-<div className="bg-surface-container-low p-5 rounded-xl border border-outline-variant/30 relative overflow-hidden flex flex-col justify-between">
-<div className="flex items-center justify-between text-on-surface-variant mb-2">
-<span className="font-label-md text-label-md uppercase tracking-wider text-outline">Khoang Thi Công</span>
-<div className="w-8 h-8 rounded-xl bg-surface-container-high flex items-center justify-center text-tertiary">
+<div className="bg-white p-5 rounded-xl border border-[#D8DFEA] relative overflow-hidden flex flex-col justify-between shadow-xs">
+<div className="flex items-center justify-between text-[#475569] mb-2">
+<span className="font-label-md text-label-md uppercase tracking-wider text-[#64748B]">Khoang Thi Công</span>
+<div className="w-8 h-8 rounded-xl bg-[#E8EDFF] flex items-center justify-center text-[#0213B2]">
 <span className="material-symbols-outlined text-base" data-icon="car_repair">car_repair</span>
 </div>
 </div>
@@ -175,22 +175,22 @@ export default function GarageDashboardPage() {
 </div>
 </div>
 
-<div className="bg-surface-container-low p-5 rounded-xl border border-outline-variant/30 relative overflow-hidden flex flex-col justify-between">
-<div className="flex items-center justify-between text-on-surface-variant mb-2">
-<span className="font-label-md text-label-md uppercase tracking-wider text-outline">Parts Procurement</span>
-<div className="w-8 h-8 rounded-xl bg-surface-container-high flex items-center justify-center text-primary">
+<div className="bg-[#E8EDFF] p-5 rounded-xl border-2 border-[#0213B2]/30 relative overflow-hidden flex flex-col justify-between shadow-sm">
+<div className="flex items-center justify-between text-[#06169B] mb-2">
+<span className="font-label-md text-label-md uppercase tracking-wider font-bold">Parts Procurement</span>
+<div className="w-8 h-8 rounded-xl bg-[#D7E1FF] border border-[#0213B2]/30 flex items-center justify-center text-[#0213B2]">
 <span className="material-symbols-outlined text-base" data-icon="local_shipping">local_shipping</span>
 </div>
 </div>
 <div>
 <div className="flex items-baseline gap-2">
-<span className="font-headline-lg text-headline-lg font-bold text-on-surface">$42,100</span>
-<span className="font-label-sm text-label-sm text-primary px-1.5 py-0.5 rounded-DEFAULT bg-primary-container/40">In Transit</span>
+<span className="font-headline-lg text-headline-lg font-bold text-[#06169B]">$42,100</span>
+<span className="font-label-sm text-label-sm text-[#0213B2] px-1.5 py-0.5 rounded bg-white border border-[#0213B2]/20 font-bold">In Transit</span>
 </div>
-<p className="text-body-sm font-body-sm text-on-surface-variant mt-2">9 deliveries scheduled this week</p>
+<p className="text-body-sm font-body-sm text-[#334155] mt-2">9 deliveries scheduled this week</p>
 </div>
-<div className="w-full bg-surface-container-highest h-1 rounded-full mt-4 overflow-hidden">
-<div className="bg-primary h-full rounded-full" style={{ width: "70%" }}></div>
+<div className="w-full bg-[#D7E1FF] h-1.5 rounded-full mt-4 overflow-hidden">
+<div className="bg-[#0213B2] h-full rounded-full" style={{ width: "70%" }}></div>
 </div>
 </div>
 </section>
@@ -206,7 +206,7 @@ export default function GarageDashboardPage() {
 </div>
 <div className="flex items-center gap-2">
 <span className="text-label-sm font-label-sm text-outline uppercase tracking-wider">Live View</span>
-<button className="p-1.5 bg-surface-container rounded-xl border border-outline-variant/30 text-on-surface hover:text-primary transition-colors">
+<button className="p-1.5 bg-white rounded-xl border border-[#CBD5E1] text-[#111827] hover:text-[#0213B2] hover:border-[#0213B2] hover:bg-[#EEF2FF] transition-all cursor-pointer shadow-xs">
 <span className="material-symbols-outlined text-lg" data-icon="refresh">refresh</span>
 </button>
 </div>

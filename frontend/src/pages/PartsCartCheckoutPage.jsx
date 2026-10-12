@@ -8,7 +8,7 @@ const INITIAL_CART_ITEMS = [
     name: 'BBS FI-R Forged Monoblock Wheel Set (20"/21")',
     sku: 'BBS-FIR-992-TITAN',
     spec: 'Titanium Silver • PCD 5x112 / ET35',
-    image: '/images/wheel-titanium.jpg',
+    image: '/images/bbs-fi-r-wheel.jpg',
     unitPrice: 8600,
     margin: '+27.4%',
     quantity: 1,
@@ -19,7 +19,7 @@ const INITIAL_CART_ITEMS = [
     name: 'Akrapovič Evolution Line Titanium Exhaust System',
     sku: 'AKR-EVO-TITAN-992',
     spec: 'Valved Bypass • Weight -11.4 kg',
-    image: '/images/exhaust-akrapovic.jpg',
+    image: '/images/akrapovic-evolution-line.jpg',
     unitPrice: 7400,
     margin: '+28.0%',
     quantity: 1,
@@ -30,7 +30,7 @@ const INITIAL_CART_ITEMS = [
     name: 'KW Suspension V4 Clubsport 3-Way Coilover Kit',
     sku: 'KW-35271842-V4CS',
     spec: '16-Click Rebound • Independent Compression',
-    image: '/images/suspension-kw.jpg',
+    image: '/images/kw-v4-clubsport.jpg',
     unitPrice: 4920,
     margin: '+20.0%',
     quantity: 1,
@@ -41,7 +41,7 @@ const INITIAL_CART_ITEMS = [
     name: 'Brembo GT-S 6-Piston Big Brake Kit (Front 380x34mm)',
     sku: 'BRM-1N1.9042A2',
     spec: 'Monoblock Radial • Type 3 Slotted',
-    image: '/images/brake-brembo.jpg',
+    image: '/images/brembo-gt-brake-kit.jpg',
     unitPrice: 3850,
     margin: '+21.4%',
     quantity: 1,
@@ -145,11 +145,11 @@ export default function PartsCartCheckoutPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-[#121414] text-[#e3e2e2] font-['Inter',sans-serif] min-h-[calc(100vh-64px)] selection:bg-[#1f2f57] selection:text-[#b6c5f6]">
+    <div className="flex-1 flex flex-col bg-[#F3F5FA] text-[#111827] font-['Inter',sans-serif] min-h-[calc(100vh-64px)] selection:bg-[#0213B2]/20 selection:text-[#0213B2]">
       {/* Toast Feedback */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#1f2f57] border border-[#6091c3] text-[#dae2ff] text-xs font-['Montserrat'] font-bold rounded-lg shadow-2xl flex items-center gap-2.5 animate-in fade-in duration-200">
-          <span className="material-symbols-outlined text-base text-[#6091c3]">check_circle</span>
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#0213B2] border border-[#0213B2] text-white text-xs font-['Montserrat'] font-bold rounded-lg shadow-2xl flex items-center gap-2.5 animate-in fade-in duration-200">
+          <span className="material-symbols-outlined text-base text-white">check_circle</span>
           <span>{toastMessage}</span>
         </div>
       )}
@@ -158,21 +158,21 @@ export default function PartsCartCheckoutPage() {
       <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-[1700px] w-full mx-auto space-y-6">
         
         {/* PAGE HEADER SECTION */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-[#45464e]/30">
+        <div className="bg-[#E8EDFF] rounded-2xl border border-[#BCC7D8] p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 w-full">
             <div className="flex items-baseline gap-3">
-              <h1 className="text-2xl md:text-3xl font-bold font-['Montserrat'] text-white tracking-tight">
-                Parts Cart
+              <h1 className="text-2xl md:text-3xl font-bold font-['Montserrat'] text-[#111827] tracking-tight">
+                Parts Cart & Staged Checkout
               </h1>
-              <span className="text-sm font-mono text-[#8f9099]">•</span>
-              <span className="text-sm text-[#c5c6cf] font-medium font-mono">
+              <span className="text-sm font-mono text-[#CBD5E1]">•</span>
+              <span className="text-sm text-[#475569] font-medium font-mono">
                 {cartItems.length} items ({selectedItems.length} selected)
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-sm text-[#6091C3]">directions_car</span>
-              <span className="font-mono text-xs text-[#8f9099] uppercase">Allocated to:</span>
-              <span className="font-mono text-xs font-semibold text-white bg-[#1e2020] px-3 py-1.5 rounded border border-[#45464e]/40">
+              <span className="material-symbols-outlined text-sm text-[#0213B2]">directions_car</span>
+              <span className="font-mono text-xs text-[#06169B] font-semibold uppercase">Allocated to:</span>
+              <span className="font-mono text-xs font-bold text-[#06169B] bg-[#D7E1FF] px-3 py-1.5 rounded-lg border border-[#0213B2]/30">
                 Porsche 911 GT3 (992)
               </span>
             </div>
@@ -186,21 +186,21 @@ export default function PartsCartCheckoutPage() {
           <div className="xl:col-span-8 space-y-4">
             
             {/* Table Controls Bar */}
-            <div className="flex items-center justify-between py-2 px-3 text-xs font-mono text-[#8f9099] bg-[#1a1c1c] border border-[#45464e]/30 rounded">
-              <label className="flex items-center gap-2 cursor-pointer text-[#c5c6cf] hover:text-white select-none">
+            <div className="flex items-center justify-between py-2.5 px-4 text-xs font-mono text-[#475569] dark:text-[#CBD5E1] bg-[#E5E8F0] dark:bg-[#14151D] border border-[#CBD5E1] dark:border-[#282A3A] rounded-2xl shadow-xs">
+              <label className="flex items-center gap-2 cursor-pointer text-[#475569] dark:text-[#CBD5E1] hover:text-[#0213B2] dark:hover:text-[#60A5FA] select-none">
                 <input 
                   type="checkbox" 
                   checked={allSelected}
                   onChange={(e) => toggleSelectAll(e.target.checked)}
-                  className="rounded border-[#45464e] bg-[#343535] text-[#6091C3] focus:ring-0 w-4 h-4 cursor-pointer"
+                  className="rounded border-[#CBD5E1] text-[#0213B2] focus:ring-0 w-4 h-4 cursor-pointer accent-[#0213B2]"
                 />
-                <span className="font-semibold">Select all</span>
+                <span className="font-semibold text-[#111827] dark:text-[#F8FAFC]">Select all</span>
               </label>
 
               <div className="flex items-center gap-4">
                 <button 
                   onClick={() => showToast('Syncing live B2B wholesale prices with OEM server...')}
-                  className="hover:text-[#6091C3] transition-colors flex items-center gap-1.5 cursor-pointer"
+                  className="hover:text-[#0213B2] dark:hover:text-[#60A5FA] transition-colors flex items-center gap-1.5 cursor-pointer text-[#475569] dark:text-[#94A3B8]"
                 >
                   <span className="material-symbols-outlined text-sm">refresh</span>
                   <span>Refresh OEM prices</span>
@@ -210,12 +210,12 @@ export default function PartsCartCheckoutPage() {
 
             {/* Cart Items List */}
             {cartItems.length === 0 ? (
-              <div className="p-12 text-center bg-[#1a1c1c] border border-[#45464e]/30 rounded-xl space-y-4">
-                <span className="material-symbols-outlined text-5xl text-[#8f9099]">shopping_cart_off</span>
-                <p className="text-base font-medium text-[#c5c6cf]">Your parts cart is currently empty</p>
+              <div className="p-12 text-center bg-[#E5E8F0] dark:bg-[#14151D] border border-[#CBD5E1] dark:border-[#282A3A] rounded-2xl space-y-4 shadow-xs">
+                <span className="material-symbols-outlined text-5xl text-[#94A3B8]">shopping_cart_off</span>
+                <p className="text-base font-medium text-[#475569] dark:text-[#CBD5E1]">Your parts cart is currently empty</p>
                 <Link
                   to="/shop"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#6091C3] text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow hover:brightness-110 transition-all font-['Montserrat']"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#0213B2] hover:bg-[#0115BC] text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow-sm transition-all font-['Montserrat']"
                 >
                   <span className="material-symbols-outlined text-sm">storefront</span>
                   <span>Browse Performance Store</span>
@@ -226,16 +226,17 @@ export default function PartsCartCheckoutPage() {
                 {cartItems.map((item) => (
                   <div 
                     key={item.id}
-                    className="bg-[#1a1c1c] border border-[#45464e]/30 hover:border-[#6091C3]/60 rounded-xl p-4 transition-all duration-150 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                    data-preserve-bg="true"
+                    className="bg-white dark:bg-[#14151D] border border-[#CBD5E1] dark:border-[#282A3A] hover:border-[#0213B2]/50 dark:hover:border-[#60A5FA]/50 rounded-2xl p-4 transition-all duration-150 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                   >
                     <div className="flex items-center gap-4 min-w-0 flex-1">
                       <input 
-                        type="checkbox"
+                        type="checkbox" 
                         checked={item.selected}
                         onChange={() => toggleSelect(item.id)}
-                        className="rounded border-[#45464e] bg-[#343535] text-[#6091C3] focus:ring-0 w-4 h-4 shrink-0 cursor-pointer"
+                        className="rounded border-[#CBD5E1] text-[#0213B2] focus:ring-0 w-4 h-4 shrink-0 cursor-pointer accent-[#0213B2]"
                       />
-                      <div className="w-20 h-20 min-w-[80px] min-h-[80px] max-w-[80px] max-h-[80px] bg-[#0d0e0f] rounded-lg border border-[#45464e]/30 p-1 shrink-0 flex items-center justify-center overflow-hidden">
+                      <div className="w-20 h-20 min-w-[80px] min-h-[80px] max-w-[80px] max-h-[80px] bg-white rounded-xl border border-[#CBD5E1] dark:border-[#282A3A] p-1 shrink-0 flex items-center justify-center overflow-hidden" data-preserve-white="true">
                         <img 
                           src={item.image} 
                           alt={item.name} 
@@ -244,34 +245,34 @@ export default function PartsCartCheckoutPage() {
                       </div>
                       <div className="space-y-1 min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="px-2 py-0.5 bg-[#1e2020] text-[#6091C3] border border-[#6091C3]/30 rounded text-[10px] font-mono tracking-wider">
+                          <span className="px-2 py-0.5 bg-[#EEF2FF] dark:bg-[#1A224D] text-[#0213B2] dark:text-[#60A5FA] border border-[#CBD5E1] dark:border-[#282A3A] rounded text-[10px] font-mono tracking-wider font-semibold">
                             SKU: {item.sku}
                           </span>
                         </div>
-                        <h3 className="font-bold text-sm md:text-base text-white truncate font-['Montserrat']">
+                        <h3 className="font-bold text-sm md:text-base text-[#111827] dark:text-[#F8FAFC] truncate font-['Montserrat']">
                           {item.name}
                         </h3>
-                        <p className="font-mono text-xs text-[#8f9099] truncate">
+                        <p className="font-mono text-xs text-[#475569] dark:text-[#CBD5E1] truncate">
                           {item.spec}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between sm:justify-end gap-6 pt-3 sm:pt-0 border-t sm:border-t-0 border-[#45464e]/20 shrink-0">
+                    <div className="flex items-center justify-between sm:justify-end gap-6 pt-3 sm:pt-0 border-t sm:border-t-0 border-[#CBD5E1] dark:border-[#282A3A] shrink-0">
                       {/* Qty Adjustment */}
-                      <div className="flex items-center border border-[#45464e]/50 rounded bg-[#15203C]">
+                      <div className="flex items-center border border-[#CBD5E1] dark:border-[#282A3A] rounded-lg bg-white dark:bg-[#1B1D28]" data-preserve-bg="true">
                         <button 
                           onClick={() => updateQuantity(item.id, -1)}
-                          className="px-2.5 py-1 text-[#8f9099] hover:text-white transition-colors cursor-pointer"
+                          className="px-2.5 py-1 text-[#475569] dark:text-[#CBD5E1] hover:text-[#0213B2] dark:hover:text-[#60A5FA] transition-colors cursor-pointer"
                         >
                           -
                         </button>
-                        <span className="px-2.5 py-1 font-mono text-white font-semibold text-xs min-w-[24px] text-center">
+                        <span className="px-2.5 py-1 font-mono text-[#111827] dark:text-[#F8FAFC] font-semibold text-xs min-w-[24px] text-center">
                           {item.quantity}
                         </span>
                         <button 
                           onClick={() => updateQuantity(item.id, 1)}
-                          className="px-2.5 py-1 text-[#8f9099] hover:text-white transition-colors cursor-pointer"
+                          className="px-2.5 py-1 text-[#475569] dark:text-[#CBD5E1] hover:text-[#0213B2] dark:hover:text-[#60A5FA] transition-colors cursor-pointer"
                         >
                           +
                         </button>
@@ -279,10 +280,10 @@ export default function PartsCartCheckoutPage() {
 
                       {/* Price & Margin */}
                       <div className="text-right min-w-[120px]">
-                        <div className="font-mono font-bold text-white text-base">
+                        <div className="font-mono font-bold text-[#111827] text-base">
                           {formatCurrency(item.unitPrice * item.quantity)}
                         </div>
-                        <div className="font-mono text-[11px] text-[#6091C3] font-medium">
+                        <div className="font-mono text-[11px] text-[#16A34A] font-medium">
                           {item.margin} margin
                         </div>
                       </div>
@@ -290,7 +291,7 @@ export default function PartsCartCheckoutPage() {
                       {/* Remove */}
                       <button 
                         onClick={() => removeItem(item.id)}
-                        className="p-1.5 text-[#8f9099] hover:text-rose-400 transition-colors cursor-pointer rounded hover:bg-white/5" 
+                        className="p-1.5 text-[#94A3B8] hover:text-[#DC2626] transition-colors cursor-pointer rounded hover:bg-[#FEE2E2]" 
                         title="Remove"
                       >
                         <span className="material-symbols-outlined text-lg">close</span>
@@ -303,10 +304,10 @@ export default function PartsCartCheckoutPage() {
 
             {/* Bottom Actions Bar */}
             {cartItems.length > 0 && (
-              <div className="flex items-center justify-between pt-4 border-t border-[#45464e]/20">
+              <div className="flex items-center justify-between pt-4 border-t border-[#E2E8F0]">
                 <Link 
                   to="/inventory"
-                  className="text-xs font-bold font-['Montserrat'] uppercase tracking-wider text-[#6091C3] hover:underline flex items-center gap-1.5 transition-colors"
+                  className="text-xs font-bold font-['Montserrat'] uppercase tracking-wider text-[#0213B2] hover:underline flex items-center gap-1.5 transition-colors"
                 >
                   <span className="material-symbols-outlined text-base">add</span>
                   <span>Add more parts from catalog</span>
@@ -314,7 +315,7 @@ export default function PartsCartCheckoutPage() {
 
                 <button 
                   onClick={clearCart}
-                  className="text-xs font-mono text-[#8f9099] hover:text-rose-400 transition-colors cursor-pointer"
+                  className="text-xs font-mono text-[#64748B] hover:text-[#DC2626] transition-colors cursor-pointer"
                 >
                   Clear cart
                 </button>
@@ -325,51 +326,51 @@ export default function PartsCartCheckoutPage() {
 
           {/* RIGHT COLUMN: B2B Order Summary, Margin Intelligence & Checkout Authorization (4 cols) */}
           <div className="xl:col-span-4 space-y-4">
-            <div className="bg-[#1a1c1c] border border-[#45464e]/40 rounded-xl p-5 shadow-2xl sticky top-20 space-y-5">
+            <div className="bg-[#E8EDFF] border-2 border-[#0213B2]/30 rounded-2xl p-5 shadow-sm sticky top-20 space-y-5">
               
-              <div className="flex items-center justify-between border-b border-[#45464e]/30 pb-3">
-                <h2 className="text-lg font-bold font-['Montserrat'] text-white">Summary</h2>
-                <span className="font-mono text-xs text-[#8f9099] bg-[#1e2020] px-2 py-0.5 rounded border border-[#45464e]/30">
+              <div className="flex items-center justify-between border-b border-[#BCC7D8] pb-3">
+                <h2 className="text-lg font-bold font-['Montserrat'] text-[#111827]">Order Summary</h2>
+                <span className="font-mono text-xs text-[#06169B] bg-[#D7E1FF] px-2.5 py-1 rounded-lg border border-[#0213B2]/30 font-bold">
                   Tier 1 B2B Pricing
                 </span>
               </div>
 
               {/* Price Breakdown */}
               <div className="space-y-3 font-mono text-xs">
-                <div className="flex justify-between items-center text-[#c5c6cf]">
+                <div className="flex justify-between items-center text-[#475569]">
                   <span>Subtotal ({selectedItems.length} items)</span>
-                  <span className="text-white font-semibold">{formatCurrency(subtotal)}</span>
+                  <span className="text-[#111827] font-semibold">{formatCurrency(subtotal)}</span>
                 </div>
-                <div className="flex justify-between items-center text-[#c5c6cf]">
+                <div className="flex justify-between items-center text-[#475569]">
                   <span>B2B Discount (8%)</span>
-                  <span className="text-emerald-400 font-semibold">-{formatCurrency(b2bDiscount)}</span>
+                  <span className="text-[#16A34A] font-semibold">-{formatCurrency(b2bDiscount)}</span>
                 </div>
-                <div className="flex justify-between items-center text-[#c5c6cf]">
+                <div className="flex justify-between items-center text-[#475569]">
                   <span>Estimated Shipping</span>
-                  <span className="text-white font-semibold">{formatCurrency(shipping)}</span>
+                  <span className="text-[#111827] font-semibold">{formatCurrency(shipping)}</span>
                 </div>
-                <div className="flex justify-between items-center text-[#c5c6cf]">
+                <div className="flex justify-between items-center text-[#475569]">
                   <span>Taxes & Customs</span>
-                  <span className="text-white font-semibold">$0.00</span>
+                  <span className="text-[#111827] font-semibold">$0.00</span>
                 </div>
                 
-                <div className="border-t border-[#45464e]/30 pt-3 flex justify-between items-baseline">
-                  <span className="text-sm font-bold font-['Montserrat'] text-white uppercase tracking-wider">
+                <div className="border-t border-[#BCC7D8] pt-3 flex justify-between items-baseline">
+                  <span className="text-sm font-bold font-['Montserrat'] text-[#06169B] uppercase tracking-wider">
                     Total Cost
                   </span>
-                  <span className="text-xl font-bold font-mono text-[#6091C3]">
+                  <span className="text-2xl font-extrabold font-mono text-[#06169B]">
                     {formatCurrency(totalCost)}
                   </span>
                 </div>
               </div>
 
               {/* Margin Intelligence ROI Card */}
-              <div className="p-3.5 bg-[#15203C] rounded-lg border border-[#6091c3]/30 flex items-center justify-between font-mono">
+              <div className="p-3.5 bg-[#D7E1FF] rounded-xl border border-[#BCC7D8] flex items-center justify-between font-mono">
                 <div>
-                  <span className="text-[#8f9099] block text-[10px] uppercase font-bold">ESTIMATED CLIENT PROFIT</span>
-                  <span className="text-[#6091C3] font-bold text-sm font-['Montserrat']">+{formatCurrency(estimatedProfit)}</span>
+                  <span className="text-[#06169B] block text-[10px] uppercase font-bold">ESTIMATED CLIENT PROFIT</span>
+                  <span className="text-[#06169B] font-extrabold text-sm font-['Montserrat']">+{formatCurrency(estimatedProfit)}</span>
                 </div>
-                <span className="text-xs bg-[#6091c3]/20 text-[#6091C3] px-2.5 py-1 rounded font-bold border border-[#6091c3]/30">
+                <span className="text-xs bg-[#DCFCE7] text-[#16A34A] px-2.5 py-1 rounded-lg font-bold border border-[#16A34A]/30">
                   +30.3% ROI
                 </span>
               </div>
@@ -379,7 +380,7 @@ export default function PartsCartCheckoutPage() {
                 <button 
                   onClick={handleRequestQuotation}
                   disabled={selectedItems.length === 0 || requestingQuote}
-                  className="w-full py-3.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 active:scale-98 shadow-lg cursor-pointer"
+                  className="w-full py-3.5 px-4 rounded-xl bg-[#0213B2] hover:bg-[#0115BC] active:bg-[#06169B] disabled:opacity-50 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md shadow-[#0213B2]/20 cursor-pointer"
                 >
                   {requestingQuote ? (
                     <>
@@ -397,9 +398,9 @@ export default function PartsCartCheckoutPage() {
                 <button 
                   onClick={handleAuthorizePO}
                   disabled={selectedItems.length === 0}
-                  className="w-full py-3 px-4 rounded-lg bg-[#6091C3] hover:brightness-110 disabled:opacity-50 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 active:scale-98 shadow-md cursor-pointer"
+                  className="w-full py-3 px-4 rounded-xl bg-white hover:bg-[#D7E1FF] border border-[#0213B2]/30 disabled:opacity-50 text-[#0213B2] font-['Montserrat'] font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                 >
-                  <span className="material-symbols-outlined text-base">lock</span>
+                  <span className="material-symbols-outlined text-base text-[#0213B2]">lock</span>
                   <span>Authorize & Dispatch PO</span>
                 </button>
 
@@ -407,7 +408,7 @@ export default function PartsCartCheckoutPage() {
                   onClick={() => {
                     navigate('/shop')
                   }}
-                  className="w-full py-2.5 text-center text-xs font-mono text-[#8f9099] hover:text-[#6091C3] transition-colors flex items-center justify-center gap-1.5 cursor-pointer hover:bg-white/5 rounded"
+                  className="w-full py-2.5 text-center text-xs font-mono text-[#64748B] hover:text-[#0213B2] transition-colors flex items-center justify-center gap-1.5 cursor-pointer hover:bg-[#F1F5F9] rounded"
                 >
                   <span className="material-symbols-outlined text-sm">storefront</span>
                   <span>Continue Shopping at Performance Store</span>

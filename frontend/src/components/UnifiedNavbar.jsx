@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { useTheme } from '../contexts/ThemeContext'
+import ThemeToggle from './ThemeToggle'
 
 const logoImg = '/images/logo.jpg'
 
@@ -88,6 +90,7 @@ export default function UnifiedNavbar() {
   const location = useLocation()
   const navigate = useNavigate()
   const { currentUser, role, logout, setLoginModalOpen } = useAuth()
+  const { isDark } = useTheme()
   const [activeDropdown, setActiveDropdown] = useState(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
@@ -125,16 +128,16 @@ export default function UnifiedNavbar() {
   }, [])
 
   const navLinkStyle = (active) => ({
-    color: active ? '#ffffff' : '#c8d4ea',
-    backgroundColor: active ? 'rgba(96,145,195,0.18)' : 'transparent',
-    border: active ? '1px solid rgba(96,145,195,0.4)' : '1px solid transparent',
+    color: '#FFFFFF',
+    backgroundColor: active ? '#06169B' : 'transparent',
+    border: active ? '1px solid rgba(255, 255, 255, 0.35)' : '1px solid transparent',
   })
 
   return (
     <header
       ref={navRef}
-      style={{ backgroundColor: '#1F2F57', borderBottom: '1px solid rgba(96,145,195,0.2)' }}
-      className="sticky top-0 z-50 h-16 text-white shadow-2xl select-none"
+      style={{ backgroundColor: '#0213B2', borderBottom: '1px solid rgba(255, 255, 255, 0.15)' }}
+      className="sticky top-0 z-50 h-16 text-white shadow-md select-none"
     >
       {/*
         Layout: 3 zones in one flex row
@@ -149,8 +152,8 @@ export default function UnifiedNavbar() {
             <img
               src={logoImg}
               alt="Virtual Tune Logo"
-              className="block w-auto group-hover:brightness-110 transition-all duration-200"
-              style={{ height: '46px', maxWidth: '240px', filter: 'brightness(1.05)', objectFit: 'contain', objectPosition: 'left center' }}
+              className="block w-auto transition-transform duration-200 group-hover:scale-[1.02]"
+              style={{ height: '46px', maxWidth: '240px', objectFit: 'contain', objectPosition: 'left center' }}
             />
           </Link>
         </div>
@@ -171,13 +174,13 @@ export default function UnifiedNavbar() {
                   type="button"
                   onClick={() => setActiveDropdown(isOpen ? null : group.groupId)}
                   onMouseEnter={() => setActiveDropdown(group.groupId)}
-                  className="px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition-all duration-150 whitespace-nowrap cursor-pointer"
+                  className="px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition-all duration-150 whitespace-nowrap cursor-pointer hover:bg-[#0115BC] active:bg-[#06169B]"
                   style={navLinkStyle(isGroupActive || isOpen)}
                 >
                   <span>{group.label}</span>
                   <span
                     className="material-symbols-outlined transition-transform duration-200"
-                    style={{ fontSize: '16px', color: '#A8A8A8', transform: isOpen ? 'rotate(180deg)' : 'none' }}
+                    style={{ fontSize: '16px', color: '#FFFFFF', transform: isOpen ? 'rotate(180deg)' : 'none' }}
                   >
                     expand_more
                   </span>
@@ -186,25 +189,32 @@ export default function UnifiedNavbar() {
                 {/* Dropdown Panel — centered under trigger */}
                 {isOpen && (
                   <div
-                    className="absolute left-1/2 -translate-x-1/2 mt-2 w-80 rounded-xl p-2 z-[100]"
+                    className="absolute left-1/2 -translate-x-1/2 mt-2 w-80 rounded-xl p-2 z-[100] transition-colors duration-150"
                     style={{
-                      backgroundColor: '#162447',
-                      border: '1.5px solid rgba(96,145,195,0.3)',
-                      boxShadow: '0 24px 64px -12px rgba(0,0,0,0.85)',
+                      backgroundColor: isDark ? '#14151D' : '#E5E8F0',
+                      border: isDark ? '1px solid #282A3A' : '1px solid #E2E8F0',
+                      boxShadow: isDark ? '0 12px 32px rgba(0, 0, 0, 0.5)' : '0 12px 32px rgba(15, 23, 42, 0.12)',
                     }}
                     onMouseLeave={() => setActiveDropdown(null)}
                   >
                     {/* Panel Header */}
                     <div
                       className="px-3 py-2 mb-1.5 rounded-lg flex items-center justify-between"
-                      style={{ backgroundColor: 'rgba(31,47,87,0.8)', border: '1px solid rgba(96,145,195,0.12)' }}
+                      style={{
+                        backgroundColor: isDark ? '#1B1D28' : '#F8FAFC',
+                        border: isDark ? '1px solid #282A3A' : '1px solid #E2E8F0',
+                      }}
                     >
-                      <span className="uppercase tracking-wider text-[11px] font-extrabold" style={{ color: '#e2e8f6' }}>
+                      <span className="uppercase tracking-wider text-[11px] font-extrabold" style={{ color: isDark ? '#F8FAFC' : '#111827' }}>
                         {group.label}
                       </span>
                       <span
                         className="font-mono text-[9px] font-bold px-1.5 py-0.5 rounded"
-                        style={{ color: '#6091C3', backgroundColor: 'rgba(96,145,195,0.12)', border: '1px solid rgba(96,145,195,0.3)' }}
+                        style={{
+                          color: isDark ? '#93C5FD' : '#0213B2',
+                          backgroundColor: isDark ? '#161C3B' : '#EEF2FF',
+                          border: isDark ? '1px solid #282A3A' : '1px solid #CBD5E1',
+                        }}
                       >
                         {group.items.length} MODULES
                       </span>
@@ -221,33 +231,33 @@ export default function UnifiedNavbar() {
                             onClick={() => setActiveDropdown(null)}
                             className="flex items-center gap-3 p-2.5 rounded-lg transition-all duration-150"
                             style={{
-                              backgroundColor: isCurrent ? 'rgba(96,145,195,0.22)' : 'rgba(31,47,87,0.5)',
-                              border: isCurrent ? '1px solid rgba(96,145,195,0.6)' : '1px solid rgba(96,145,195,0.08)',
-                              color: isCurrent ? '#ffffff' : '#c8d4ea',
+                              backgroundColor: isCurrent ? (isDark ? '#161C3B' : '#EEF2FF') : 'transparent',
+                              border: isCurrent ? (isDark ? '1px solid #282A3A' : '1px solid #CBD5E1') : '1px solid transparent',
+                              color: isCurrent ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#F8FAFC' : '#111827'),
                             }}
                             onMouseEnter={e => {
                               if (!isCurrent) {
-                                e.currentTarget.style.backgroundColor = 'rgba(96,145,195,0.14)'
-                                e.currentTarget.style.borderColor = 'rgba(96,145,195,0.3)'
-                                e.currentTarget.style.color = '#ffffff'
+                                e.currentTarget.style.backgroundColor = isDark ? '#1E202C' : '#F1F5F9'
+                                e.currentTarget.style.borderColor = isDark ? '#282A3A' : '#E2E8F0'
+                                e.currentTarget.style.color = isDark ? '#93C5FD' : '#0213B2'
                               }
                             }}
                             onMouseLeave={e => {
                               if (!isCurrent) {
-                                e.currentTarget.style.backgroundColor = 'rgba(31,47,87,0.5)'
-                                e.currentTarget.style.borderColor = 'rgba(96,145,195,0.08)'
-                                e.currentTarget.style.color = '#c8d4ea'
+                                e.currentTarget.style.backgroundColor = 'transparent'
+                                e.currentTarget.style.borderColor = 'transparent'
+                                e.currentTarget.style.color = isDark ? '#F8FAFC' : '#111827'
                               }
                             }}
                           >
                             <div
                               className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
                               style={{
-                                backgroundColor: isCurrent ? '#6091C3' : 'rgba(96,145,195,0.15)',
-                                border: isCurrent ? 'none' : '1px solid rgba(96,145,195,0.25)',
+                                backgroundColor: isCurrent ? '#0213B2' : (isDark ? '#1B1D28' : '#F1F5F9'),
+                                border: isCurrent ? 'none' : (isDark ? '1px solid #282A3A' : '1px solid #E2E8F0'),
                               }}
                             >
-                              <span className="material-symbols-outlined" style={{ fontSize: '18px', color: isCurrent ? '#fff' : '#6091C3' }}>
+                              <span className="material-symbols-outlined" style={{ fontSize: '18px', color: isCurrent ? '#ffffff' : (isDark ? '#93C5FD' : '#0213B2') }}>
                                 {item.icon}
                               </span>
                             </div>
@@ -259,13 +269,17 @@ export default function UnifiedNavbar() {
                                 {item.badge && (
                                   <span
                                     className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded shrink-0"
-                                    style={{ backgroundColor: 'rgba(96,145,195,0.12)', border: '1px solid rgba(96,145,195,0.35)', color: '#6091C3' }}
+                                    style={{
+                                      backgroundColor: isDark ? '#161C3B' : '#EEF2FF',
+                                      border: isDark ? '1px solid #282A3A' : '1px solid #CBD5E1',
+                                      color: isDark ? '#93C5FD' : '#0213B2',
+                                    }}
                                   >
                                     {item.badge}
                                   </span>
                                 )}
                               </div>
-                              <p className="text-[11px] mt-0.5 line-clamp-1" style={{ color: '#A8A8A8' }}>
+                              <p className="text-[11px] mt-0.5 line-clamp-1" style={{ color: isDark ? '#94A3B8' : '#475569' }}>
                                 {item.desc}
                               </p>
                             </div>
@@ -282,7 +296,7 @@ export default function UnifiedNavbar() {
           {/* Knowledge */}
           <Link
             to="/knowledge"
-            className="px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition-all duration-150 whitespace-nowrap"
+            className="px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition-all duration-150 whitespace-nowrap hover:bg-[#0115BC] active:bg-[#06169B]"
             style={navLinkStyle(location.pathname === '/knowledge')}
           >
             <span>Knowledge</span>
@@ -291,7 +305,10 @@ export default function UnifiedNavbar() {
 
         {/* ── ZONE 3: ACTIONS (right, fixed) ──────────────── */}
         <div className="shrink-0 flex items-center gap-2 sm:gap-2.5">
-          {/* Shopping Cart Button (Locked for unauthenticated guests) */}
+          {/* Theme Toggle (immediately to the LEFT of the shopping cart) */}
+          <ThemeToggle />
+
+          {/* Shopping Cart Button */}
           <button
             type="button"
             onClick={() => {
@@ -301,19 +318,19 @@ export default function UnifiedNavbar() {
                 navigate('/cart')
               }
             }}
-            className="relative flex items-center justify-center p-2 rounded-lg transition-all duration-150 cursor-pointer"
+            className="relative flex items-center justify-center p-2 rounded-lg transition-all duration-150 cursor-pointer hover:bg-[#0115BC]"
             style={{
-              backgroundColor: location.pathname === '/cart' ? 'rgba(96,145,195,0.25)' : 'rgba(31,47,87,0.7)',
-              border: location.pathname === '/cart' ? '1.5px solid #6091C3' : '1px solid rgba(96,145,195,0.3)',
-              color: location.pathname === '/cart' ? '#ffffff' : '#c8d4ea'
+              backgroundColor: location.pathname === '/cart' ? '#06169B' : 'rgba(255, 255, 255, 0.18)',
+              border: location.pathname === '/cart' ? '1.5px solid #FFFFFF' : '1px solid rgba(255, 255, 255, 0.3)',
+              color: '#FFFFFF'
             }}
             title={currentUser ? "Parts Cart & B2B Procurement" : "Sign in required to view Cart"}
           >
-            <span className="material-symbols-outlined text-lg" style={{ color: currentUser ? '#6091C3' : '#c8d4ea' }}>shopping_cart</span>
+            <span className="material-symbols-outlined text-lg" style={{ color: '#FFFFFF' }}>shopping_cart</span>
             {currentUser ? (
               <span 
-                className="absolute -top-1 -right-1 w-4 h-4 text-[9px] font-bold font-mono rounded-full flex items-center justify-center text-white shadow"
-                style={{ backgroundColor: '#6091C3' }}
+                className="absolute -top-1 -right-1 w-4 h-4 text-[9px] font-bold font-mono rounded-full flex items-center justify-center text-white shadow-xs"
+                style={{ backgroundColor: '#EF4444' }}
               >
                 4
               </span>
@@ -327,25 +344,24 @@ export default function UnifiedNavbar() {
             )}
           </button>
 
-
-
           {/* Authentication State: User Info & Logout or Login Button */}
           {currentUser ? (
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all duration-150 cursor-pointer"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all duration-150 cursor-pointer hover:bg-[#0115BC]"
                 style={{
-                  backgroundColor: 'rgba(31,47,87,0.7)',
-                  border: '1px solid rgba(96,145,195,0.3)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.18)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
                 }}
               >
                 <div 
                   className="w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs"
                   style={{
-                    backgroundColor: role === 'GARAGE_OWNER' ? '#6091C3' : role === 'LEAD_TECHNICIAN' ? '#10B981' : '#F59E0B',
-                    color: '#ffffff'
+                    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                    border: '1.5px solid rgba(255, 255, 255, 0.6)',
+                    color: '#FFFFFF'
                   }}
                 >
                   {currentUser.fullName ? currentUser.fullName.charAt(0) : 'U'}
@@ -355,35 +371,33 @@ export default function UnifiedNavbar() {
                     {currentUser.fullName || currentUser.username}
                   </div>
                   <div 
-                    className="text-[9px] font-mono font-bold uppercase truncate"
-                    style={{
-                      color: role === 'GARAGE_OWNER' ? '#6091C3' : role === 'LEAD_TECHNICIAN' ? '#10B981' : '#F59E0B'
-                    }}
+                    className="text-[9px] font-mono font-bold uppercase tracking-wider truncate text-white/80"
                   >
                     {role.replace('_', ' ')}
                   </div>
                 </div>
-                <span className="material-symbols-outlined text-white/50 text-sm">expand_more</span>
+                <span className="material-symbols-outlined text-white text-sm">expand_more</span>
               </button>
 
               {/* User Dropdown */}
               {userMenuOpen && (
                 <div 
-                  className="absolute right-0 mt-2 w-56 rounded-xl p-2 z-[110] shadow-2xl animate-in fade-in"
+                  className="absolute right-0 mt-2 w-56 rounded-xl p-2 z-[110] shadow-xl animate-in fade-in transition-colors duration-150"
                   style={{
-                    backgroundColor: '#162447',
-                    border: '1.5px solid rgba(96,145,195,0.3)',
-                    boxShadow: '0 20px 50px rgba(0,0,0,0.85)'
+                    backgroundColor: isDark ? '#14151D' : '#E5E8F0',
+                    border: isDark ? '1px solid #282A3A' : '1px solid #E2E8F0',
+                    boxShadow: isDark ? '0 12px 32px rgba(0, 0, 0, 0.5)' : '0 12px 32px rgba(15, 23, 42, 0.12)'
                   }}
                 >
-                  <div className="p-2.5 border-b border-white/10 mb-1">
-                    <p className="text-xs font-bold text-white">{currentUser.fullName}</p>
-                    <p className="text-[10px] text-white/50 font-mono truncate">{currentUser.email || currentUser.username}</p>
+                  <div className="p-2.5 border-b mb-1" style={{ borderColor: isDark ? '#282A3A' : '#E2E8F0' }}>
+                    <p className="text-xs font-bold" style={{ color: isDark ? '#F8FAFC' : '#111827' }}>{currentUser.fullName}</p>
+                    <p className="text-[10px] font-mono truncate" style={{ color: isDark ? '#94A3B8' : '#64748B' }}>{currentUser.email || currentUser.username}</p>
                     <span 
                       className="inline-block mt-1 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold uppercase"
                       style={{
-                        backgroundColor: 'rgba(96,145,195,0.15)',
-                        color: role === 'GARAGE_OWNER' ? '#6091C3' : role === 'LEAD_TECHNICIAN' ? '#10B981' : '#F59E0B'
+                        backgroundColor: isDark ? '#161C3B' : '#EEF2FF',
+                        color: role === 'GARAGE_OWNER' ? (isDark ? '#93C5FD' : '#0213B2') : role === 'LEAD_TECHNICIAN' ? '#16A34A' : '#D97706',
+                        border: isDark ? '1px solid #282A3A' : '1px solid #CBD5E1'
                       }}
                     >
                       {role}
@@ -393,9 +407,18 @@ export default function UnifiedNavbar() {
                   <Link
                     to="/account"
                     onClick={() => setUserMenuOpen(false)}
-                    className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+                    className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium transition-colors"
+                    style={{ color: isDark ? '#CBD5E1' : '#475569' }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.backgroundColor = isDark ? '#1E202C' : '#F1F5F9'
+                      e.currentTarget.style.color = isDark ? '#93C5FD' : '#0213B2'
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.backgroundColor = 'transparent'
+                      e.currentTarget.style.color = isDark ? '#CBD5E1' : '#475569'
+                    }}
                   >
-                    <span className="material-symbols-outlined text-base" style={{ color: '#6091C3' }}>account_circle</span>
+                    <span className="material-symbols-outlined text-base" style={{ color: isDark ? '#93C5FD' : '#0213B2' }}>account_circle</span>
                     <span>My Account & Builds</span>
                   </Link>
 
@@ -403,9 +426,18 @@ export default function UnifiedNavbar() {
                     <Link
                       to="/dashboard"
                       onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+                      className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium transition-colors"
+                      style={{ color: isDark ? '#CBD5E1' : '#475569' }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.backgroundColor = isDark ? '#1E202C' : '#F1F5F9'
+                        e.currentTarget.style.color = isDark ? '#93C5FD' : '#0213B2'
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.backgroundColor = 'transparent'
+                        e.currentTarget.style.color = isDark ? '#CBD5E1' : '#475569'
+                      }}
                     >
-                      <span className="material-symbols-outlined text-base" style={{ color: '#6091C3' }}>dashboard</span>
+                      <span className="material-symbols-outlined text-base" style={{ color: isDark ? '#93C5FD' : '#0213B2' }}>dashboard</span>
                       <span>Dashboard</span>
                     </Link>
                   )}
@@ -416,9 +448,18 @@ export default function UnifiedNavbar() {
                       setUserMenuOpen(false)
                       setLoginModalOpen(true)
                     }}
-                    className="w-full flex items-center gap-2 p-2 rounded-lg text-xs font-medium text-white/80 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-2 p-2 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+                    style={{ color: isDark ? '#CBD5E1' : '#475569' }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.backgroundColor = isDark ? '#1E202C' : '#F1F5F9'
+                      e.currentTarget.style.color = '#16A34A'
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.backgroundColor = 'transparent'
+                      e.currentTarget.style.color = isDark ? '#CBD5E1' : '#475569'
+                    }}
                   >
-                    <span className="material-symbols-outlined text-base" style={{ color: '#10B981' }}>switch_account</span>
+                    <span className="material-symbols-outlined text-base" style={{ color: '#16A34A' }}>switch_account</span>
                     <span>Switch Demo Persona</span>
                   </button>
 
@@ -428,7 +469,8 @@ export default function UnifiedNavbar() {
                       setUserMenuOpen(false)
                       logout()
                     }}
-                    className="w-full flex items-center gap-2 p-2 rounded-lg text-xs font-semibold text-rose-400 hover:bg-rose-500/15 transition-colors cursor-pointer border-t border-white/10 mt-1 pt-2"
+                    className="w-full flex items-center gap-2 p-2 rounded-lg text-xs font-semibold text-[#DC2626] hover:bg-[#FEE2E2] dark:hover:bg-[#DC2626]/20 transition-colors cursor-pointer border-t mt-1 pt-2"
+                    style={{ borderColor: isDark ? '#282A3A' : '#E2E8F0' }}
                   >
                     <span className="material-symbols-outlined text-base">logout</span>
                     <span>Sign Out</span>
@@ -439,14 +481,14 @@ export default function UnifiedNavbar() {
           ) : (
             <Link
               to="/login"
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold font-['Montserrat'] uppercase tracking-wider transition-all duration-150 hover:bg-white/10"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold font-['Montserrat'] uppercase tracking-wider transition-all duration-150 hover:bg-[#0115BC] active:bg-[#06169B] shadow-xs"
               style={{
-                backgroundColor: 'rgba(31,47,87,0.8)',
-                border: '1px solid rgba(96,145,195,0.4)',
-                color: '#dae2ff',
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                border: '1px solid rgba(255, 255, 255, 0.4)',
+                color: '#ffffff',
               }}
             >
-              <span className="material-symbols-outlined text-base" style={{ color: '#6091C3' }}>login</span>
+              <span className="material-symbols-outlined text-base" style={{ color: '#ffffff' }}>login</span>
               <span>SIGN IN</span>
             </Link>
           )}
@@ -455,8 +497,8 @@ export default function UnifiedNavbar() {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-lg transition-colors"
-            style={{ color: '#c8d4ea', backgroundColor: 'rgba(255,255,255,0.06)' }}
+            className="lg:hidden p-2 rounded-lg transition-colors hover:bg-[#0115BC]"
+            style={{ color: '#FFFFFF', backgroundColor: 'rgba(255, 255, 255, 0.18)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
             aria-label="Toggle Navigation Menu"
           >
             <span className="material-symbols-outlined" style={{ fontSize: '22px' }}>
@@ -469,19 +511,44 @@ export default function UnifiedNavbar() {
       {/* ── MOBILE DRAWER ───────────────────────────────── */}
       {mobileMenuOpen && (
         <div
-          className="lg:hidden px-4 py-4 space-y-4 max-h-[85vh] overflow-y-auto"
-          style={{ backgroundColor: '#162447', borderTop: '1px solid rgba(96,145,195,0.2)' }}
+          className="lg:hidden px-4 py-4 space-y-4 max-h-[85vh] overflow-y-auto transition-colors duration-150"
+          style={{
+            backgroundColor: isDark ? '#14151D' : '#E5E8F0',
+            borderTop: isDark ? '1px solid #282A3A' : '1px solid #E2E8F0',
+            color: isDark ? '#F8FAFC' : '#111827'
+          }}
         >
+          {/* Mobile Theme Toggle Row */}
+          <div
+            className="flex items-center justify-between p-2.5 rounded-lg"
+            style={{
+              backgroundColor: isDark ? '#1B1D28' : '#F8FAFC',
+              border: isDark ? '1px solid #282A3A' : '1px solid #E2E8F0',
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-sm" style={{ color: isDark ? '#93C5FD' : '#0213B2' }}>
+                {isDark ? 'dark_mode' : 'light_mode'}
+              </span>
+              <span className="text-xs font-bold" style={{ color: isDark ? '#F8FAFC' : '#111827' }}>
+                {isDark ? 'Dark Mode' : 'Light Mode'}
+              </span>
+            </div>
+            <ThemeToggle />
+          </div>
+
           <Link
             to="/"
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold"
             style={{
               fontFamily: "'Montserrat', sans-serif",
-              ...navLinkStyle(location.pathname === '/'),
+              backgroundColor: location.pathname === '/' ? (isDark ? '#161C3B' : '#EEF2FF') : 'transparent',
+              color: location.pathname === '/' ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#F8FAFC' : '#111827'),
+              border: location.pathname === '/' ? (isDark ? '1px solid #282A3A' : '1px solid #CBD5E1') : '1px solid transparent',
             }}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: '17px', color: '#6091C3' }}>home</span>
+            <span className="material-symbols-outlined" style={{ fontSize: '17px', color: '#0213B2' }}>home</span>
             <span>Platform Landing</span>
           </Link>
 
@@ -489,7 +556,7 @@ export default function UnifiedNavbar() {
             <div key={group.groupId} className="space-y-1">
               <div
                 className="px-3 py-1 text-[10px] uppercase tracking-widest font-extrabold flex items-center gap-2"
-                style={{ color: '#6091C3' }}
+                style={{ color: isDark ? '#93C5FD' : '#0213B2' }}
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>{group.icon}</span>
                 <span>{group.label}</span>
@@ -502,22 +569,26 @@ export default function UnifiedNavbar() {
                       key={item.path}
                       to={item.path}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold"
+                      className="flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-colors"
                       style={{
                         fontFamily: "'Montserrat', sans-serif",
-                        color: isCurrent ? '#ffffff' : '#c8d4ea',
-                        backgroundColor: isCurrent ? 'rgba(96,145,195,0.2)' : 'rgba(31,47,87,0.4)',
-                        borderLeft: `3px solid ${isCurrent ? '#6091C3' : 'transparent'}`,
+                        color: isCurrent ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#CBD5E1' : '#475569'),
+                        backgroundColor: isCurrent ? (isDark ? '#161C3B' : '#EEF2FF') : 'transparent',
+                        borderLeft: `3px solid ${isCurrent ? '#0213B2' : 'transparent'}`,
                       }}
                     >
                       <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined" style={{ fontSize: '17px', color: '#6091C3' }}>{item.icon}</span>
+                        <span className="material-symbols-outlined" style={{ fontSize: '17px', color: isCurrent ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#94A3B8' : '#64748B') }}>{item.icon}</span>
                         <span>{item.label}</span>
                       </div>
                       {item.badge && (
                         <span
                           className="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold"
-                          style={{ backgroundColor: 'rgba(96,145,195,0.12)', border: '1px solid rgba(96,145,195,0.35)', color: '#6091C3' }}
+                          style={{
+                            backgroundColor: isDark ? '#161C3B' : '#EEF2FF',
+                            border: isDark ? '1px solid #282A3A' : '1px solid #CBD5E1',
+                            color: isDark ? '#93C5FD' : '#0213B2',
+                          }}
                         >
                           {item.badge}
                         </span>
@@ -542,17 +613,19 @@ export default function UnifiedNavbar() {
             className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-bold transition-all text-left"
             style={{
               fontFamily: "'Montserrat', sans-serif",
-              ...navLinkStyle(location.pathname === '/cart'),
+              backgroundColor: location.pathname === '/cart' ? (isDark ? '#161C3B' : '#EEF2FF') : 'transparent',
+              color: location.pathname === '/cart' ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#F8FAFC' : '#111827'),
+              border: location.pathname === '/cart' ? (isDark ? '1px solid #282A3A' : '1px solid #CBD5E1') : '1px solid transparent',
             }}
           >
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined" style={{ fontSize: '17px', color: '#6091C3' }}>shopping_cart</span>
+              <span className="material-symbols-outlined" style={{ fontSize: '17px', color: isDark ? '#93C5FD' : '#0213B2' }}>shopping_cart</span>
               <span>Parts Cart & Checkout</span>
             </div>
             {currentUser ? (
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#6091C3] text-white">4</span>
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#0213B2] text-white">4</span>
             ) : (
-              <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1">
+              <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-500 border border-amber-500/40 flex items-center gap-1">
                 <span className="material-symbols-outlined text-[10px]">lock</span>
                 <span>SIGN IN</span>
               </span>
@@ -562,13 +635,15 @@ export default function UnifiedNavbar() {
           <Link
             to="/knowledge"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold"
+            className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors"
             style={{
               fontFamily: "'Montserrat', sans-serif",
-              ...navLinkStyle(location.pathname === '/knowledge'),
+              backgroundColor: location.pathname === '/knowledge' ? (isDark ? '#161C3B' : '#EEF2FF') : 'transparent',
+              color: location.pathname === '/knowledge' ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#F8FAFC' : '#111827'),
+              border: location.pathname === '/knowledge' ? (isDark ? '1px solid #282A3A' : '1px solid #CBD5E1') : '1px solid transparent',
             }}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: '17px', color: '#6091C3' }}>menu_book</span>
+            <span className="material-symbols-outlined" style={{ fontSize: '17px', color: isDark ? '#93C5FD' : '#0213B2' }}>menu_book</span>
             <span>Knowledge Hub</span>
           </Link>
 
@@ -576,13 +651,15 @@ export default function UnifiedNavbar() {
             <Link
               to="/account"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold"
+              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors"
               style={{
                 fontFamily: "'Montserrat', sans-serif",
-                ...navLinkStyle(location.pathname === '/account'),
+                backgroundColor: location.pathname === '/account' ? (isDark ? '#161C3B' : '#EEF2FF') : 'transparent',
+                color: location.pathname === '/account' ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#F8FAFC' : '#111827'),
+                border: location.pathname === '/account' ? (isDark ? '1px solid #282A3A' : '1px solid #CBD5E1') : '1px solid transparent',
               }}
             >
-              <span className="material-symbols-outlined" style={{ fontSize: '17px', color: '#6091C3' }}>account_circle</span>
+              <span className="material-symbols-outlined" style={{ fontSize: '17px', color: isDark ? '#93C5FD' : '#0213B2' }}>account_circle</span>
               <span>My Account & Builds</span>
             </Link>
           )}

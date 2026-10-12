@@ -5,12 +5,15 @@ import { useAuth } from '../contexts/AuthContext'
 import ProtectedRoute from '../components/ProtectedRoute'
 
 const PART_IMAGES = {
-  'BBS-FIR-992-TITAN': '/images/wheel-titanium.jpg',
-  'RAYS-TE37-ULTRA-20': '/images/wheel-volk-te37.jpg',
-  'AKR-EVO-TITAN-992': '/images/exhaust-akrapovic.jpg',
-  'KW-35271842-V4CS': '/images/suspension-kw.jpg',
-  'BRM-1N1.9042A2': '/images/brake-brembo.jpg',
-  'VOR-CF-AERO-992': '/images/aero-carbon.jpg'
+  'BBS-FIR-992-TITAN': '/images/bbs-fi-r-wheel.jpg',
+  'RAYS-TE37-ULTRA-20': '/images/rays-te37-ultra.jpg',
+  'WORK-VSXX-19-F458': '/images/work-vs-xx-wheel.jpg',
+  'GEN-GTWING-F458': '/images/carbon-gt-wing.jpg',
+  'CARB-AERO-F458': '/images/carbon-aero-package.jpg',
+  'AKR-EVO-TITAN-992': '/images/akrapovic-evolution-line.jpg',
+  'KW-35271842-V4CS': '/images/kw-v4-clubsport.jpg',
+  'BRM-1N1.9042A2': '/images/brembo-gt-brake-kit.jpg',
+  'VOR-CF-AERO-992': '/images/vorsteiner-carbon-aero.jpg'
 }
 
 const INVENTORY_CATEGORIES = [
@@ -125,12 +128,12 @@ export default function InventoryProcurementPage() {
   const totalUnitsInStock = parts.reduce((sum, p) => sum + (p.stockQuantity || 0), 0)
 
   return (
-    <div className="bg-[#0d131f] text-[#e3e8f5] min-h-[calc(100vh-4rem)] flex flex-col font-['Inter',sans-serif] antialiased selection:bg-[#1f2f57] selection:text-[#dae2ff]">
+    <div className="bg-[#F3F5FA] text-[#111827] min-h-[calc(100vh-4rem)] flex flex-col font-['Inter',sans-serif] antialiased selection:bg-[#0213B2]/20 selection:text-[#0213B2]">
       
       {/* Toast Feedback */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#1f2f57] border border-[#6091c3] text-[#dae2ff] text-xs font-['Montserrat'] font-bold rounded-lg shadow-2xl flex items-center gap-2.5 animate-in fade-in duration-200">
-          <span className="material-symbols-outlined text-base text-[#6091c3]">check_circle</span>
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#0213B2] border border-[#0213B2] text-white text-xs font-['Montserrat'] font-bold rounded-lg shadow-2xl flex items-center gap-2.5 animate-in fade-in duration-200">
+          <span className="material-symbols-outlined text-base text-white">check_circle</span>
           <span>{toastMessage}</span>
         </div>
       )}
@@ -140,60 +143,60 @@ export default function InventoryProcurementPage() {
         <section className="px-6 py-6 max-w-7xl mx-auto w-full">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             
-            <div className="p-4 rounded-xl bg-[#162447] border border-[#6091C3]/30 flex items-start justify-between relative overflow-hidden shadow">
+            <div className="p-4 rounded-xl bg-[#E8EDFF] border-2 border-[#0213B2]/30 flex items-start justify-between relative overflow-hidden shadow-xs">
               <div className="space-y-1">
-                <p className="font-mono uppercase tracking-wider text-[#8f9099] text-[10px]">Total Inventory Valuation</p>
-                <p className="text-2xl text-white font-extrabold font-mono tracking-tight">
+                <p className="font-mono uppercase tracking-wider text-[#06169B] font-semibold text-[10px]">Total Inventory Valuation</p>
+                <p className="text-2xl text-[#06169B] font-extrabold font-mono tracking-tight">
                   ${totalValuationUsd.toLocaleString('en-US', { maximumFractionDigits: 0 })}
                 </p>
-                <div className="flex items-center gap-1 text-[11px] text-[#6091c3]">
+                <div className="flex items-center gap-1 text-[11px] text-[#0213B2]">
                   <span className="material-symbols-outlined text-xs">trending_up</span>
                   <span>Calculated from live SQL Server stock</span>
                 </div>
               </div>
-              <div className="p-2 rounded-lg bg-white/5 text-[#6091C3] border border-white/10">
+              <div className="p-2 rounded-lg bg-[#D7E1FF] text-[#0213B2] border border-[#0213B2]/30">
                 <span className="material-symbols-outlined text-xl">account_balance_wallet</span>
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#162447] border border-[#6091C3]/30 flex items-start justify-between relative overflow-hidden shadow">
+            <div className="p-4 rounded-xl bg-[#E8EDFF] border border-[#BCC7D8] flex items-start justify-between relative overflow-hidden shadow-xs">
               <div className="space-y-1">
-                <p className="font-mono uppercase tracking-wider text-[#8f9099] text-[10px]">Active Performance SKUs</p>
+                <p className="font-mono uppercase tracking-wider text-[#06169B] font-semibold text-[10px]">Active Performance SKUs</p>
                 <div className="flex items-baseline gap-2">
-                  <p className="text-2xl text-white font-extrabold font-mono tracking-tight">{parts.length}</p>
-                  <span className="text-xs text-[#8f9099] font-mono">OEM parts</span>
+                  <p className="text-2xl text-[#111827] font-extrabold font-mono tracking-tight">{parts.length}</p>
+                  <span className="text-xs text-[#475569] font-mono">OEM parts</span>
                 </div>
-                <p className="text-[11px] text-[#c8d4ea]">{totalUnitsInStock} total physical sets in depot</p>
+                <p className="text-[11px] text-[#475569]">{totalUnitsInStock} total physical sets in depot</p>
               </div>
-              <div className="p-2 rounded-lg bg-white/5 text-[#6091C3] border border-white/10">
+              <div className="p-2 rounded-lg bg-[#D7E1FF] text-[#0213B2] border border-[#0213B2]/30">
                 <span className="material-symbols-outlined text-xl">precision_manufacturing</span>
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#162447] border border-[#6091C3]/30 flex items-start justify-between relative overflow-hidden shadow">
+            <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] flex items-start justify-between relative overflow-hidden shadow-xs">
               <div className="space-y-1">
-                <p className="font-mono uppercase tracking-wider text-amber-400 text-[10px]">Low Stock Threshold Alerts</p>
+                <p className="font-mono uppercase tracking-wider text-[#D97706] text-[10px]">Low Stock Threshold Alerts</p>
                 <div className="flex items-baseline gap-2">
-                  <p className="text-2xl text-amber-400 font-extrabold font-mono tracking-tight">{lowStockCount}</p>
-                  <span className="text-xs text-[#8f9099] font-mono">SKUs need reorder</span>
+                  <p className="text-2xl text-[#D97706] font-extrabold font-mono tracking-tight">{lowStockCount}</p>
+                  <span className="text-xs text-[#64748B] font-mono">SKUs need reorder</span>
                 </div>
-                <p className="text-[11px] text-[#8f9099]">Reorder threshold: &le; 2 units</p>
+                <p className="text-[11px] text-[#64748B]">Reorder threshold: &le; 2 units</p>
               </div>
-              <div className="p-2 rounded-lg bg-white/5 text-amber-400 border border-white/10">
+              <div className="p-2 rounded-lg bg-[#FEF3C7] text-[#D97706] border border-[#D97706]/30">
                 <span className="material-symbols-outlined text-xl">warning</span>
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#162447] border border-[#6091C3]/30 flex items-start justify-between relative overflow-hidden shadow">
+            <div className="p-4 rounded-xl bg-white border border-[#E2E8F0] flex items-start justify-between relative overflow-hidden shadow-xs">
               <div className="space-y-1">
-                <p className="font-mono uppercase tracking-wider text-[#8f9099] text-[10px]">Depot Compliance</p>
+                <p className="font-mono uppercase tracking-wider text-[#64748B] text-[10px]">Depot Compliance</p>
                 <div className="flex items-baseline gap-2">
-                  <p className="text-2xl text-emerald-400 font-extrabold font-mono tracking-tight">100%</p>
-                  <span className="text-xs text-[#8f9099] font-mono">TÜV / ECE</span>
+                  <p className="text-2xl text-[#16A34A] font-extrabold font-mono tracking-tight">100%</p>
+                  <span className="text-xs text-[#64748B] font-mono">TÜV / ECE</span>
                 </div>
-                <p className="text-[11px] text-emerald-400 font-mono">All serials authenticated</p>
+                <p className="text-[11px] text-[#16A34A] font-mono font-semibold">All serials authenticated</p>
               </div>
-              <div className="p-2 rounded-lg bg-white/5 text-emerald-400 border border-white/10">
+              <div className="p-2 rounded-lg bg-[#DCFCE7] text-[#16A34A] border border-[#16A34A]/30">
                 <span className="material-symbols-outlined text-xl">verified</span>
               </div>
             </div>
@@ -203,15 +206,15 @@ export default function InventoryProcurementPage() {
 
         {/* Catalog Table Section */}
         <section className="px-6 pb-12 max-w-7xl mx-auto w-full">
-          <div className="bg-[#162447] rounded-xl border border-[#6091c3]/30 p-5 space-y-4 shadow-xl">
+          <div className="bg-white rounded-xl border border-[#E2E8F0] p-5 space-y-4 shadow-sm">
             
             {/* Filter Bar with Integrated Search & Live API Status */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/10">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#E2E8F0]">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="font-['Montserrat'] font-bold text-xs uppercase tracking-wider text-white">
+                <span className="font-['Montserrat'] font-bold text-xs uppercase tracking-wider text-[#111827]">
                   Warehouse Stock & Procurement List
                 </span>
-                <span className="px-2 py-0.5 bg-[#0d131f] rounded text-[#6091C3] text-[11px] font-mono font-bold border border-[#6091C3]/30">
+                <span className="px-2 py-0.5 bg-[#EEF2FF] rounded text-[#0213B2] text-[11px] font-mono font-bold border border-[#0213B2]/20">
                   {filteredParts.length} Live Items
                 </span>
               </div>
@@ -219,18 +222,18 @@ export default function InventoryProcurementPage() {
               {/* Right Side: Search Box & Category Filters */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <div className="relative w-full sm:w-64">
-                  <span className="material-symbols-outlined absolute left-2.5 top-2 text-[#8f9099] text-base">search</span>
+                  <span className="material-symbols-outlined absolute left-2.5 top-2 text-[#64748B] text-base">search</span>
                   <input 
                     type="text"
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     placeholder="Search SKU, brand, name..." 
-                    className="w-full pl-8 pr-7 py-1.5 rounded-lg bg-[#0d131f] border border-[#45464e]/40 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#6091c3] font-mono shadow-inner"
+                    className="w-full pl-8 pr-7 py-1.5 rounded-lg bg-white border border-[#CBD5E1] text-xs text-[#111827] placeholder-[#94A3B8] focus:outline-none focus:border-[#0213B2] focus:ring-1 focus:ring-[#0213B2] font-mono shadow-xs"
                   />
                   {searchQuery && (
                     <button 
                       onClick={() => setSearchQuery('')}
-                      className="absolute right-2.5 top-2 text-[#8f9099] hover:text-white text-xs"
+                      className="absolute right-2.5 top-2 text-[#64748B] hover:text-[#111827] text-xs cursor-pointer"
                     >
                       ✕
                     </button>
@@ -244,8 +247,8 @@ export default function InventoryProcurementPage() {
                       onClick={() => setActiveCategory(cat.id)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                         activeCategory === cat.id
-                          ? 'bg-[#6091C3] text-white shadow'
-                          : 'bg-white/5 text-[#c8d4ea] hover:bg-white/10 border border-white/10'
+                          ? 'bg-[#0213B2] text-white shadow-xs'
+                          : 'bg-white text-[#475569] hover:bg-[#D7E1FF] hover:text-[#0213B2] border border-[#CBD5E1]'
                       }`}
                     >
                       {cat.label}
@@ -257,16 +260,16 @@ export default function InventoryProcurementPage() {
 
             {/* List of Dynamic Parts */}
             {loading ? (
-              <div className="py-16 text-center text-xs font-mono text-[#8f9099] flex items-center justify-center gap-2">
-                <span className="w-4 h-4 border-2 border-[#6091c3] border-t-transparent rounded-full animate-spin" />
+              <div className="py-16 text-center text-xs font-mono text-[#64748B] flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-[#0213B2] border-t-transparent rounded-full animate-spin" />
                 <span>Loading warehouse inventory...</span>
               </div>
             ) : filteredParts.length === 0 ? (
-              <div className="py-16 text-center text-xs font-mono text-[#8f9099] space-y-2">
+              <div className="py-16 text-center text-xs font-mono text-[#64748B] space-y-2">
                 <p>No inventory items match search criteria "{searchQuery}"</p>
                 <button 
                   onClick={() => { setSearchQuery(''); setActiveCategory('all') }}
-                  className="text-[#6091c3] hover:underline"
+                  className="text-[#0213B2] hover:underline cursor-pointer"
                 >
                   Reset search & filters
                 </button>
@@ -282,37 +285,37 @@ export default function InventoryProcurementPage() {
                   return (
                     <div 
                       key={part.partId || part.id || part.sku}
-                      className="bg-[#0d131f] border border-[#6091c3]/20 hover:border-[#6091c3]/60 transition-all p-4 rounded-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+                      className="bg-white border border-[#E2E8F0] hover:border-[#CBD5E1] transition-all p-4 rounded-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xs"
                     >
                       <div className="flex items-start gap-4">
-                        <div className="w-16 h-16 rounded-lg bg-[#162447] border border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-lg bg-white border border-[#E2E8F0] overflow-hidden shrink-0 flex items-center justify-center p-1 shadow-xs" data-preserve-white="true">
                           {partThumb ? (
-                            <img src={partThumb} alt={part.partName} className="w-full h-full object-cover" />
+                            <img src={partThumb} alt={part.partName} className="max-w-full max-h-full object-contain" />
                           ) : (
-                            <span className="material-symbols-outlined text-2xl text-[#6091c3]">build_circle</span>
+                            <span className="material-symbols-outlined text-2xl text-[#0213B2]">build_circle</span>
                           )}
                         </div>
 
                         <div className="space-y-1">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="px-2 py-0.5 bg-[#162447] text-[#6091C3] border border-[#6091C3]/30 rounded text-[10px] font-mono font-bold tracking-wider">
+                            <span className="px-2 py-0.5 bg-[#F1F5F9] text-[#0213B2] border border-[#E2E8F0] rounded text-[10px] font-mono font-bold tracking-wider">
                               SKU: {part.sku || `PART-${part.partId}`}
                             </span>
                             <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider border ${
                               isLow
-                                ? 'bg-amber-950/80 border-amber-500/50 text-amber-400'
-                                : 'bg-emerald-950/80 border-emerald-500/50 text-emerald-400'
+                                ? 'bg-[#FEF3C7] border-[#D97706]/40 text-[#D97706]'
+                                : 'bg-[#DCFCE7] border-[#16A34A]/40 text-[#16A34A]'
                             }`}>
                               {isLow ? `Low Stock: ${part.stockQuantity} units` : `In Stock: ${part.stockQuantity} units`}
                             </span>
-                            <span className="text-[10px] text-[#8f9099] font-mono uppercase bg-white/5 px-1.5 py-0.5 rounded">
+                            <span className="text-[10px] text-[#64748B] font-mono uppercase bg-[#F1F5F9] px-1.5 py-0.5 rounded border border-[#E2E8F0]">
                               {part.brand || 'OEM Supplier'}
                             </span>
                           </div>
-                          <h4 className="font-['Montserrat'] font-bold text-sm text-white">
+                          <h4 className="font-['Montserrat'] font-bold text-sm text-[#111827]">
                             {part.partName}
                           </h4>
-                          <p className="text-xs text-[#c8d4ea] line-clamp-1">
+                          <p className="text-xs text-[#475569] line-clamp-1">
                             {part.description || part.specifications || 'Precision engineered high-performance tuning component'}
                           </p>
                         </div>
@@ -320,10 +323,10 @@ export default function InventoryProcurementPage() {
 
                       <div className="flex items-center gap-5 self-end md:self-center shrink-0">
                         <div className="text-right">
-                          <div className="font-mono text-sm font-bold text-[#6091c3]">
+                          <div className="font-mono text-sm font-bold text-[#0213B2]">
                             ${priceUsd.toLocaleString()} USD
                           </div>
-                          <div className="text-[10px] font-mono text-[#8f9099]">
+                          <div className="text-[10px] font-mono text-[#64748B]">
                             {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(priceVnd)}
                           </div>
                         </div>
@@ -331,7 +334,7 @@ export default function InventoryProcurementPage() {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => handleProcure(part.partId || part.id, 2)}
-                            className="px-3 py-1.5 rounded-lg bg-[#6091c3]/20 hover:bg-[#6091c3] text-[#6091c3] hover:text-white border border-[#6091c3]/40 font-['Montserrat'] text-xs font-bold transition-all flex items-center gap-1 active:scale-95 cursor-pointer"
+                            className="px-3.5 py-1.5 rounded-lg bg-[#0213B2] hover:bg-[#0115BC] active:bg-[#06169B] text-white font-['Montserrat'] text-xs font-bold transition-all flex items-center gap-1 active:scale-95 cursor-pointer shadow-xs"
                             title="Send B2B Procurement Request to OEM"
                           >
                             <span className="material-symbols-outlined text-sm">add_shopping_cart</span>

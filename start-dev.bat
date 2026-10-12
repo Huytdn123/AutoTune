@@ -108,8 +108,8 @@ echo [3/3] Dang tu dong mo ung dung tren trinh duyet...
 timeout /t 3 /nobreak >nul 2>nul
 start http://localhost:5173
 echo.
-echo Cua so dieu khien nay se tu dong dong sau 7 giay...
-timeout /t 7 /nobreak >nul 2>nul
+echo Cua so dieu khien nay se tu dong dong sau 5 giay...
+timeout /t 5 /nobreak >nul 2>nul
 exit
 
 :: -------------------------------------------------------------------------

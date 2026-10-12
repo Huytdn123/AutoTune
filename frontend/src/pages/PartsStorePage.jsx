@@ -13,6 +13,18 @@ const STORE_CATEGORIES = [
   { id: 'aero', label: 'Carbon Aero Kits', icon: 'speed' }
 ]
 
+const SKU_IMAGE_MAP = {
+  'BBS-FIR-992-TITAN': '/images/bbs-fi-r-wheel.jpg',
+  'RAYS-TE37-ULTRA-20': '/images/rays-te37-ultra.jpg',
+  'WORK-VSXX-19-F458': '/images/work-vs-xx-wheel.jpg',
+  'GEN-GTWING-F458': '/images/carbon-gt-wing.jpg',
+  'CARB-AERO-F458': '/images/carbon-aero-package.jpg',
+  'AKR-EVO-TITAN-992': '/images/akrapovic-evolution-line.jpg',
+  'KW-35271842-V4CS': '/images/kw-v4-clubsport.jpg',
+  'BRM-1N1.9042A2': '/images/brembo-gt-brake-kit.jpg',
+  'VOR-CF-AERO-992': '/images/vorsteiner-carbon-aero.jpg'
+}
+
 export default function PartsStorePage({ defaultTab }) {
   const navigate = useNavigate()
   const location = useLocation()
@@ -59,7 +71,7 @@ export default function PartsStorePage({ defaultTab }) {
           stock: p.stockQuantity ?? p.stock ?? 0,
           rating: p.rating ? Number(p.rating) : 4.9,
           badge: p.badge || 'HOT / BESTSELLER',
-          image: p.imageUrl || p.image || '/images/hero-car.jpg'
+          image: SKU_IMAGE_MAP[p.sku] || p.imageUrl || p.image || '/images/bbs-fi-r-wheel.jpg'
         })))
       } else {
         setPartsError('No parts found in the backend database.')
@@ -117,42 +129,28 @@ export default function PartsStorePage({ defaultTab }) {
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-[#0d131f] text-[#e3e8f5] font-['Inter',sans-serif] min-h-[calc(100vh-64px)] select-none">
+    <div className="flex-1 flex flex-col bg-[#F3F5FA] text-[#111827] font-['Inter',sans-serif] min-h-[calc(100vh-64px)] select-none">
       
       {/* Toast Feedback */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#1f2f57] border border-[#6091c3] text-[#dae2ff] text-xs font-['Montserrat'] font-bold rounded-lg shadow-2xl flex items-center gap-2.5 animate-in fade-in slide-in-from-bottom-4 duration-200">
-          <span className="material-symbols-outlined text-base text-[#6091c3]">check_circle</span>
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#0213B2] border border-[#0213B2] text-white text-xs font-['Montserrat'] font-bold rounded-lg shadow-2xl flex items-center gap-2.5 animate-in fade-in slide-in-from-bottom-4 duration-200">
+          <span className="material-symbols-outlined text-base text-white">check_circle</span>
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* STORE HERO BANNER (Preserved exactly from Image 1) */}
-      <section 
-        className="relative py-10 px-6 lg:px-12 border-b border-[#45464e]/30 overflow-hidden"
-        style={{
-          background: 'linear-gradient(135deg, #162447 0%, #1f2f57 50%, #0d131f 100%)',
-        }}
-      >
-        {/* Subtle grid pattern */}
-        <div 
-          className="absolute inset-0 pointer-events-none opacity-10"
-          style={{
-            backgroundImage: 'radial-gradient(rgba(96,145,195,0.6) 1px, transparent 1px)',
-            backgroundSize: '20px 20px'
-          }}
-        />
-
+      {/* STORE HERO BANNER */}
+      <section className="relative py-10 px-6 lg:px-12 border-b border-[#BCC7D8] bg-[#E8EDFF] overflow-hidden">
         <div className="relative max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-[#6091c3]/15 border border-[#6091c3]/30 text-[#6091c3] text-[10px] font-mono font-bold uppercase tracking-wider">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#6091c3] animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-[#D7E1FF] border border-[#0213B2]/30 text-[#0213B2] text-[10px] font-mono font-bold uppercase tracking-wider">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0213B2] animate-pulse" />
               {activeTab === 'inventory' ? 'OFFICIAL B2B WAREHOUSE DEPOT' : 'OFFICIAL B2B PERFORMANCE STORE'}
             </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white font-['Montserrat'] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#111827] font-['Montserrat'] tracking-tight">
               {activeTab === 'inventory' ? 'Warehouse Inventory & Procurement' : 'High-Performance Parts & Tuning Store'}
             </h1>
-            <p className="text-xs sm:text-sm text-[#c8d4ea] leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#334155] leading-relaxed">
               {activeTab === 'inventory' 
                 ? 'Live OEM stock tracking, inventory valuation, depot compliance, and supplier replenishment.'
                 : 'Explore authentic OEM and aftermarket upgrades (BBS, Akrapovič, KW, Brembo, Rays, Vorsteiner). Verified CAD fitment matrix and seamless 3D Configurator staging.'}
@@ -162,7 +160,7 @@ export default function PartsStorePage({ defaultTab }) {
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
             {/* Unified Mode Toggle: STRICTLY HIDDEN from guests and regular car owners */}
             {isGarageStaff && (
-              <div className="flex items-center p-1 rounded-xl bg-[#0d131f]/90 border border-white/15 shadow-inner">
+              <div className="flex items-center p-1 rounded-xl bg-[#D7E1FF] border border-[#BCC7D8] shadow-inner">
                 <button
                   type="button"
                   onClick={() => {
@@ -171,8 +169,8 @@ export default function PartsStorePage({ defaultTab }) {
                   }}
                   className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-['Montserrat'] font-bold uppercase tracking-wider transition-all cursor-pointer ${
                     activeTab === 'store'
-                      ? 'bg-[#6091c3] text-white shadow-md'
-                      : 'text-[#c8d4ea] hover:text-white'
+                      ? 'bg-[#0213B2] text-white shadow-sm'
+                      : 'text-[#06169B] hover:text-[#111827] hover:bg-white/50'
                   }`}
                 >
                   <span className="material-symbols-outlined text-sm">storefront</span>
@@ -187,8 +185,8 @@ export default function PartsStorePage({ defaultTab }) {
                   }}
                   className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-['Montserrat'] font-bold uppercase tracking-wider transition-all cursor-pointer ${
                     activeTab === 'inventory'
-                      ? 'bg-[#10b981] text-white shadow-md'
-                      : 'text-[#c8d4ea] hover:text-white'
+                      ? 'bg-[#16A34A] text-white shadow-sm'
+                      : 'text-[#06169B] hover:text-[#111827] hover:bg-white/50'
                   }`}
                 >
                   <span className="material-symbols-outlined text-sm">inventory_2</span>
@@ -206,7 +204,7 @@ export default function PartsStorePage({ defaultTab }) {
                   navigate('/cart')
                 }
               }}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#6091c3] hover:brightness-110 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider transition-all shadow-md active:scale-98 cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0213B2] hover:bg-[#0115BC] text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider transition-all shadow-sm active:scale-98 cursor-pointer"
             >
               <span className="material-symbols-outlined text-base">{currentUser ? 'shopping_cart' : 'lock'}</span>
               <span>{currentUser ? `CART (${cartCount})` : 'CART'}</span>
@@ -223,282 +221,277 @@ export default function PartsStorePage({ defaultTab }) {
       ) : (
         <>
           {/* FILTER & SEARCH TOOLBAR */}
-          <section className="sticky top-16 z-30 bg-[#162447]/95 backdrop-blur-md border-b border-[#45464e]/30 px-6 lg:px-12 py-3.5">
+          <section className="sticky top-16 z-30 bg-[#E5E8F0]/95 dark:bg-[#0B0C10]/95 backdrop-blur-md border-b border-[#CBD5E1] dark:border-[#282A3A] px-6 lg:px-12 py-3.5 shadow-xs">
             <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           
-          {/* Categories Tab */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
-            {STORE_CATEGORIES.map(cat => {
-              const active = selectedCategory === cat.id
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer font-['Montserrat'] ${
-                    active
-                      ? 'bg-[#6091c3] text-white shadow-md'
-                      : 'bg-white/5 text-[#c8d4ea] hover:bg-white/10 hover:text-white border border-white/10'
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-sm">{cat.icon}</span>
-                  <span>{cat.label}</span>
-                </button>
-              )
-            })}
-          </div>
-
-          {/* Search Box */}
-          <div className="relative w-full lg:w-80 shrink-0">
-            <span className="material-symbols-outlined absolute left-3 top-2.5 text-[#8f9099] text-base">search</span>
-            <input 
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by part name, brand, SKU or vehicle..."
-              className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-[#0d131f] border border-[#45464e]/40 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#6091c3] transition-all"
-            />
-            {searchQuery && (
-              <button 
-                onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-2 text-[#8f9099] hover:text-white text-xs"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-
-        </div>
-      </section>
-
-      {/* PRODUCTS GRID */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-6 lg:px-12 py-8">
-        
-        <div className="flex items-center justify-between mb-6 pb-2 border-b border-[#45464e]/20">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-bold font-['Montserrat'] text-white">
-              VERIFIED PERFORMANCE CATALOG
-            </span>
-            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-[#1f2f57] text-[#6091c3] border border-[#6091c3]/30">
-              {filteredItems.length} PRODUCTS
-            </span>
-          </div>
-
-          <span className="text-[11px] font-mono text-[#8f9099] hidden sm:block">
-            24-MONTH OFFICIAL WARRANTY • TÜV HOMOLOGATED & COMPLIANT
-          </span>
-        </div>
-
-        {loadingParts ? (
-          <div className="py-24 text-center flex flex-col items-center justify-center space-y-4 bg-[#162447]/40 rounded-2xl border border-white/10">
-            <div className="w-12 h-12 rounded-full border-4 border-[#6091c3]/20 border-t-[#6091c3] animate-spin" />
-            <h3 className="text-sm font-bold uppercase tracking-wider text-white">Loading Parts Catalog</h3>
-            <p className="text-xs text-[#8f9099] font-mono">Synchronizing verified parts inventory...</p>
-          </div>
-        ) : partsError && partsList.length === 0 ? (
-          <div className="py-20 text-center space-y-4 bg-[#162447]/40 rounded-2xl border border-rose-500/30">
-            <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 mx-auto">
-              <span className="material-symbols-outlined text-2xl">cloud_off</span>
-            </div>
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">Parts Catalog Connection Error</h3>
-            <p className="text-xs text-[#c8d4ea] max-w-md mx-auto">{partsError}</p>
-            <button
-              onClick={fetchParts}
-              className="px-4 py-2 rounded-lg bg-[#6091c3] hover:bg-[#6091c3]/80 text-white text-xs font-bold font-['Montserrat'] uppercase transition-all shadow-md"
-            >
-              Retry Connection
-            </button>
-          </div>
-        ) : filteredItems.length === 0 ? (
-          <div className="py-20 text-center space-y-3 bg-[#162447]/40 rounded-2xl border border-white/10">
-            <span className="material-symbols-outlined text-5xl text-[#8f9099]">search_off</span>
-            <p className="text-sm text-[#c8d4ea]">No performance components match "{searchQuery}"</p>
-            <button 
-              onClick={() => { setSearchQuery(''); setSelectedCategory('all') }}
-              className="text-xs text-[#6091c3] hover:underline font-mono"
-            >
-              Reset search & filters
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredItems.map(item => (
-              <div 
-                key={item.id}
-                className="group rounded-xl overflow-hidden flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl"
-                style={{
-                  backgroundColor: '#162447',
-                  border: '1.5px solid rgba(96,145,195,0.25)',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
-                }}
-              >
-                {/* Product Image & Badges */}
-                <div className="relative aspect-video bg-[#0d131f] overflow-hidden">
-                  <img 
-                    src={item.image} 
-                    alt={item.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#162447] via-transparent to-transparent opacity-80" />
-                  
-                  {/* Top Badges */}
-                  <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-                    <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-[#6091c3] text-white shadow">
-                      {item.badge}
-                    </span>
-                    <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-black/60 text-white/90 backdrop-blur-sm border border-white/10">
-                      {item.brand}
-                    </span>
-                  </div>
-
-                  {/* Stock Status */}
-                  <div className="absolute bottom-2.5 left-3">
-                    <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-500/40">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      In Stock: {item.stock} sets
-                    </span>
-                  </div>
-                </div>
-
-                {/* Body Content */}
-                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                  <div className="space-y-1.5">
-                    <div className="text-[10px] font-mono text-[#8f9099]">
-                      SKU: <strong className="text-white/80">{item.sku}</strong>
-                    </div>
-                    <h3 className="font-bold text-base text-white font-['Montserrat'] line-clamp-1 group-hover:text-[#6091c3] transition-colors">
-                      {item.name}
-                    </h3>
-                    <p className="text-xs text-[#c8d4ea] line-clamp-2">
-                      {item.spec}
-                    </p>
-                    <div className="pt-2 text-[11px] text-[#8f9099] flex items-center gap-1 font-mono">
-                      <span className="material-symbols-outlined text-xs text-[#6091c3]">directions_car</span>
-                      <span className="truncate">{item.compatible}</span>
-                    </div>
-                  </div>
-
-                  {/* Pricing & CTA */}
-                  <div className="pt-3 border-t border-white/10 flex items-center justify-between gap-3">
-                    <div>
-                      <div className="text-xs font-mono text-[#8f9099] uppercase">B2B Price</div>
-                      <div className="text-base font-extrabold text-[#6091c3] font-mono">
-                        ${item.priceUsd.toLocaleString()} USD
-                      </div>
-                      <div className="text-[10px] font-mono text-white/50">
-                        ({formatVnd(item.priceVnd)})
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        onClick={() => setViewItem(item)}
-                        className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white transition-colors cursor-pointer"
-                        title="View Technical Specifications"
-                      >
-                        <span className="material-symbols-outlined text-base">info</span>
-                      </button>
-
-                      <button
-                        onClick={() => handleAddToCart(item)}
-                        className={`px-3.5 py-2 rounded-lg font-['Montserrat'] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-md cursor-pointer ${
-                          currentUser
-                            ? 'bg-[#6091c3] hover:brightness-110 active:scale-95 text-white'
-                            : 'bg-white/10 hover:bg-white/20 text-[#dae2ff] border border-white/15'
-                        }`}
-                        title={currentUser ? 'Add item to cart' : 'Sign in required to add items to cart'}
-                      >
-                        <span className="material-symbols-outlined text-sm">{currentUser ? 'add_shopping_cart' : 'lock'}</span>
-                        <span>{currentUser ? 'ADD TO CART' : 'SIGN IN TO BUY'}</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
+              {/* Categories Tab */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
+                {STORE_CATEGORIES.map(cat => {
+                  const active = selectedCategory === cat.id
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => setSelectedCategory(cat.id)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer font-['Montserrat'] ${
+                        active
+                          ? 'bg-[#0213B2] text-white shadow-xs'
+                          : 'bg-[#E5E8F0] dark:bg-[#14151D] text-[#475569] dark:text-[#CBD5E1] hover:bg-[#D7E1FF] dark:hover:bg-[#1A224D] hover:text-[#0213B2] dark:hover:text-[#60A5FA] border border-[#CBD5E1] dark:border-[#282A3A]'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-sm">{cat.icon}</span>
+                      <span>{cat.label}</span>
+                    </button>
+                  )
+                })}
               </div>
-            ))}
-          </div>
-        )}
 
-      </main>
+              {/* Search Box */}
+              <div className="relative w-full lg:w-80 shrink-0">
+                <span className="material-symbols-outlined absolute left-3 top-2.5 text-[#64748B] text-base">search</span>
+                <input 
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search by part name, brand, SKU or vehicle..."
+                  className="w-full pl-9 pr-8 py-2 rounded-lg bg-[#E5E8F0] dark:bg-[#14151D] border border-[#CBD5E1] dark:border-[#282A3A] text-xs text-[#111827] dark:text-[#F8FAFC] placeholder-[#94A3B8] focus:outline-none focus:border-[#0213B2] dark:focus:border-[#60A5FA] focus:ring-1 focus:ring-[#0213B2] dark:focus:ring-[#60A5FA] transition-all shadow-xs"
+                />
+                {searchQuery && (
+                  <button 
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2.5 top-2.5 text-[#64748B] hover:text-[#111827] text-xs cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
 
-      {/* QUICK VIEW TECHNICAL MODAL */}
-      {viewItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div 
-            className="relative w-full max-w-lg rounded-2xl p-6 space-y-4 shadow-2xl"
-            style={{
-              backgroundColor: '#162447',
-              border: '1.5px solid #6091C3',
-            }}
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <span className="text-[10px] font-mono font-bold text-[#6091c3] uppercase tracking-wider">
-                  DETAILED TECHNICAL SPECIFICATIONS
+            </div>
+          </section>
+
+          {/* PRODUCTS GRID */}
+          <main className="flex-1 max-w-7xl w-full mx-auto px-6 lg:px-12 py-8">
+            
+            <div className="flex items-center justify-between mb-6 pb-2 border-b border-[#E2E8F0]">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold font-['Montserrat'] text-[#111827]">
+                  VERIFIED PERFORMANCE CATALOG
                 </span>
-                <h3 className="text-lg font-bold text-white font-['Montserrat'] mt-0.5">
-                  {viewItem.name}
-                </h3>
+                <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-[#EEF2FF] text-[#0213B2] border border-[#0213B2]/20">
+                  {filteredItems.length} PRODUCTS
+                </span>
               </div>
-              <button 
-                onClick={() => setViewItem(null)}
-                className="p-1 rounded-lg text-white/60 hover:text-white hover:bg-white/10 cursor-pointer"
-              >
-                <span className="material-symbols-outlined">close</span>
-              </button>
+
+              <span className="text-[11px] font-mono text-[#64748B] hidden sm:block">
+                24-MONTH OFFICIAL WARRANTY • TÜV HOMOLOGATED & COMPLIANT
+              </span>
             </div>
 
-            <img 
-              src={viewItem.image} 
-              alt={viewItem.name}
-              className="w-full h-48 object-cover rounded-xl border border-white/10"
-            />
+            {loadingParts ? (
+              <div className="py-24 text-center flex flex-col items-center justify-center space-y-4 bg-[#E5E8F0] dark:bg-[#14151D] rounded-2xl border border-[#CBD5E1] dark:border-[#282A3A] shadow-xs">
+                <div className="w-12 h-12 rounded-full border-4 border-[#0213B2]/20 border-t-[#0213B2] animate-spin" />
+                <h3 className="text-sm font-bold uppercase tracking-wider text-[#111827] dark:text-[#F8FAFC]">Loading Parts Catalog</h3>
+                <p className="text-xs text-[#64748B] dark:text-[#94A3B8] font-mono">Synchronizing verified parts inventory...</p>
+              </div>
+            ) : partsError && partsList.length === 0 ? (
+              <div className="py-20 text-center space-y-4 bg-[#E5E8F0] dark:bg-[#14151D] rounded-2xl border border-[#FEE2E2] dark:border-[#EF4444]/30 shadow-xs">
+                <div className="w-12 h-12 rounded-2xl bg-[#FEE2E2] dark:bg-[#EF4444]/20 border border-[#DC2626]/30 flex items-center justify-center text-[#DC2626] dark:text-[#F87171] mx-auto">
+                  <span className="material-symbols-outlined text-2xl">cloud_off</span>
+                </div>
+                <h3 className="text-sm font-bold text-[#111827] dark:text-[#F8FAFC] uppercase tracking-wider">Parts Catalog Connection Error</h3>
+                <p className="text-xs text-[#DC2626] dark:text-[#F87171] max-w-md mx-auto">{partsError}</p>
+                <button
+                  onClick={fetchParts}
+                  className="px-4 py-2 rounded-lg bg-[#0213B2] hover:bg-[#0115BC] text-white text-xs font-bold font-['Montserrat'] uppercase transition-all shadow-sm"
+                >
+                  Retry Connection
+                </button>
+              </div>
+            ) : filteredItems.length === 0 ? (
+              <div className="py-20 text-center space-y-3 bg-[#E5E8F0] dark:bg-[#14151D] rounded-2xl border border-[#CBD5E1] dark:border-[#282A3A] shadow-xs">
+                <span className="material-symbols-outlined text-5xl text-[#94A3B8]">search_off</span>
+                <p className="text-sm text-[#475569] dark:text-[#CBD5E1]">No performance components match "{searchQuery}"</p>
+                <button 
+                  onClick={() => { setSearchQuery(''); setSelectedCategory('all') }}
+                  className="text-xs text-[#0213B2] dark:text-[#60A5FA] hover:underline font-mono cursor-pointer"
+                >
+                  Reset search & filters
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredItems.map(item => (
+                  <div 
+                    key={item.id}
+                    className="group bg-[#E5E8F0] dark:bg-[#14151D] border border-[#CBD5E1] dark:border-[#282A3A] hover:border-[#94A3B8] dark:hover:border-[#383A4E] rounded-xl overflow-hidden flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 shadow-xs hover:shadow-md"
+                  >
+                    {/* Product Image & Badges */}
+                    <div className="relative aspect-video bg-[#F8FAFC] dark:bg-[#181A24] border-b border-[#CBD5E1] dark:border-[#282A3A] overflow-hidden flex items-center justify-center p-3">
+                      <div className="w-full h-full bg-white rounded-lg p-2 flex items-center justify-center shadow-xs" data-preserve-white="true">
+                        <img 
+                          src={item.image} 
+                          alt={item.name} 
+                          className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      
+                      {/* Top Badges */}
+                      <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10 pointer-events-none">
+                        <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-[#0213B2] text-white shadow">
+                          {item.badge}
+                        </span>
+                        <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-slate-900/80 text-white backdrop-blur-sm border border-slate-700/60 shadow-xs">
+                          {item.brand}
+                        </span>
+                      </div>
 
-            <div className="space-y-2 text-xs font-mono bg-[#0d131f] p-3.5 rounded-xl border border-white/10">
-              <div className="flex justify-between py-1 border-b border-white/10">
-                <span className="text-white/60">Brand / Manufacturer:</span>
-                <span className="text-white font-bold">{viewItem.brand}</span>
+                      {/* Stock Status */}
+                      <div className="absolute bottom-2.5 left-3 z-10 pointer-events-none">
+                        <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-white/95 dark:bg-[#14151D]/95 text-[#16A34A] dark:text-[#4ADE80] border border-[#16A34A]/30 shadow-xs">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
+                          In Stock: {item.stock} sets
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Body Content */}
+                    <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                      <div className="space-y-1.5">
+                        <div className="text-[10px] font-mono text-[#64748B] dark:text-[#94A3B8]">
+                          SKU: <strong className="text-[#111827] dark:text-[#F8FAFC]">{item.sku}</strong>
+                        </div>
+                        <h3 
+                          className="font-bold text-base text-[#111827] dark:text-[#F8FAFC] font-['Montserrat'] line-clamp-2 leading-snug group-hover:text-[#0213B2] dark:group-hover:text-[#60A5FA] transition-colors"
+                          title={item.name}
+                        >
+                          {item.name}
+                        </h3>
+                        <p className="text-xs text-[#475569] dark:text-[#CBD5E1] line-clamp-2">
+                          {item.spec}
+                        </p>
+                        <div className="pt-2 text-[11px] text-[#64748B] dark:text-[#94A3B8] flex items-center gap-1 font-mono">
+                          <span className="material-symbols-outlined text-xs text-[#0213B2] dark:text-[#60A5FA]">directions_car</span>
+                          <span className="truncate">{item.compatible}</span>
+                        </div>
+                      </div>
+
+                      {/* Pricing & CTA */}
+                      <div className="pt-3 border-t border-[#CBD5E1] dark:border-[#282A3A] flex items-center justify-between gap-3">
+                        <div>
+                          <div className="text-xs font-mono text-[#64748B] dark:text-[#94A3B8] uppercase">B2B Price</div>
+                          <div className="text-base font-extrabold text-[#0213B2] dark:text-[#60A5FA] font-mono">
+                            ${item.priceUsd.toLocaleString()} USD
+                          </div>
+                          <div className="text-[10px] font-mono text-[#64748B] dark:text-[#94A3B8]">
+                            ({formatVnd(item.priceVnd)})
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => setViewItem(item)}
+                            className="p-2 rounded-lg bg-[#E5E8F0] dark:bg-[#1B1D28] hover:bg-[#D7E1FF] dark:hover:bg-[#262938] border border-[#CBD5E1] dark:border-[#282A3A] text-[#475569] dark:text-[#CBD5E1] hover:text-[#0213B2] dark:hover:text-[#60A5FA] transition-colors cursor-pointer"
+                            title="View Technical Specifications"
+                          >
+                            <span className="material-symbols-outlined text-base">info</span>
+                          </button>
+
+                          <button
+                            onClick={() => handleAddToCart(item)}
+                            className={`px-3.5 py-2 rounded-lg font-['Montserrat'] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer ${
+                              currentUser
+                                ? 'bg-[#0213B2] hover:bg-[#0115BC] active:scale-95 text-white'
+                                : 'bg-[#E5E8F0] dark:bg-[#1B1D28] hover:bg-[#D7E1FF] dark:hover:bg-[#262938] text-[#111827] dark:text-[#F8FAFC] border border-[#CBD5E1] dark:border-[#282A3A]'
+                            }`}
+                            title={currentUser ? 'Add item to cart' : 'Sign in required to add items to cart'}
+                          >
+                            <span className="material-symbols-outlined text-sm">{currentUser ? 'add_shopping_cart' : 'lock'}</span>
+                            <span>{currentUser ? 'ADD TO CART' : 'SIGN IN TO BUY'}</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                ))}
               </div>
-              <div className="flex justify-between py-1 border-b border-white/10">
-                <span className="text-white/60">SKU Code:</span>
-                <span className="text-[#6091c3] font-bold">{viewItem.sku}</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-white/10">
-                <span className="text-white/60">Vehicle Fitment:</span>
-                <span className="text-white">{viewItem.compatible}</span>
-              </div>
-              <div className="flex justify-between py-1">
-                <span className="text-white/60">B2B Workshop Price:</span>
-                <span className="text-emerald-400 font-bold">${viewItem.priceUsd.toLocaleString()} USD ({formatVnd(viewItem.priceVnd)})</span>
+            )}
+
+          </main>
+
+          {/* QUICK VIEW TECHNICAL MODAL */}
+          {viewItem && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+              <div className="relative w-full max-w-lg rounded-2xl p-6 space-y-4 bg-[#E5E8F0] dark:bg-[#14151D] border border-[#CBD5E1] dark:border-[#282A3A] shadow-2xl">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <span className="text-[10px] font-mono font-bold text-[#0213B2] dark:text-[#60A5FA] uppercase tracking-wider">
+                      DETAILED TECHNICAL SPECIFICATIONS
+                    </span>
+                    <h3 className="text-lg font-bold text-[#111827] dark:text-[#F8FAFC] font-['Montserrat'] mt-0.5" title={viewItem.name}>
+                      {viewItem.name}
+                    </h3>
+                  </div>
+                  <button 
+                    onClick={() => setViewItem(null)}
+                    className="p-1.5 rounded-lg text-[#64748B] dark:text-[#94A3B8] hover:text-[#111827] dark:hover:text-[#F8FAFC] hover:bg-[#CBD5E1] dark:hover:bg-[#282A3A] cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-lg">close</span>
+                  </button>
+                </div>
+
+                <div className="w-full h-52 bg-white rounded-xl border border-[#CBD5E1] dark:border-[#282A3A] p-4 flex items-center justify-center overflow-hidden" data-preserve-white="true">
+                  <img 
+                    src={viewItem.image} 
+                    alt={viewItem.name}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+
+                <div className="space-y-2 text-xs font-mono bg-[#E5E8F0] dark:bg-[#1B1D28] p-4 rounded-xl border border-[#CBD5E1] dark:border-[#282A3A]">
+                  <div className="flex justify-between py-1 border-b border-[#CBD5E1] dark:border-[#282A3A]">
+                    <span className="text-[#64748B] dark:text-[#94A3B8]">Brand / Manufacturer:</span>
+                    <span className="text-[#111827] dark:text-[#F8FAFC] font-bold">{viewItem.brand}</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-[#CBD5E1] dark:border-[#282A3A]">
+                    <span className="text-[#64748B] dark:text-[#94A3B8]">SKU Code:</span>
+                    <span className="text-[#0213B2] dark:text-[#60A5FA] font-bold">{viewItem.sku}</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-[#CBD5E1] dark:border-[#282A3A]">
+                    <span className="text-[#64748B] dark:text-[#94A3B8]">Vehicle Fitment:</span>
+                    <span className="text-[#111827] dark:text-[#F8FAFC]">{viewItem.compatible}</span>
+                  </div>
+                  <div className="flex justify-between py-1">
+                    <span className="text-[#64748B] dark:text-[#94A3B8]">B2B Workshop Price:</span>
+                    <span className="text-[#16A34A] dark:text-[#4ADE80] font-bold">${viewItem.priceUsd.toLocaleString()} USD ({formatVnd(viewItem.priceVnd)})</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-2.5 pt-2">
+                  <button
+                    onClick={() => {
+                      handleAddToCart(viewItem)
+                      if (currentUser) setViewItem(null)
+                    }}
+                    className={`flex-1 py-2.5 rounded-lg font-['Montserrat'] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all ${
+                      currentUser
+                        ? 'bg-[#0213B2] text-white hover:bg-[#0115BC] shadow-sm'
+                        : 'bg-[#E5E8F0] dark:bg-[#1B1D28] hover:bg-[#EEF2FF] dark:hover:bg-[#262938] text-[#111827] dark:text-[#F8FAFC] border border-[#CBD5E1] dark:border-[#282A3A]'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-base">{currentUser ? 'add_shopping_cart' : 'lock'}</span>
+                    <span>{currentUser ? 'Add To Cart' : 'Sign In To Order'}</span>
+                  </button>
+                  <Link
+                    to="/configurator"
+                    className="px-4 py-2.5 rounded-lg bg-[#E5E8F0] dark:bg-[#1B1D28] hover:bg-[#EEF2FF] dark:hover:bg-[#262938] border border-[#CBD5E1] dark:border-[#282A3A] hover:border-[#0213B2] dark:hover:border-[#60A5FA] text-[#111827] dark:text-[#F8FAFC] hover:text-[#0213B2] dark:hover:text-[#60A5FA] font-['Montserrat'] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 cursor-pointer transition-all shadow-xs"
+                  >
+                    <span className="material-symbols-outlined text-sm text-[#0213B2] dark:text-[#60A5FA]">view_in_ar</span>
+                    <span>Stage in 3D</span>
+                  </Link>
+                </div>
               </div>
             </div>
-
-            <div className="flex gap-2.5 pt-2">
-              <button
-                onClick={() => {
-                  handleAddToCart(viewItem)
-                  if (currentUser) setViewItem(null)
-                }}
-                className={`flex-1 py-2.5 rounded-lg font-['Montserrat'] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all ${
-                  currentUser
-                    ? 'bg-[#6091c3] text-white hover:brightness-110 shadow-lg'
-                    : 'bg-white/10 hover:bg-white/20 text-[#dae2ff] border border-white/20'
-                }`}
-              >
-                <span className="material-symbols-outlined text-base">{currentUser ? 'add_shopping_cart' : 'lock'}</span>
-                <span>{currentUser ? 'Add To Cart' : 'Sign In To Order'}</span>
-              </button>
-              <Link
-                to="/configurator"
-                className="px-4 py-2.5 rounded-lg bg-white/10 hover:bg-white/15 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-sm">view_in_ar</span>
-                <span>Stage in 3D</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
+          )}
         </>
       )}
 

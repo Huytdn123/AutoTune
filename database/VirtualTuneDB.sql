@@ -356,49 +356,49 @@ INSERT INTO dbo.parts (part_id, sku, part_name, category, brand, specifications,
 VALUES
 (1, 'BBS-FIR-992-TITAN', 'BBS FI-R Forged Monoblock Wheel Set 20"/21"', 'Wheels & Rims', 'BBS Germany',
     'Ultra-lightweight aerospace forged aluminum • PCD 5x112 / ET35 • 7.8 kg/wheel',
-    215000000, 8600, '/images/wheel-titanium.jpg', 'Porsche 911 GT3 RS, BMW M4 Competition, McLaren 720S',
+    215000000, 8600, '/images/bbs-fi-r-wheel.jpg', 'Porsche 911 GT3 RS, BMW M4 Competition, McLaren 720S',
     4.90, 'HOT / BESTSELLER', 8, 'PASS', '5x112', 20.0, 9.5, 35, 66.6, NULL, NULL, NULL, 'Aerospace Forged Aluminum'),
 
 (2, 'RAYS-TE37-ULTRA-20', 'Volk Racing TE37 Ultra M-Spec Forged 20"', 'Wheels & Rims', 'Rays Japan',
     'Motorsport-grade forged monoblock • PCD 5x114.3 • Bronze Anodized finish',
-    185000000, 7400, '/images/wheel-volk-te37.jpg', 'Ferrari 458 Italia, Nissan GT-R Nismo (R35)',
+    185000000, 7400, '/images/rays-te37-ultra.jpg', 'Ferrari 458 Italia, Nissan GT-R Nismo (R35)',
     5.00, 'TRACK LEGEND', 6, 'PASS', '5x114.3', 20.0, 10.0, 30, 66.1, NULL, NULL, NULL, 'Motorsport Forged Monoblock'),
 
 (3, 'WORK-VSXX-19-F458', 'WORK VS-XX 19" Aftermarket Wheel', 'Wheels & Rims', 'WORK Wheels',
     '19-inch 3-piece modular forged construction • Classic mesh design • PCD 5x114.3',
-    105000000, 4200, '/images/wheel-volk-te37.jpg', 'Ferrari 458 Italia, Ferrari 458 Spider',
+    105000000, 4200, '/images/work-vs-xx-wheel.jpg', 'Ferrari 458 Italia, Ferrari 458 Spider',
     4.95, 'CC BY 4.0 VERIFIED', 8, 'PASS', '5x114.3', 19.0, 10.0, 30, 67.1, NULL, NULL,
     '/models/parts/ferrari-458/wheels/work-vs-xx.glb', '3-Piece Modular Forged Alloy'),
 
 (4, 'GEN-GTWING-F458', 'Carbon Aero GT Wing', 'Rear Spoilers', 'Track Aerodynamics',
     'Gloss carbon fiber airfoil blade • Twin CNC aluminum uprights • High-downforce track profile',
-    61250000, 2450, '/images/aero-carbon.jpg', 'Ferrari 458 Italia, Ferrari 458 Spider',
+    61250000, 2450, '/images/carbon-gt-wing.jpg', 'Ferrari 458 Italia, Ferrari 458 Spider',
     4.92, 'TRACK SPEC', 5, 'PASS', NULL, NULL, NULL, NULL, NULL, NULL, NULL,
     '/models/parts/ferrari-458/spoilers/carbon-gt-wing.glb', 'Gloss Carbon Fiber & CNC Aluminum'),
 
 (5, 'CARB-AERO-F458', 'Carbon Fiber Aerodynamics Package', 'Carbon Aero Kits', 'Track Aerodynamics',
     'Pre-preg carbon fiber front splitter extensions • Side skirts • Rear diffuser aero fins',
-    80000000, 3200, '/images/aero-carbon.jpg', 'Ferrari 458 Italia, Ferrari 458 Spider',
+    80000000, 3200, '/images/carbon-aero-package.jpg', 'Ferrari 458 Italia, Ferrari 458 Spider',
     4.93, 'TRACK SPEC', 4, 'PASS', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Pre-preg 2x2 Carbon Fiber'),
 
 (7, 'AKR-EVO-TITAN-992', 'Akrapovic Evolution Line Titanium Exhaust System', 'Exhaust Systems', 'Akrapovic',
     'Full Titanium construction • Bluetooth active flap control • -11.4 kg weight savings',
-    185000000, 7400, '/images/exhaust-akrapovic.jpg', 'Porsche 911 GT3 RS, Ferrari 458 Italia, Nissan GT-R Nismo (R35)',
+    185000000, 7400, '/images/akrapovic-evolution-line.jpg', 'Porsche 911 GT3 RS, Ferrari 458 Italia, Nissan GT-R Nismo (R35)',
     4.95, 'SIGNATURE SOUND', 3, 'PASS', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Grade 5 Titanium'),
 
 (8, 'KW-35271842-V4CS', 'KW Suspensions V4 Clubsport 3-Way Coilover Kit', 'Coilovers & Shocks', 'KW Automotive',
     '16-click rebound & independent high/low speed compression • Uniball camber plates',
-    123000000, 4920, '/images/suspension-kw.jpg', 'BMW M4 Competition, Porsche 911 GT3 RS, McLaren 720S',
+    123000000, 4920, '/images/kw-v4-clubsport.jpg', 'BMW M4 Competition, Porsche 911 GT3 RS, McLaren 720S',
     4.85, 'TRACK READY', 4, 'PASS', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Stainless Steel & Anodized Alloy'),
 
 (9, 'BRM-1N1.9042A2', 'Brembo GT-S 6-Piston Big Brake Kit 380x34mm', 'Brake Systems', 'Brembo Racing',
     'Radial monoblock caliper • 2-piece Type 3 slotted disc • 800°C thermal endurance',
-    96250000, 3850, '/images/brake-brembo.jpg', 'Universal Supercar Hubs (Ferrari 458, Porsche 911, McLaren 720S, Nissan GT-R)',
+    96250000, 3850, '/images/brembo-gt-brake-kit.jpg', 'Universal Supercar Hubs (Ferrari 458, Porsche 911, McLaren 720S, Nissan GT-R)',
     4.98, 'RACING SPEC', 5, 'PASS', 'Universal', NULL, NULL, NULL, NULL, 380, 19.0, NULL, 'Forged Monoblock Aluminum'),
 
 (10, 'VOR-CF-AERO-992', 'Vorsteiner Aero Carbon Wing & Rear Diffuser Package', 'Carbon Aero Kits', 'Vorsteiner USA',
     'Pre-preg 2x2 weave vacuum autoclave carbon • Aerodynamic downforce profile',
-    145000000, 5800, '/images/aero-carbon.jpg', 'Porsche 911 GT3 RS, McLaren 720S, BMW M4 Competition',
+    145000000, 5800, '/images/vorsteiner-carbon-aero.jpg', 'Porsche 911 GT3 RS, McLaren 720S, BMW M4 Competition',
     4.90, 'ULTRA LIGHTWEIGHT', 2, 'PASS', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Pre-preg Autoclave Carbon');
 SET IDENTITY_INSERT dbo.parts OFF;
 

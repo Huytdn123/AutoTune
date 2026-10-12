@@ -45,16 +45,16 @@ export default function ConfiguratorFooterSummary({
 
       <div className="flex justify-between items-center mb-2">
         <div>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 block">Estimated Build MSRP</span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-300 block">Estimated Build MSRP</span>
           {optionsTotal > 0 ? (
-            <span className="text-[9px] font-mono text-emerald-400 font-semibold">
+            <span className="text-[10px] font-mono text-emerald-400 font-bold">
               +${optionsTotal.toLocaleString()} ({selectedPartsCount} Parts)
             </span>
           ) : (
-            <span className="text-[9px] font-mono text-white/30 font-medium">Stock OEM Configuration</span>
+            <span className="text-[10px] font-mono text-slate-400 font-medium">Stock OEM Configuration</span>
           )}
         </div>
-        <span className="text-lg font-black font-mono" style={{ color: activeCar?.accentColor }}>
+        <span className="text-xl font-black font-mono text-white">
           ${totalEstimatedCost.toLocaleString()}
         </span>
       </div>
@@ -62,17 +62,17 @@ export default function ConfiguratorFooterSummary({
       <div className="flex gap-2">
         <button
           onClick={onOpenSaveModal}
-          className="flex-1 py-2 px-2.5 rounded-lg bg-white/8 border border-white/15 hover:border-white/30 hover:bg-white/12 text-white text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all shadow-sm"
+          className="flex-1 py-2 px-2 rounded-lg bg-white/10 border border-white/20 hover:border-white/35 hover:bg-white/15 text-white text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer min-w-0"
         >
-          <span className="material-symbols-outlined text-sm text-primary">bookmark_add</span>
-          Save 3D Build
+          <span className="material-symbols-outlined text-sm text-[#6091C3] shrink-0">bookmark_add</span>
+          <span className="truncate">Save 3D Build</span>
         </button>
         <button
           onClick={onGetQuote}
-          className="flex-1 py-2 px-2.5 rounded-lg bg-primary hover:bg-primary/90 text-on-primary text-[11px] font-bold flex items-center justify-center gap-1 transition-all shadow-md shadow-primary/30"
+          className="flex-1 py-2 px-2 rounded-lg bg-[#0213B2] hover:bg-[#0115BC] active:bg-[#06169B] text-white text-[11px] font-bold flex items-center justify-center gap-1 transition-all shadow-md shadow-[#0213B2]/30 cursor-pointer min-w-0"
         >
-          <span className="material-symbols-outlined text-xs">arrow_forward</span>
-          Get Quote
+          <span className="material-symbols-outlined text-xs shrink-0">arrow_forward</span>
+          <span className="truncate">Get Quote</span>
         </button>
       </div>
     </div>

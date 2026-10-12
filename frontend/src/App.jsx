@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { ThemeProvider } from './contexts/ThemeContext'
 import UnifiedNavbar from './components/UnifiedNavbar'
 import LoginModal from './components/LoginModal'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -246,7 +247,7 @@ function InteractiveAppWrapper() {
 
   return (
     <div 
-      className="min-h-screen bg-[#0d131f] text-[#e3e8f5] flex flex-col font-['Inter',sans-serif]"
+      className="min-h-screen bg-[#F3F5FA] text-[#111827] flex flex-col font-['Inter',sans-serif]"
       onClick={handleGlobalClick}
     >
       {/* STRICTLY SINGLE UNIFIED NAVBAR */}
@@ -257,8 +258,8 @@ function InteractiveAppWrapper() {
 
       {/* Professional Status Toast Notification */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#1f2f57] border border-[#6091c3] text-[#dae2ff] text-xs font-['Montserrat'] font-bold rounded-lg shadow-2xl flex items-center gap-2.5 animate-in fade-in slide-in-from-bottom-4 duration-200">
-          <span className="material-symbols-outlined text-base text-[#6091c3]">check_circle</span>
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#0213B2] border border-white/20 text-white text-xs font-['Montserrat'] font-bold rounded-xl shadow-xl flex items-center gap-2.5 animate-in fade-in slide-in-from-bottom-4 duration-200">
+          <span className="material-symbols-outlined text-base text-white">check_circle</span>
           <span>{toast.message}</span>
         </div>
       )}
@@ -351,10 +352,12 @@ function InteractiveAppWrapper() {
 
 export default function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <InteractiveAppWrapper />
-      </AuthProvider>
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <AuthProvider>
+          <InteractiveAppWrapper />
+        </AuthProvider>
+      </Router>
+    </ThemeProvider>
   )
 }

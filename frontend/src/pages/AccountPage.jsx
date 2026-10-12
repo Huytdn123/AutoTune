@@ -181,28 +181,28 @@ export default function AccountPage() {
 
   // Role Color Matrix
   const roleBadgeColors = {
-    GARAGE_OWNER: { bg: 'rgba(96,145,195,0.15)', border: 'rgba(96,145,195,0.4)', text: '#6091C3', label: 'Garage Owner (B2B)' },
-    LEAD_TECHNICIAN: { bg: 'rgba(16,185,129,0.15)', border: 'rgba(16,185,129,0.4)', text: '#10B981', label: 'Master Technician' },
-    CAR_OWNER: { bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.4)', text: '#F59E0B', label: 'Verified Car Owner' },
-    CUSTOMER: { bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.4)', text: '#F59E0B', label: 'Verified Car Owner' },
-    ADMIN: { bg: 'rgba(168,85,247,0.15)', border: 'rgba(168,85,247,0.4)', text: '#A855F7', label: 'System Administrator' }
+    GARAGE_OWNER: { bg: '#EEF2FF', border: '#CBD5E1', text: '#0213B2', label: 'Garage Owner (B2B)' },
+    LEAD_TECHNICIAN: { bg: '#DCFCE7', border: '#86EFAC', text: '#16A34A', label: 'Master Technician' },
+    CAR_OWNER: { bg: '#FEF3C7', border: '#FDE68A', text: '#D97706', label: 'Verified Car Owner' },
+    CUSTOMER: { bg: '#FEF3C7', border: '#FDE68A', text: '#D97706', label: 'Verified Car Owner' },
+    ADMIN: { bg: '#F3E8FF', border: '#D8B4FE', text: '#9333EA', label: 'System Administrator' }
   }
 
   const currentBadge = roleBadgeColors[role] || roleBadgeColors.CAR_OWNER
 
   return (
-    <div className="min-h-screen bg-[#0d131f] text-[#e3e8f5] py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-[#F3F5FA] text-[#111827]">
       {/* Toast Feedback */}
       {toast && (
         <div 
-          className="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-lg shadow-2xl flex items-center gap-2.5 animate-in fade-in"
+          className="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-xl flex items-center gap-2.5 animate-in fade-in"
           style={{
-            backgroundColor: toast.type === 'error' ? '#3B1219' : '#1f2f57',
-            border: `1.5px solid ${toast.type === 'error' ? '#EF4444' : '#6091c3'}`,
-            color: '#dae2ff'
+            backgroundColor: toast.type === 'error' ? '#DC2626' : '#0213B2',
+            border: '1px solid rgba(255,255,255,0.2)',
+            color: '#FFFFFF'
           }}
         >
-          <span className="material-symbols-outlined text-base" style={{ color: toast.type === 'error' ? '#EF4444' : '#6091c3' }}>
+          <span className="material-symbols-outlined text-base">
             {toast.type === 'error' ? 'error' : 'check_circle'}
           </span>
           <span className="text-xs font-semibold">{toast.message}</span>
@@ -212,22 +212,15 @@ export default function AccountPage() {
       <div className="max-w-6xl mx-auto space-y-6">
         {/* User Hero Header Card */}
         <div 
-          className="rounded-2xl p-6 sm:p-8 relative overflow-hidden backdrop-blur-md"
-          style={{
-            backgroundColor: 'rgba(22, 36, 71, 0.75)',
-            border: '1px solid rgba(96, 145, 195, 0.25)',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
-          }}
+          className="rounded-2xl p-6 sm:p-8 relative overflow-hidden bg-[#E8EDFF] border border-[#BCC7D8] shadow-sm"
         >
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
             {/* Avatar Preview */}
             <div className="relative group">
               <div 
-                className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden flex items-center justify-center font-bold text-3xl shadow-xl border-2"
+                className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden flex items-center justify-center font-bold text-3xl shadow-md border-2 bg-[#0213B2] text-white"
                 style={{
-                  backgroundColor: '#1f2f57',
                   borderColor: currentBadge.text,
-                  color: '#dae2ff'
                 }}
               >
                 {currentUser?.avatar || profileForm.avatarUrl ? (
@@ -253,10 +246,10 @@ export default function AccountPage() {
             <div className="flex-1 text-center sm:text-left space-y-2">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
                     {currentUser?.fullName || currentUser?.username}
                   </h1>
-                  <p className="text-sm text-[#8fa2c7] font-mono">
+                  <p className="text-sm text-[#475569] font-mono">
                     @{currentUser?.username} • {currentUser?.email}
                   </p>
                 </div>
@@ -276,32 +269,32 @@ export default function AccountPage() {
               </div>
 
               {currentUser?.garageName && (
-                <div className="inline-flex items-center gap-1.5 text-xs text-[#a6b8de] pt-1">
-                  <span className="material-symbols-outlined text-sm text-[#6091c3]">domain</span>
-                  <span>Affiliated Workshop: <strong className="text-white">{currentUser.garageName}</strong></span>
+                <div className="inline-flex items-center gap-1.5 text-xs text-[#475569] pt-1">
+                  <span className="material-symbols-outlined text-sm text-[#0213B2]">domain</span>
+                  <span>Affiliated Workshop: <strong className="text-[#111827]">{currentUser.garageName}</strong></span>
                 </div>
               )}
             </div>
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex items-center gap-2 mt-8 border-t border-white/10 pt-4 overflow-x-auto">
+          <div className="flex items-center gap-2 mt-8 border-t border-[#BCC7D8] pt-4 overflow-x-auto">
             <button
               onClick={() => setActiveTab('builds')}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer ${
                 activeTab === 'builds'
-                  ? 'bg-[#6091c3] text-[#0d131f] shadow-lg'
-                  : 'text-[#8fa2c7] hover:text-white hover:bg-white/5'
+                  ? 'bg-[#0213B2] text-white shadow-sm'
+                  : 'text-[#475569] hover:text-[#0213B2] hover:bg-[#D7E1FF]'
               }`}
             >
               <span className="material-symbols-outlined text-sm">directions_car</span>
               <span>My Saved Builds</span>
               <span 
-                className="px-1.5 py-0.2 rounded-full text-[10px] font-mono"
-                style={{
-                  backgroundColor: activeTab === 'builds' ? '#0d131f' : 'rgba(96,145,195,0.2)',
-                  color: activeTab === 'builds' ? '#dae2ff' : '#6091c3'
-                }}
+                className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                  activeTab === 'builds'
+                    ? 'bg-[#D7E1FF] dark:bg-[#1A224D] text-[#06169B] dark:text-[#93C5FD]'
+                    : 'bg-[#E5E8F0] dark:bg-[#1E202C] text-[#475569] dark:text-[#94A3B8]'
+                }`}
               >
                 {builds.length}
               </span>
@@ -311,8 +304,8 @@ export default function AccountPage() {
               onClick={() => setActiveTab('profile')}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer ${
                 activeTab === 'profile'
-                  ? 'bg-[#6091c3] text-[#0d131f] shadow-lg'
-                  : 'text-[#8fa2c7] hover:text-white hover:bg-white/5'
+                  ? 'bg-[#0213B2] text-white shadow-sm'
+                  : 'text-[#475569] hover:text-[#0213B2] hover:bg-[#D7E1FF]'
               }`}
             >
               <span className="material-symbols-outlined text-sm">person</span>
@@ -323,8 +316,8 @@ export default function AccountPage() {
               onClick={() => setActiveTab('security')}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer ${
                 activeTab === 'security'
-                  ? 'bg-[#6091c3] text-[#0d131f] shadow-lg'
-                  : 'text-[#8fa2c7] hover:text-white hover:bg-white/5'
+                  ? 'bg-[#0213B2] text-white shadow-sm'
+                  : 'text-[#475569] hover:text-[#0213B2] hover:bg-[#D7E1FF]'
               }`}
             >
               <span className="material-symbols-outlined text-sm">lock</span>
@@ -338,18 +331,18 @@ export default function AccountPage() {
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
               <div>
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                <h2 className="text-lg font-bold text-[#111827] flex items-center gap-2">
                   <span>Custom Builds Library</span>
-                  <span className="text-xs font-mono text-[#6091c3]">({builds.length} Active Configurations)</span>
+                  <span className="text-xs font-mono text-[#0213B2]">({builds.length} Active Configurations)</span>
                 </h2>
-                <p className="text-xs text-[#8fa2c7]">
+                <p className="text-xs text-[#475569]">
                   All bespoke 3D vehicle configurations created by your account. Stored securely in database.
                 </p>
               </div>
 
               <button
                 onClick={() => navigate('/configurator')}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#6091c3] text-[#0d131f] hover:brightness-110 transition-all shadow-md self-start sm:self-auto cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#0213B2] text-white hover:bg-[#0115BC] transition-all shadow-sm self-start sm:self-auto cursor-pointer"
               >
                 <span className="material-symbols-outlined text-sm">add_circle</span>
                 <span>New 3D Build</span>
@@ -357,27 +350,26 @@ export default function AccountPage() {
             </div>
 
             {buildsLoading ? (
-              <div className="p-12 text-center rounded-2xl bg-[#162447]/50 border border-white/10 space-y-3">
-                <span className="material-symbols-outlined text-3xl text-[#6091c3] animate-spin">refresh</span>
-                <p className="text-sm text-[#8fa2c7] font-mono">Fetching saved builds from database...</p>
+              <div className="p-12 text-center rounded-2xl bg-white border border-[#E2E8F0] space-y-3">
+                <span className="material-symbols-outlined text-3xl text-[#0213B2] animate-spin">refresh</span>
+                <p className="text-sm text-[#475569] font-mono">Fetching saved builds from database...</p>
               </div>
             ) : builds.length === 0 ? (
               <div 
-                className="p-12 text-center rounded-2xl border border-dashed border-white/15 space-y-4"
-                style={{ backgroundColor: 'rgba(22, 36, 71, 0.4)' }}
+                className="p-12 text-center rounded-2xl border border-dashed border-[#CBD5E1] bg-white space-y-4"
               >
-                <div className="w-14 h-14 rounded-full bg-[#1f2f57] flex items-center justify-center mx-auto text-[#6091c3]">
+                <div className="w-14 h-14 rounded-full bg-[#EEF2FF] border border-[#CBD5E1] flex items-center justify-center mx-auto text-[#0213B2] shadow-sm">
                   <span className="material-symbols-outlined text-2xl">directions_car</span>
                 </div>
                 <div className="max-w-md mx-auto space-y-1">
-                  <h3 className="text-base font-bold text-white">No Saved Builds Yet</h3>
-                  <p className="text-xs text-[#8fa2c7]">
+                  <h3 className="text-base font-bold text-[#111827]">No Saved Builds Yet</h3>
+                  <p className="text-xs text-[#475569]">
                     Launch the 3D Configurator to tune suspension, paint finishes, rims, and aerodynamic components, then save your setup here.
                   </p>
                 </div>
                 <button
                   onClick={() => navigate('/configurator')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#6091c3] text-[#0d131f] hover:brightness-110 transition-all shadow-lg cursor-pointer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#0213B2] text-white hover:bg-[#0115BC] transition-all shadow-md cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-sm">view_in_ar</span>
                   <span>Launch 3D Configurator</span>
@@ -392,12 +384,7 @@ export default function AccountPage() {
                   return (
                     <div 
                       key={build.shareCode}
-                      className="rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 hover:border-[#6091c3]/50 hover:shadow-xl group"
-                      style={{
-                        backgroundColor: 'rgba(22, 36, 71, 0.65)',
-                        border: '1px solid rgba(96, 145, 195, 0.2)',
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.3)'
-                      }}
+                      className="rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 bg-white border border-[#E2E8F0] shadow-sm hover:border-[#0213B2] hover:shadow-md group"
                     >
                       <div className="space-y-3">
                         {/* Build Header */}
@@ -409,19 +396,19 @@ export default function AccountPage() {
                                   type="text"
                                   value={renameInput}
                                   onChange={(e) => setRenameInput(e.target.value)}
-                                  className="w-full text-xs font-bold bg-[#0d131f] border border-[#6091c3] rounded px-2 py-1 text-white outline-none"
+                                  className="w-full text-xs font-bold bg-[#E5E8F0] dark:bg-[#14151D] border border-[#0213B2] dark:border-[#60A5FA] rounded px-2 py-1 text-[#111827] dark:text-[#F8FAFC] outline-none"
                                   autoFocus
                                 />
                                 <button
                                   onClick={() => handleSaveRename(build.shareCode)}
-                                  className="p-1 rounded bg-[#10b981] text-[#0d131f] hover:brightness-110"
+                                  className="p-1 rounded bg-[#16A34A] text-white hover:brightness-110"
                                   title="Save Name"
                                 >
                                   <span className="material-symbols-outlined text-xs">check</span>
                                 </button>
                                 <button
                                   onClick={() => setRenamingCode(null)}
-                                  className="p-1 rounded bg-white/10 text-white/70 hover:bg-white/20"
+                                  className="p-1 rounded bg-[#F1F5F9] text-[#475569] hover:bg-[#E2E8F0]"
                                   title="Cancel"
                                 >
                                   <span className="material-symbols-outlined text-xs">close</span>
@@ -429,12 +416,12 @@ export default function AccountPage() {
                               </div>
                             ) : (
                               <div className="flex items-center gap-1.5">
-                                <h3 className="text-sm font-bold text-white truncate" title={build.buildName}>
+                                <h3 className="text-sm font-bold text-[#111827] truncate" title={build.buildName}>
                                   {build.buildName || 'Custom 3D Build'}
                                 </h3>
                                 <button
                                   onClick={() => handleStartRename(build)}
-                                  className="opacity-0 group-hover:opacity-100 text-[#8fa2c7] hover:text-[#6091c3] transition-opacity cursor-pointer p-0.5"
+                                  className="opacity-0 group-hover:opacity-100 text-[#475569] hover:text-[#0213B2] transition-opacity cursor-pointer p-0.5"
                                   title="Rename Build"
                                 >
                                   <span className="material-symbols-outlined text-xs">edit</span>
@@ -442,7 +429,7 @@ export default function AccountPage() {
                               </div>
                             )}
 
-                            <p className="text-xs text-[#6091c3] font-semibold mt-0.5">
+                            <p className="text-xs text-[#0213B2] font-semibold mt-0.5">
                               {car.brand ? `${car.brand} ${car.model}` : 'Performance Supercar'}
                             </p>
                           </div>
@@ -450,7 +437,7 @@ export default function AccountPage() {
                           {/* Share Code Badge */}
                           <button
                             onClick={() => handleCopyShare(build.shareCode)}
-                            className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-mono font-bold bg-[#1f2f57] border border-[#6091c3]/40 text-[#dae2ff] hover:bg-[#6091c3]/20 transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-mono font-bold bg-[#EEF2FF] border border-[#CBD5E1] text-[#0213B2] hover:bg-[#E0E7FF] transition-colors cursor-pointer"
                             title="Click to copy share code"
                           >
                             <span>{build.shareCode}</span>
@@ -459,22 +446,22 @@ export default function AccountPage() {
                         </div>
 
                         {/* Specs Palette Preview */}
-                        <div className="p-3 rounded-xl bg-[#0d131f]/70 border border-white/5 space-y-2">
+                        <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
                           <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-[#8fa2c7]">Custom Finishes:</span>
+                            <span className="text-[#475569]">Custom Finishes:</span>
                             <div className="flex items-center gap-1.5">
                               <span 
-                                className="w-3.5 h-3.5 rounded-full border border-white/30 shadow-sm"
+                                className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-sm"
                                 style={{ backgroundColor: build.bodyColor || '#CC0000' }}
                                 title={`Body: ${build.bodyColor}`}
                               />
                               <span 
-                                className="w-3.5 h-3.5 rounded-full border border-white/30 shadow-sm"
+                                className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-sm"
                                 style={{ backgroundColor: build.rimColor || '#CCCCCC' }}
                                 title={`Rims: ${build.rimColor}`}
                               />
                               <span 
-                                className="w-3.5 h-3.5 rounded-full border border-white/30 shadow-sm"
+                                className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-sm"
                                 style={{ backgroundColor: build.glassColor || '#C8D8F0' }}
                                 title={`Glass: ${build.glassColor}`}
                               />
@@ -482,13 +469,13 @@ export default function AccountPage() {
                           </div>
 
                           <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-[#8fa2c7]">Finish Type:</span>
-                            <span className="text-white font-medium">{build.bodyFinish || 'Metallic'}</span>
+                            <span className="text-[#475569]">Finish Type:</span>
+                            <span className="text-[#111827] font-medium">{build.bodyFinish || 'Metallic'}</span>
                           </div>
 
-                          <div className="flex items-center justify-between text-[11px] pt-1 border-t border-white/5">
-                            <span className="text-[#8fa2c7]">Estimated Cost:</span>
-                            <span className="text-emerald-400 font-bold font-mono">
+                          <div className="flex items-center justify-between text-[11px] pt-1 border-t border-[#E2E8F0]">
+                            <span className="text-[#475569]">Estimated Cost:</span>
+                            <span className="text-[#16A34A] font-bold font-mono">
                               ${(build.totalEstimatedCost || 250000).toLocaleString()}
                             </span>
                           </div>
@@ -496,10 +483,10 @@ export default function AccountPage() {
                       </div>
 
                       {/* Card Action Buttons */}
-                      <div className="pt-4 mt-3 border-t border-white/10 flex items-center justify-between gap-1.5">
+                      <div className="pt-4 mt-3 border-t border-[#E2E8F0] flex items-center justify-between gap-1.5">
                         <button
                           onClick={() => navigate(`/configurator?build=${build.shareCode}`)}
-                          className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg bg-[#6091c3] text-[#0d131f] text-xs font-bold hover:brightness-110 transition-all cursor-pointer shadow"
+                          className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg bg-[#0213B2] text-white text-xs font-bold hover:bg-[#0115BC] transition-all cursor-pointer shadow-sm"
                           title="Open in 3D Configurator"
                         >
                           <span className="material-symbols-outlined text-xs">view_in_ar</span>
@@ -508,7 +495,7 @@ export default function AccountPage() {
 
                         <button
                           onClick={() => handleForkBuild(build.shareCode)}
-                          className="p-1.5 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:bg-white/15 hover:text-white transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-[#475569] hover:bg-[#F1F5F9] hover:text-[#0213B2] transition-colors cursor-pointer"
                           title="Duplicate / Fork Build"
                         >
                           <span className="material-symbols-outlined text-sm">content_copy</span>
@@ -516,7 +503,7 @@ export default function AccountPage() {
 
                         <button
                           onClick={() => handleCopyShare(build.shareCode)}
-                          className="p-1.5 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:bg-white/15 hover:text-white transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-[#475569] hover:bg-[#F1F5F9] hover:text-[#0213B2] transition-colors cursor-pointer"
                           title="Copy Share Link"
                         >
                           <span className="material-symbols-outlined text-sm">share</span>
@@ -524,7 +511,7 @@ export default function AccountPage() {
 
                         <button
                           onClick={() => handleDeleteBuild(build.shareCode, build.buildName)}
-                          className="p-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg bg-[#FEE2E2] border border-[#FCA5A5] text-[#DC2626] hover:bg-[#FECACA] transition-colors cursor-pointer"
                           title="Delete Build"
                         >
                           <span className="material-symbols-outlined text-sm">delete</span>
@@ -541,17 +528,12 @@ export default function AccountPage() {
         {/* TAB 2: PROFILE INFORMATION */}
         {activeTab === 'profile' && (
           <div 
-            className="rounded-2xl p-6 sm:p-8 backdrop-blur-md"
-            style={{
-              backgroundColor: 'rgba(22, 36, 71, 0.75)',
-              border: '1px solid rgba(96, 145, 195, 0.25)',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
-            }}
+            className="rounded-2xl p-6 sm:p-8 bg-white border border-[#E2E8F0] shadow-sm"
           >
             <div className="max-w-2xl space-y-6">
               <div>
-                <h2 className="text-lg font-bold text-white">Account Details</h2>
-                <p className="text-xs text-[#8fa2c7]">
+                <h2 className="text-lg font-bold text-[#111827]">Account Details</h2>
+                <p className="text-xs text-[#475569]">
                   Manage your personal information and profile picture visible to certified tuning workshops.
                 </p>
               </div>
@@ -559,21 +541,21 @@ export default function AccountPage() {
               <form onSubmit={handleProfileSubmit} className="space-y-4">
                 {/* Full Name */}
                 <div>
-                  <label className="block text-xs font-semibold text-[#8fa2c7] mb-1.5">
-                    Full Name <span className="text-rose-400">*</span>
+                  <label className="block text-xs font-semibold text-[#475569] mb-1.5">
+                    Full Name <span className="text-[#DC2626]">*</span>
                   </label>
                   <input
                     type="text"
                     value={profileForm.fullName}
                     onChange={(e) => setProfileForm(prev => ({ ...prev, fullName: e.target.value }))}
                     placeholder="Enter your full name"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0d131f] border border-white/15 text-white text-xs outline-none focus:border-[#6091c3] transition-colors"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] text-xs outline-none focus:border-[#0213B2] transition-colors"
                   />
                 </div>
 
                 {/* Phone */}
                 <div>
-                  <label className="block text-xs font-semibold text-[#8fa2c7] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#475569] mb-1.5">
                     Contact Phone
                   </label>
                   <input
@@ -581,13 +563,13 @@ export default function AccountPage() {
                     value={profileForm.phone}
                     onChange={(e) => setProfileForm(prev => ({ ...prev, phone: e.target.value }))}
                     placeholder="+84 901 234 567"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0d131f] border border-white/15 text-white text-xs outline-none focus:border-[#6091c3] transition-colors font-mono"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] text-xs outline-none focus:border-[#0213B2] transition-colors font-mono"
                   />
                 </div>
 
                 {/* Avatar URL */}
                 <div>
-                  <label className="block text-xs font-semibold text-[#8fa2c7] mb-1.5">
+                  <label className="block text-xs font-semibold text-[#475569] mb-1.5">
                     Avatar Image URL
                   </label>
                   <input
@@ -595,9 +577,9 @@ export default function AccountPage() {
                     value={profileForm.avatarUrl}
                     onChange={(e) => setProfileForm(prev => ({ ...prev, avatarUrl: e.target.value }))}
                     placeholder="https://images.unsplash.com/photo-..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0d131f] border border-white/15 text-white text-xs outline-none focus:border-[#6091c3] transition-colors font-mono"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] text-xs outline-none focus:border-[#0213B2] transition-colors font-mono"
                   />
-                  <p className="text-[10px] text-[#8fa2c7] mt-1">
+                  <p className="text-[10px] text-[#64748B] mt-1">
                     Provide a direct link to an avatar image (Unsplash, Gravatar, or CDN).
                   </p>
                 </div>
@@ -605,36 +587,36 @@ export default function AccountPage() {
                 {/* Read-Only Account Fields */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                   <div>
-                    <label className="block text-xs font-semibold text-[#8fa2c7] mb-1.5">
+                    <label className="block text-xs font-semibold text-[#475569] mb-1.5">
                       Username (Immutable)
                     </label>
                     <input
                       type="text"
                       value={currentUser?.username || ''}
                       disabled
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0d131f]/50 border border-white/10 text-white/50 text-xs font-mono cursor-not-allowed"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] text-xs font-mono cursor-not-allowed"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[#8fa2c7] mb-1.5">
+                    <label className="block text-xs font-semibold text-[#475569] mb-1.5">
                       Email Address (Protected)
                     </label>
                     <input
                       type="email"
                       value={currentUser?.email || ''}
                       disabled
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0d131f]/50 border border-white/10 text-white/50 text-xs font-mono cursor-not-allowed"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] text-xs font-mono cursor-not-allowed"
                     />
                   </div>
                 </div>
 
                 {/* Submit Button */}
-                <div className="pt-4 border-t border-white/10">
+                <div className="pt-4 border-t border-[#E2E8F0]">
                   <button
                     type="submit"
                     disabled={profileSaving}
-                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#6091c3] text-[#0d131f] hover:brightness-110 transition-all shadow-md cursor-pointer disabled:opacity-50"
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#0213B2] text-white hover:bg-[#0115BC] transition-all shadow-sm cursor-pointer disabled:opacity-50"
                   >
                     {profileSaving ? (
                       <>
@@ -657,17 +639,12 @@ export default function AccountPage() {
         {/* TAB 3: SECURITY & PASSWORD */}
         {activeTab === 'security' && (
           <div 
-            className="rounded-2xl p-6 sm:p-8 backdrop-blur-md"
-            style={{
-              backgroundColor: 'rgba(22, 36, 71, 0.75)',
-              border: '1px solid rgba(96, 145, 195, 0.25)',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
-            }}
+            className="rounded-2xl p-6 sm:p-8 bg-white border border-[#E2E8F0] shadow-sm"
           >
             <div className="max-w-2xl space-y-6">
               <div>
-                <h2 className="text-lg font-bold text-white">Security & Password</h2>
-                <p className="text-xs text-[#8fa2c7]">
+                <h2 className="text-lg font-bold text-[#111827]">Security & Password</h2>
+                <p className="text-xs text-[#475569]">
                   Update your authentication credentials. Passwords are encrypted using BCrypt salted hashing.
                 </p>
               </div>
@@ -675,52 +652,52 @@ export default function AccountPage() {
               <form onSubmit={handlePasswordSubmit} className="space-y-4">
                 {/* Current Password */}
                 <div>
-                  <label className="block text-xs font-semibold text-[#8fa2c7] mb-1.5">
-                    Current Password <span className="text-rose-400">*</span>
+                  <label className="block text-xs font-semibold text-[#475569] mb-1.5">
+                    Current Password <span className="text-[#DC2626]">*</span>
                   </label>
                   <input
                     type="password"
                     value={securityForm.currentPassword}
                     onChange={(e) => setSecurityForm(prev => ({ ...prev, currentPassword: e.target.value }))}
                     placeholder="Enter current password"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0d131f] border border-white/15 text-white text-xs outline-none focus:border-[#6091c3] transition-colors"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] text-xs outline-none focus:border-[#0213B2] transition-colors"
                   />
                 </div>
 
                 {/* New Password */}
                 <div>
-                  <label className="block text-xs font-semibold text-[#8fa2c7] mb-1.5">
-                    New Password <span className="text-rose-400">*</span> (min. 6 characters)
+                  <label className="block text-xs font-semibold text-[#475569] mb-1.5">
+                    New Password <span className="text-[#DC2626]">*</span> (min. 6 characters)
                   </label>
                   <input
                     type="password"
                     value={securityForm.newPassword}
                     onChange={(e) => setSecurityForm(prev => ({ ...prev, newPassword: e.target.value }))}
                     placeholder="Enter new strong password"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0d131f] border border-white/15 text-white text-xs outline-none focus:border-[#6091c3] transition-colors"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] text-xs outline-none focus:border-[#0213B2] transition-colors"
                   />
                 </div>
 
                 {/* Confirm Password */}
                 <div>
-                  <label className="block text-xs font-semibold text-[#8fa2c7] mb-1.5">
-                    Confirm New Password <span className="text-rose-400">*</span>
+                  <label className="block text-xs font-semibold text-[#475569] mb-1.5">
+                    Confirm New Password <span className="text-[#DC2626]">*</span>
                   </label>
                   <input
                     type="password"
                     value={securityForm.confirmPassword}
                     onChange={(e) => setSecurityForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
                     placeholder="Confirm new password"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0d131f] border border-white/15 text-white text-xs outline-none focus:border-[#6091c3] transition-colors"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] text-xs outline-none focus:border-[#0213B2] transition-colors"
                   />
                 </div>
 
                 {/* Submit Button */}
-                <div className="pt-4 border-t border-white/10">
+                <div className="pt-4 border-t border-[#E2E8F0]">
                   <button
                     type="submit"
                     disabled={passwordSaving}
-                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#6091c3] text-[#0d131f] hover:brightness-110 transition-all shadow-md cursor-pointer disabled:opacity-50"
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#0213B2] text-white hover:bg-[#0115BC] transition-all shadow-sm cursor-pointer disabled:opacity-50"
                   >
                     {passwordSaving ? (
                       <>

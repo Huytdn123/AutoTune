@@ -132,7 +132,7 @@ export default function ConfiguratorPage() {
     setSelectedBodykit(prev => {
       const willBeActive = !prev
       if (!willBeActive) {
-        setSelectedParts(pList => pList.filter(p => !p.category?.toLowerCase().includes('aero') && !p.sku?.includes('AERO')))
+        setSelectedParts(pList => pList.filter(p => !p.category?.toLowerCase().includes('aero') && !p.sku?.includes('CARB-AERO') && p.sku !== 'VOR-CF-AERO-992'))
         return null
       } else {
         const targetPart = part || {
@@ -145,7 +145,7 @@ export default function ConfiguratorPage() {
           priceVnd: 80000000,
         }
         setSelectedParts(pList => {
-          const filtered = pList.filter(p => !p.category?.toLowerCase().includes('aero') && !p.sku?.includes('AERO'))
+          const filtered = pList.filter(p => !p.category?.toLowerCase().includes('aero') && !p.sku?.includes('CARB-AERO'))
           return [...filtered, targetPart]
         })
         return 'carbon-aero'
@@ -155,26 +155,27 @@ export default function ConfiguratorPage() {
 
   const handleToggleSpoiler = useCallback((part) => {
     setSelectedSpoiler(prev => {
-      const willBeActive = !prev
-      if (!willBeActive) {
-        setSelectedParts(pList => pList.filter(p => !p.category?.toLowerCase().includes('spoiler') && !p.sku?.includes('WING') && !p.sku?.includes('GTWING')))
+      const targetSku = part?.sku || 'GEN-GTWING-F458'
+      const isAlreadyActive = prev === targetSku || (prev && prev === 'big-country-labs-style-wing' && targetSku === 'GEN-GTWING-F458')
+      if (isAlreadyActive) {
+        setSelectedParts(pList => pList.filter(p => !p.category?.toLowerCase().includes('spoiler') && !p.sku?.includes('WING') && !p.sku?.includes('GTWING') && p.sku !== 'VOR-CF-AERO-992'))
         return null
       } else {
         const targetPart = part || {
           sku: 'GEN-GTWING-F458',
-          partName: 'Big Country Labs Style GT Wing',
-          name: 'Big Country Labs Style GT Wing',
+          partName: 'Carbon Aero GT Wing',
+          name: 'Carbon Aero GT Wing',
           category: 'Rear Spoilers',
-          brand: 'Big Country Labs',
+          brand: 'Track Aerodynamics',
           priceUsd: 2450,
           priceVnd: 61250000,
           assetUrl: '/models/parts/ferrari-458/spoilers/big-country-labs-style-wing.glb'
         }
         setSelectedParts(pList => {
-          const filtered = pList.filter(p => !p.category?.toLowerCase().includes('spoiler') && !p.sku?.includes('WING') && !p.sku?.includes('GTWING'))
+          const filtered = pList.filter(p => !p.category?.toLowerCase().includes('spoiler') && !p.sku?.includes('WING') && !p.sku?.includes('GTWING') && p.sku !== 'VOR-CF-AERO-992')
           return [...filtered, targetPart]
         })
-        return 'big-country-labs-style-wing'
+        return targetSku === 'GEN-GTWING-F458' ? 'big-country-labs-style-wing' : targetSku
       }
     })
   }, [])
@@ -558,8 +559,8 @@ export default function ConfiguratorPage() {
   return (
     <div className="bg-[#0d0d12] text-white antialiased h-[calc(100vh-4rem)] flex flex-col w-full overflow-hidden select-none font-sans">
 
-      {/* ── MAIN LAYOUT (Pure 2-Panel Split: 3D Viewport + Control Panel) ── */}
-      <div className="flex flex-1 overflow-hidden min-h-0 relative">
+      {/* ── MAIN LAYOUT (Pure 2-Panel Split: 3D Viewport + Narrowed Customizer Panel ~72% Width) ── */}
+      <div className="flex flex-1 overflow-hidden min-h-0 relative [--panel-w:min(92vw,360px)] sm:[--panel-w:340px] md:[--panel-w:380px] lg:[--panel-w:420px] xl:[--panel-w:448px] 2xl:[--panel-w:456px]">
 
         {/* ── 3D CANVAS ───────────────────────────────────────────────────── */}
         <main className="flex-1 relative bg-[#0d0d12] overflow-hidden">
@@ -638,9 +639,9 @@ export default function ConfiguratorPage() {
         <button
           onClick={() => setSidebarOpen(o => !o)}
           title={sidebarOpen ? 'Collapse panel' : 'Expand panel'}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-5 h-12 bg-[#0f0f16] border border-white/10 rounded-l-lg shadow-xl hover:bg-white/10 transition-all group"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-5 h-12 bg-[#0f0f16] border border-white/10 rounded-l-lg shadow-xl hover:bg-white/10 transition-all group cursor-pointer"
           style={{
-            right: sidebarOpen ? '330px' : '0px',
+            right: sidebarOpen ? 'var(--panel-w, 448px)' : '0px',
             transition: 'right 0.35s cubic-bezier(0.4,0,0.2,1)'
           }}
         >
@@ -652,11 +653,12 @@ export default function ConfiguratorPage() {
           </span>
         </button>
 
-        {/* ── SIDE PANEL ─────────────────────────────────────────────────────── */}
+        {/* ── NARROWED SIDE PANEL (Target ~70-75% width: 420-456px on desktop) ── */}
         <aside
           className="flex flex-col bg-[#0f0f16] border-l border-white/8 h-full shrink-0 z-20 min-h-0 overflow-hidden"
           style={{
-            width: '330px',
+            width: 'var(--panel-w, 448px)',
+            maxWidth: '92vw',
             transform: sidebarOpen ? 'translateX(0)' : 'translateX(100%)',
             transition: 'transform 0.35s cubic-bezier(0.4,0,0.2,1)',
             position: sidebarOpen ? 'relative' : 'absolute',
@@ -666,15 +668,24 @@ export default function ConfiguratorPage() {
           }}
         >
 
-          {/* Header */}
-          <div className="px-4 pt-3.5 pb-2.5 border-b border-white/8 shrink-0">
+          {/* Header (Aligned with content & footer via px-4) */}
+          <div className="px-4 pt-3.5 pb-2.5 border-b border-white/10 shrink-0">
             <div className="flex items-start justify-between">
-              <div>
-                <h2 className="text-sm font-black text-white tracking-wide uppercase">{activeCar.brand} {activeCar.model}</h2>
-                <p className="text-[10px] text-white/40 mt-0.5 font-mono">{activeCar.tagline}</p>
+              <div className="min-w-0 pr-2">
+                <h2 className="text-sm font-black text-white tracking-wide uppercase truncate">{activeCar.brand} {activeCar.model}</h2>
+                <p className="text-[10px] text-slate-300 mt-0.5 font-mono truncate">{activeCar.tagline}</p>
               </div>
-              <div className="px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-wider" style={{ borderColor: activeCar.accentColor + '50', color: activeCar.accentColor, backgroundColor: activeCar.accentColor + '15' }}>
-                {activeCar.year}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <div className="px-2 py-0.5 rounded-md border border-white/20 bg-white/10 text-[10px] font-bold uppercase tracking-wider text-white font-mono">
+                  {activeCar.year}
+                </div>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="sm:hidden p-1 rounded-md text-white/50 hover:text-white hover:bg-white/10 cursor-pointer"
+                  title="Close panel"
+                >
+                  <span className="material-symbols-outlined text-sm">close</span>
+                </button>
               </div>
             </div>
 
@@ -689,21 +700,21 @@ export default function ConfiguratorPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveSection(tab.id)}
-                  className={`flex-1 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider flex items-center justify-center gap-0.5 transition-all ${
+                  className={`flex-1 py-1.5 px-1 rounded-md text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition-all cursor-pointer ${
                     activeSection === tab.id
-                      ? 'bg-primary text-on-primary shadow-lg shadow-primary/30'
-                      : 'text-white/40 hover:text-white/70'
+                      ? 'bg-[#0213B2] text-white shadow-md shadow-[#0213B2]/30'
+                      : 'text-white/60 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   <span className="material-symbols-outlined text-xs">{tab.icon}</span>
-                  {tab.label}
+                  <span className="truncate">{tab.label}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Content (Scrollable if needed on very small screens, compact by default) */}
-          <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-3 space-y-3.5 min-h-0"
+          {/* Content (Aligned with header & footer via px-4, independent scrolling) */}
+          <div className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-3.5 space-y-3.5 min-h-0 pb-6"
             style={{ scrollbarWidth: 'thin', scrollbarColor: '#333 transparent' }}>
 
             {/* ── MODEL SELECTOR TAB ──────────────────────────────────────── */}

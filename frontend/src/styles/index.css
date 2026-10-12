@@ -6,32 +6,465 @@
 }
 
 :root {
+  /* Brand and interactions */
+  --color-primary: #0213B2;
+  --color-primary-hover: #0115BC;
+  --color-primary-pressed: #06169B;
+  --color-primary-foreground: #FFFFFF;
+
+  /* Light application surfaces */
+  --color-page-background: #F3F5FA;
+  --color-surface: #E5E8F0;
+  --color-surface-subtle: #E9EDF5;
+  --color-surface-hover: #EEF2F8;
+  --color-surface-selected: #E8EDFF;
+  --color-surface-blue-section: #D7E1FF;
+  --color-surface-pale-blue: #E8EDFF;
+  --color-deep-blue: #06169B;
+  --color-border: #D8DFEA;
+  --color-border-strong: #BCC7D8;
+
+  /* Typography */
+  --color-text-primary: #111827;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748B;
+  --color-text-inverse: #FFFFFF;
+
+  /* Existing brand identity */
   --color-primary-navy: #1F2F57;
-  --color-canvas-base: #15203C;
-  --color-surface-dim: #121414;
   --color-tech-blue: #6091C3;
   --color-metallic-gray: #A8A8A8;
   --color-off-white: #FDFAF9;
+
+  /* Feedback */
+  --color-success: #16A34A;
+  --color-success-surface: #DCFCE7;
+  --color-warning: #D97706;
+  --color-warning-surface: #FEF3C7;
+  --color-danger: #DC2626;
+  --color-danger-surface: #FEE2E2;
+  --color-info: #2563EB;
+  --color-info-surface: #DBEAFE;
+
+  /* Focus and overlays */
+  --color-focus-ring: #6091C3;
+  --color-overlay: rgb(15 23 42 / 45%);
+
+  /* Consistent geometry */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  /* Consistent transitions */
+  --duration-fast: 120ms;
+  --duration-normal: 180ms;
+
+  /* Backward-compatible aliases */
+  --color-canvas-base: var(--color-page-background);
+  --color-surface-dim: var(--color-surface-subtle);
+
+  /* Fonts */
   --font-display: 'Montserrat', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
+/* ── Dark Mode Design Tokens (Deep Charcoal & High Contrast Off-White) ── */
+html.dark,
+:root[data-theme="dark"] {
+  /* Brand remains #0213B2 for primary actions */
+  --color-primary: #0213B2;
+  --color-primary-hover: #0115BC;
+  --color-primary-pressed: #06169B;
+  --color-primary-foreground: #FFFFFF;
+
+  /* Dark application surfaces: layered charcoal, visually distinct from page bg */
+  --color-page-background: #0B0C10;
+  --color-surface: #14151D;
+  --color-surface-elevated: #1B1D28;
+  --color-surface-subtle: #1E202C;
+  --color-surface-hover: #262938;
+  --color-surface-selected: #1A224D;
+  --color-surface-blue-section: #121833;
+  --color-surface-pale-blue: #161C3B;
+  --color-deep-blue: #23348C;
+  --color-border: #282A3A;
+  --color-border-subtle: #212330;
+  --color-border-strong: #383A4E;
+
+  /* Typography: high-contrast off-white & accessible muted gray */
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #CBD5E1;
+  --color-text-muted: #94A3B8;
+  --color-text-inverse: #0B0C10;
+
+  /* Feedback in dark mode */
+  --color-success: #22C55E;
+  --color-success-surface: rgba(34, 197, 94, 0.18);
+  --color-warning: #F59E0B;
+  --color-warning-surface: rgba(245, 158, 11, 0.18);
+  --color-danger: #EF4444;
+  --color-danger-surface: rgba(239, 68, 68, 0.18);
+  --color-info: #3B82F6;
+  --color-info-surface: rgba(59, 130, 246, 0.18);
+}
+
 html {
   scroll-behavior: smooth;
-  background-color: #121414;
+  background-color: var(--color-page-background);
+  color-scheme: light;
+}
+
+html.dark {
+  background-color: var(--color-page-background);
   color-scheme: dark;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #121414;
-  color: #e3e2e2;
+  background-color: var(--color-page-background);
+  color: var(--color-text-primary);
   font-family: var(--font-body);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.15s ease;
+}
+
+/* ── Light Mode Base Typography Contrast Safeguards ── */
+.text-outline {
+  color: var(--color-text-secondary);
+}
+
+/* ── Light Mode UI Surface Softening (Pure White #FFFFFF -> Soft Blue-Gray Off-White #E5E8F0) ── */
+/* Replaces harsh #FFFFFF with gentle #E5E8F0 across light UI surfaces while preserving image photo frames and foreground text */
+html:not(.dark) .bg-white:not([data-preserve-white]):not([data-preserve-bg]),
+html:not(.dark) [class*="bg-white"]:not([class*="/"]):not([data-preserve-white]):not([data-preserve-bg]) {
+  background-color: #E5E8F0 !important;
+}
+
+html:not(.dark) [class*="bg-white/95"]:not([data-preserve-white]):not([data-preserve-bg]) {
+  background-color: rgba(229, 232, 240, 0.95) !important;
+}
+
+html:not(.dark) [class*="bg-white/90"]:not([data-preserve-white]):not([data-preserve-bg]) {
+  background-color: rgba(229, 232, 240, 0.90) !important;
+}
+
+html:not(.dark) [class*="bg-white/85"]:not([data-preserve-white]):not([data-preserve-bg]) {
+  background-color: rgba(229, 232, 240, 0.85) !important;
+}
+
+html:not(.dark) [class*="bg-white/80"]:not([data-preserve-white]):not([data-preserve-bg]) {
+  background-color: rgba(229, 232, 240, 0.80) !important;
+}
+
+html:not(.dark) [class*="bg-white/70"]:not([data-preserve-white]):not([data-preserve-bg]) {
+  background-color: rgba(229, 232, 240, 0.70) !important;
+}
+
+/* Global Light Mode Surface Classes */
+html:not(.dark) .modal-surface,
+html:not(.dark) .dropdown-surface,
+html:not(.dark) .card-surface {
+  background-color: #E5E8F0 !important;
+}
+
+/* ── Global Dark Mode Surface & Container Overrides ── */
+html.dark .bg-background,
+html.dark [class*="bg-[#F3F5FA]"],
+html.dark .bg-surface-dim {
+  background-color: var(--color-page-background) !important;
+}
+
+html.dark .bg-white:not([data-preserve-white]),
+html.dark .bg-surface,
+html.dark .bg-surface-container-low,
+html.dark .bg-surface-container-lowest:not([data-preserve-white]),
+html.dark [class*="bg-[#E5E8F0]"]:not([data-preserve-white]),
+html.dark [class*="bg-[#F1F3F9]"]:not([data-preserve-white]) {
+  background-color: var(--color-surface) !important;
+}
+
+html.dark [class*="bg-[#F8FAFC]"],
+html.dark .bg-surface-container,
+html.dark .bg-surface-bright {
+  background-color: var(--color-surface-elevated) !important;
+}
+
+html.dark [class*="bg-[#F1F5F9]"],
+html.dark .bg-surface-subtle,
+html.dark .bg-surface-container-high {
+  background-color: var(--color-surface-subtle) !important;
+}
+
+html.dark .bg-surface-container-highest {
+  background-color: var(--color-surface-hover) !important;
+}
+
+html.dark [class*="bg-[#E8EDFF]"],
+html.dark .bg-primary-container,
+html.dark .bg-surface-pale-blue {
+  background-color: var(--color-surface-pale-blue) !important;
+}
+
+html.dark [class*="bg-[#D7E1FF]"],
+html.dark .bg-surface-blue {
+  background-color: var(--color-surface-blue-section) !important;
+}
+
+html.dark [class*="bg-[#EEF2FF]"],
+html.dark .bg-surface-selected {
+  background-color: var(--color-surface-selected) !important;
+}
+
+/* Semi-transparent white badges and overlays in dark mode */
+html.dark [class*="bg-white/95"],
+html.dark [class*="bg-white/90"],
+html.dark [class*="bg-white/85"],
+html.dark [class*="bg-white/80"],
+html.dark [class*="bg-white/70"] {
+  background-color: rgba(27, 29, 40, 0.95) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+}
+
+html.dark [class*="bg-surface-container-lowest/90"] {
+  background-color: rgba(20, 21, 29, 0.95) !important;
+  border-color: var(--color-border) !important;
+}
+
+html.dark [class*="bg-white/50"] {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+html.dark [class*="hover:bg-white/50"]:hover {
+  background-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Hover States in Dark Mode */
+html.dark [class*="hover:bg-[#F8FAFC]"]:hover,
+html.dark [class*="hover:bg-[#F1F5F9]"]:hover,
+html.dark [class*="hover:bg-[#E2E8F0]"]:hover,
+html.dark [class*="hover:bg-[#EEF2FF]"]:hover,
+html.dark [class*="hover:bg-[#E8EDFF]"]:hover,
+html.dark [class*="hover:bg-[#D7E1FF]"]:hover,
+html.dark .hover\:bg-surface-container:hover,
+html.dark .hover\:bg-surface-hover:hover {
+  background-color: var(--color-surface-hover) !important;
+}
+
+/* Typography in Dark Mode */
+html.dark [class*="text-[#111827]"],
+html.dark .text-on-surface,
+html.dark [class*="text-[#1E293B]"],
+html.dark [class*="text-[#1F2F57]"],
+html.dark .text-secondary {
+  color: var(--color-text-primary) !important;
+}
+
+html.dark [class*="text-[#334155]"],
+html.dark [class*="text-[#475569]"],
+html.dark .text-on-surface-variant {
+  color: var(--color-text-secondary) !important;
+}
+
+html.dark [class*="text-[#64748B]"],
+html.dark [class*="text-[#94A3B8]"],
+html.dark .text-outline {
+  color: #94A3B8 !important;
+}
+
+/* Blue foreground text adapts to high-contrast tech blue in dark mode */
+html.dark [class*="text-[#0213B2]"]:not([class*="bg-[#0213B2]"]):not([data-preserve-text]),
+html.dark .text-primary:not([class*="bg-primary"]):not([data-preserve-text]) {
+  color: #60A5FA !important;
+}
+html.dark [class*="text-[#06169B]"],
+html.dark .text-deep-blue {
+  color: #93C5FD !important;
+}
+
+/* Primary actions retain white text */
+html.dark [class*="bg-[#0213B2]"],
+html.dark .bg-primary {
+  color: #FFFFFF !important;
+}
+
+/* Borders in Dark Mode */
+html.dark [class*="border-[#D8DFEA]"],
+html.dark [class*="border-[#E2E8F0]"],
+html.dark [class*="border-[#CBD5E1]"],
+html.dark [class*="border-[#BCC7D8]"],
+html.dark .border-outline,
+html.dark .border-outline-variant,
+html.dark [class*="border-outline-variant/"] {
+  border-color: var(--color-border) !important;
+}
+
+/* ── Precision Customization Modules (Feature Cards) High-Contrast Master Rules ── */
+.feature-module-card {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+html.dark .feature-module-card {
+  background-color: #14151D !important;
+  border-color: #282A3A !important;
+}
+html.dark .feature-module-card:hover {
+  border-color: #60A5FA !important;
+  box-shadow: 0 4px 20px rgba(96, 165, 250, 0.12) !important;
+}
+
+.feature-module-tag {
+  color: #0213B2;
+}
+html.dark .feature-module-tag {
+  color: #38BDF8 !important; /* Sky Blue 400 - high-visibility luminous contrast */
+}
+
+.feature-module-badge {
+  background-color: #E8EDFF;
+  color: #0213B2;
+  border: 1px solid #BCC7D8;
+}
+html.dark .feature-module-badge {
+  background-color: #1E293B !important;
+  color: #38BDF8 !important;
+  border-color: #475569 !important;
+}
+
+.feature-module-title {
+  color: #111827;
+}
+html.dark .feature-module-title {
+  color: #FFFFFF !important;
+}
+
+.feature-module-desc {
+  color: #475569;
+}
+html.dark .feature-module-desc {
+  color: #E2E8F0 !important; /* Slate-200 - crisp, easy-reading light silver */
+}
+
+.feature-module-link {
+  color: #0213B2;
+}
+html.dark .feature-module-link {
+  color: #60A5FA !important; /* Tech Blue - sharp and accessible */
+}
+html.dark .feature-module-link:hover {
+  color: #93C5FD !important;
+}
+
+.feature-module-icon {
+  background-color: #E8EDFF;
+  border: 1px solid #BCC7D8;
+  color: #0213B2;
+}
+html.dark .feature-module-icon {
+  background-color: #1E254A !important;
+  border-color: #384580 !important;
+  color: #93C5FD !important;
+}
+
+/* Form Controls in Dark Mode */
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+html.dark select,
+html.dark textarea {
+  background-color: var(--color-surface-subtle) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: var(--color-text-muted) !important;
+}
+
+/* Status Badges in Dark Mode */
+html.dark .bg-red-50,
+html.dark .bg-\[\#FEE2E2\],
+html.dark .bg-error-container {
+  background-color: rgba(239, 68, 68, 0.16) !important;
+}
+html.dark .border-red-200,
+html.dark .border-\[\#FCA5A5\] {
+  border-color: rgba(239, 68, 68, 0.35) !important;
+}
+html.dark .text-red-700,
+html.dark .text-red-600,
+html.dark .text-\[\#DC2626\],
+html.dark .text-error {
+  color: #F87171 !important;
+}
+
+html.dark .bg-green-50,
+html.dark .bg-emerald-50,
+html.dark .bg-\[\#DCFCE7\],
+html.dark .bg-success-surface {
+  background-color: rgba(34, 197, 94, 0.16) !important;
+}
+html.dark .border-green-200,
+html.dark .border-emerald-200,
+html.dark .border-\[\#86EFAC\] {
+  border-color: rgba(34, 197, 94, 0.35) !important;
+}
+html.dark .text-green-700,
+html.dark .text-emerald-700,
+html.dark .text-\[\#16A34A\],
+html.dark .text-success {
+  color: #4ADE80 !important;
+}
+
+html.dark .bg-amber-50,
+html.dark .bg-yellow-50,
+html.dark .bg-\[\#FEF3C7\],
+html.dark .bg-warning-surface {
+  background-color: rgba(245, 158, 11, 0.16) !important;
+}
+html.dark .border-amber-200,
+html.dark .border-yellow-200,
+html.dark .border-\[\#FDE68A\] {
+  border-color: rgba(245, 158, 11, 0.35) !important;
+}
+html.dark .text-amber-700,
+html.dark .text-amber-800,
+html.dark .text-\[\#D97706\],
+html.dark .text-warning {
+  color: #FBBF24 !important;
+}
+
+html.dark .bg-blue-50,
+html.dark .bg-\[\#DBEAFE\],
+html.dark .bg-info-surface {
+  background-color: rgba(59, 130, 246, 0.16) !important;
+}
+html.dark .border-blue-200,
+html.dark .border-\[\#BFDBFE\] {
+  border-color: rgba(59, 130, 246, 0.35) !important;
+}
+html.dark .text-blue-700,
+html.dark .text-blue-600,
+html.dark .text-\[\#2563EB\],
+html.dark .text-info {
+  color: #60A5FA !important;
+}
+
+/* Deep Shadows in Dark Mode */
+html.dark .shadow-xs,
+html.dark .shadow-sm {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45) !important;
+}
+html.dark .shadow,
+html.dark .shadow-md {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55) !important;
+}
+html.dark .shadow-lg,
+html.dark .shadow-xl,
+html.dark .shadow-2xl {
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7) !important;
 }
 
 /* Tabular figures for telemetry, currencies, tolerances, and dimensions */
@@ -59,8 +492,8 @@ body {
 .cad-grid-pattern {
   background-size: 24px 24px;
   background-image: 
-    linear-gradient(to right, rgba(96, 145, 195, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(96, 145, 195, 0.07) 1px, transparent 1px);
+    linear-gradient(to right, rgba(51, 82, 232, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(51, 82, 232, 0.08) 1px, transparent 1px);
 }
 
 /* Fine Technical Typography Utility Classes */
@@ -137,23 +570,38 @@ body {
 
 .custom-scrollbar::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track {
-  background: rgba(18, 20, 20, 0.6);
+  background: #F1F5F9;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-thumb {
-  background: #2b3d66;
-  border-radius: 2px;
+  background: #CBD5E1;
+  border-radius: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover,
 ::-webkit-scrollbar-thumb:hover {
-  background: #6091c3;
+  background: #94A3B8;
 }
 
 /* Micro-interaction polish */
 button, a {
   transition: all 0.15s ease-in-out;
+}
+
+button:not(:disabled), [role="button"]:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled, [role="button"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Accessible focus-visible state using official token #6091C3 */
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
 }
 
 /* 360 auto-rotate icon spin animation */

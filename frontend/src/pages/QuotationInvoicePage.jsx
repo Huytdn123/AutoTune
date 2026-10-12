@@ -249,6 +249,50 @@ export default function QuotationInvoicePage() {
     return `$${usd.toLocaleString()} USD`
   }
 
+  const renderStatusBadge = (status) => {
+    const configs = {
+      APPROVED: {
+        pill: 'bg-[#DCFCE7] text-[#15803D] border-[#86EFAC] dark:bg-[#16A34A]/25 dark:text-[#4ADE80] dark:border-[#16A34A]/50',
+        dot: 'bg-[#16A34A] dark:bg-[#4ADE80]'
+      },
+      SENT: {
+        pill: 'bg-[#DBEAFE] text-[#1D4ED8] border-[#93C5FD] dark:bg-[#0213B2]/30 dark:text-[#60A5FA] dark:border-[#60A5FA]/40',
+        dot: 'bg-[#2563EB] dark:bg-[#60A5FA]'
+      },
+      REJECTED: {
+        pill: 'bg-[#FEE2E2] text-[#DC2626] border-[#FCA5A5] dark:bg-[#DC2626]/25 dark:text-[#F87171] dark:border-[#DC2626]/50',
+        dot: 'bg-[#DC2626] dark:bg-[#F87171]'
+      },
+      DRAFT: {
+        pill: 'bg-[#FEF3C7] text-[#D97706] border-[#FDE68A] dark:bg-[#D97706]/25 dark:text-[#FBBF24] dark:border-[#D97706]/50',
+        dot: 'bg-[#D97706] dark:bg-[#FBBF24]'
+      },
+      IN_PROGRESS: {
+        pill: 'bg-[#DBEAFE] text-[#1D4ED8] border-[#93C5FD] dark:bg-[#0213B2]/30 dark:text-[#60A5FA] dark:border-[#60A5FA]/40',
+        dot: 'bg-[#2563EB] dark:bg-[#60A5FA]'
+      },
+      COMPLETED: {
+        pill: 'bg-[#DCFCE7] text-[#15803D] border-[#86EFAC] dark:bg-[#16A34A]/25 dark:text-[#4ADE80] dark:border-[#16A34A]/50',
+        dot: 'bg-[#16A34A] dark:bg-[#4ADE80]'
+      },
+      CANCELLED: {
+        pill: 'bg-[#FEE2E2] text-[#DC2626] border-[#FCA5A5] dark:bg-[#DC2626]/25 dark:text-[#F87171] dark:border-[#DC2626]/40',
+        dot: 'bg-[#DC2626] dark:bg-[#F87171]'
+      },
+      PENDING: {
+        pill: 'bg-[#FEF3C7] text-[#D97706] border-[#FDE68A] dark:bg-[#D97706]/25 dark:text-[#FBBF24] dark:border-[#D97706]/40',
+        dot: 'bg-[#D97706] dark:bg-[#FBBF24]'
+      }
+    }
+    const conf = configs[status] || configs.DRAFT
+    return (
+      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border inline-flex items-center gap-1.5 shadow-2xs ${conf.pill}`}>
+        <span className={`w-1.5 h-1.5 rounded-full ${conf.dot}`} />
+        <span>{status}</span>
+      </span>
+    )
+  }
+
   // Filtered lists
   const filteredQuotes = quotations.filter(q => {
     if (quoteFilter === 'ALL') return true
@@ -261,39 +305,39 @@ export default function QuotationInvoicePage() {
   })
 
   return (
-    <div className="bg-[#0d131f] text-[#e3e8f5] min-h-[calc(100vh-4rem)] flex flex-col font-['Inter',sans-serif] antialiased selection:bg-[#1f2f57] selection:text-[#dae2ff]">
+    <div className="bg-[#F3F5FA] text-[#111827] min-h-[calc(100vh-4rem)] flex flex-col font-['Inter',sans-serif] antialiased selection:bg-[#0213B2]/20 selection:text-[#0213B2]">
       
       {/* Toast Feedback */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#1f2f57] border border-[#6091c3] text-[#dae2ff] text-xs font-['Montserrat'] font-bold rounded-lg shadow-2xl flex items-center gap-2.5 animate-in fade-in duration-200">
-          <span className="material-symbols-outlined text-base text-[#6091c3]">check_circle</span>
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#0213B2] border border-[#0213B2] text-white text-xs font-['Montserrat'] font-bold rounded-lg shadow-2xl flex items-center gap-2.5 animate-in fade-in duration-200">
+          <span className="material-symbols-outlined text-base text-white">check_circle</span>
           <span>{toastMessage}</span>
         </div>
       )}
 
       {/* TOP WORKSPACE NAVIGATION & TAB SWITCHER */}
-      <section className="bg-[#162447] border-b border-[#45464e]/30 px-6 py-4">
+      <section className="bg-[#E8EDFF] border-b border-[#BCC7D8] px-6 py-4 shadow-xs">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs font-mono text-[#8f9099] uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-xs font-mono text-[#06169B] uppercase tracking-wider">
               <span>COMMERCIAL WORKSHOP</span>
               <span>/</span>
-              <span className="text-[#6091c3] font-bold">WORKFLOW EXECUTION</span>
+              <span className="text-[#0213B2] font-bold">WORKFLOW EXECUTION</span>
             </div>
-            <h1 className="font-['Montserrat'] text-2xl font-extrabold text-white tracking-tight flex items-center gap-3">
+            <h1 className="font-['Montserrat'] text-2xl font-extrabold text-[#111827] tracking-tight flex items-center gap-3">
               <span>Quotation & Work Order Workflow</span>
             </h1>
           </div>
 
           {/* Mode Switcher Tabs */}
-          <div className="flex items-center p-1 rounded-xl bg-[#0d131f] border border-white/15 shadow-inner self-start sm:self-auto">
+          <div className="flex items-center p-1 rounded-xl bg-[#D7E1FF] border border-[#BCC7D8] shadow-inner self-start sm:self-auto">
             <button
               type="button"
               onClick={() => setActiveTab('quotations')}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-['Montserrat'] font-bold uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === 'quotations'
-                  ? 'bg-[#6091c3] text-white shadow-md'
-                  : 'text-[#c8d4ea] hover:text-white'
+                  ? 'bg-[#0213B2] text-white shadow-xs'
+                  : 'text-[#06169B] hover:text-[#111827] hover:bg-white/50'
               }`}
             >
               <span className="material-symbols-outlined text-sm">receipt_long</span>
@@ -305,8 +349,8 @@ export default function QuotationInvoicePage() {
               onClick={() => setActiveTab('work-orders')}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-['Montserrat'] font-bold uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === 'work-orders'
-                  ? 'bg-[#10b981] text-white shadow-md'
-                  : 'text-[#c8d4ea] hover:text-white'
+                  ? 'bg-[#16A34A] text-white shadow-xs'
+                  : 'text-[#06169B] hover:text-[#111827] hover:bg-white/50'
               }`}
             >
               <span className="material-symbols-outlined text-sm">precision_manufacturing</span>
@@ -321,35 +365,35 @@ export default function QuotationInvoicePage() {
 
         {/* Staged 3D Build Quotation Link Banner */}
         {buildPreview && (
-          <div className="bg-gradient-to-r from-[#162447] to-[#1f2f57] border-2 border-[#6091c3] rounded-2xl p-5 shadow-2xl space-y-4">
+          <div className="bg-[#E8EDFF] border-2 border-[#0213B2]/40 rounded-2xl p-5 shadow-sm space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-start gap-3">
-                <div className="w-12 h-12 rounded-xl bg-[#6091c3]/20 border border-[#6091c3]/40 flex items-center justify-center text-[#6091c3] shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-[#D7E1FF] border border-[#0213B2]/30 flex items-center justify-center text-[#0213B2] shrink-0">
                   <span className="material-symbols-outlined text-2xl">view_in_ar</span>
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#6091c3]/30 text-white border border-[#6091c3]/50">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#D7E1FF] text-[#06169B] border border-[#0213B2]/30">
                       3D Configurator Staging
                     </span>
-                    <span className="text-xs font-mono text-[#8f9099]">Mã bản độ: {buildPreview.build.shareCode}</span>
+                    <span className="text-xs font-mono text-[#475569]">Mã bản độ: {buildPreview.build.shareCode}</span>
                   </div>
-                  <h2 className="text-lg font-black text-white mt-1">
+                  <h2 className="text-lg font-black text-[#111827] mt-1">
                     {buildPreview.config?.carName || buildPreview.build.buildName || 'Ferrari 458 Italia Custom Build'}
                   </h2>
-                  <p className="text-xs text-[#c8d4ea]/80 mt-0.5">
-                    Ngoại thất: <strong className="text-white">{buildPreview.config?.bodyColorName || buildPreview.build.bodyColor}</strong> · 
-                    Nội thất: <strong className="text-white">{buildPreview.config?.interiorColorName || 'Nero'}</strong> · 
-                    Mâm: <strong className="text-white">{buildPreview.config?.selectedWheelSku ? 'NOVITEC 21"' : 'Ferrari OEM'}</strong> · 
-                    Bodykit: <strong className="text-white">{buildPreview.config?.selectedBodykitSku ? 'LB-WORKS Full Carbon' : 'OEM'}</strong> · 
-                    Cánh gió: <strong className="text-white">{buildPreview.config?.selectedSpoilerSku ? (buildPreview.config.selectedSpoilerSku.includes('ducktail') ? 'LB Ducktail' : 'LB GT Wing') : 'OEM Clean'}</strong>
+                  <p className="text-xs text-[#475569] mt-0.5">
+                    Ngoại thất: <strong className="text-[#111827]">{buildPreview.config?.bodyColorName || buildPreview.build.bodyColor}</strong> · 
+                    Nội thất: <strong className="text-[#111827]">{buildPreview.config?.interiorColorName || 'Nero'}</strong> · 
+                    Mâm: <strong className="text-[#111827]">{buildPreview.config?.selectedWheelSku ? 'NOVITEC 21"' : 'Ferrari OEM'}</strong> · 
+                    Bodykit: <strong className="text-[#111827]">{buildPreview.config?.selectedBodykitSku ? 'LB-WORKS Full Carbon' : 'OEM'}</strong> · 
+                    Cánh gió: <strong className="text-[#111827]">{buildPreview.config?.selectedSpoilerSku ? (buildPreview.config.selectedSpoilerSku.includes('ducktail') ? 'LB Ducktail' : 'LB GT Wing') : 'OEM Clean'}</strong>
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-3 self-end sm:self-center">
                 <div className="text-right">
-                  <span className="text-[10px] font-mono text-[#8f9099] block uppercase">Tổng giá trị dự toán</span>
-                  <span className="text-xl font-black font-mono text-emerald-400">
+                  <span className="text-[10px] font-mono text-[#475569] block uppercase font-medium">Tổng giá trị dự toán</span>
+                  <span className="text-xl font-black font-mono text-[#06169B]">
                     ${(buildPreview.build.totalEstimatedCost || 328000).toLocaleString()} USD
                   </span>
                 </div>
@@ -357,7 +401,7 @@ export default function QuotationInvoicePage() {
                   type="button"
                   onClick={handleCreateQuoteFromBuild}
                   disabled={creatingQuoteFromBuild}
-                  className="px-4 py-2.5 bg-primary hover:bg-primary/90 text-on-primary rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-lg transition-all cursor-pointer disabled:opacity-50"
+                  className="px-4 py-2.5 bg-[#0213B2] hover:bg-[#0115BC] text-white rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-sm transition-all cursor-pointer disabled:opacity-50"
                 >
                   <span className="material-symbols-outlined text-base">receipt_long</span>
                   <span>{creatingQuoteFromBuild ? 'Đang tạo...' : 'Lập Báo Giá Ngay'}</span>
@@ -375,26 +419,27 @@ export default function QuotationInvoicePage() {
             
             {/* LEFT: Quotations List */}
             <div className="lg:col-span-4 space-y-4">
-              <div className="bg-[#162447] rounded-xl p-4 border border-[#6091c3]/30 shadow space-y-3">
-                <div className="flex items-center justify-between pb-2 border-b border-white/10">
-                  <h2 className="font-['Montserrat'] text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[#6091c3] text-base">format_list_bulleted</span>
+              <div className="bg-[#E5E8F0] dark:bg-[#14151D] rounded-2xl p-4 border border-[#CBD5E1] dark:border-[#282A3A] shadow-sm space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-[#CBD5E1] dark:border-[#282A3A]">
+                  <h2 className="font-['Montserrat'] text-xs font-bold uppercase tracking-wider text-[#111827] dark:text-[#F8FAFC] flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[#0213B2] dark:text-[#60A5FA] text-base">format_list_bulleted</span>
                     <span>All Quotations</span>
                   </h2>
-                  <span className="text-[11px] font-mono text-[#8f9099]">{filteredQuotes.length} Records</span>
+                  <span className="text-[11px] font-mono text-[#475569] dark:text-[#94A3B8] font-semibold">{filteredQuotes.length} Records</span>
                 </div>
 
                 {/* Filter Pills */}
-                <div className="flex items-center gap-1 text-[11px] font-mono overflow-x-auto pb-1 scrollbar-none">
+                <div className="flex items-center gap-1.5 text-[11px] font-mono overflow-x-auto pb-1 scrollbar-none">
                   {['ALL', 'APPROVED', 'SENT', 'DRAFT', 'REJECTED'].map(st => (
                     <button
                       key={st}
                       type="button"
                       onClick={() => setQuoteFilter(st)}
-                      className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                      data-preserve-bg={quoteFilter !== st ? "true" : undefined}
+                      className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                         quoteFilter === st
-                          ? 'bg-[#6091c3] text-white font-bold'
-                          : 'bg-white/5 text-[#c8d4ea] hover:bg-white/10'
+                          ? 'bg-[#0213B2] text-white font-bold shadow-xs'
+                          : 'bg-white dark:bg-[#1B1D28] text-[#475569] dark:text-[#CBD5E1] border border-[#CBD5E1] dark:border-[#282A3A] hover:bg-[#D7E1FF] dark:hover:bg-[#1A224D] hover:text-[#0213B2] dark:hover:text-[#60A5FA] shadow-2xs'
                       }`}
                     >
                       {st}
@@ -404,42 +449,54 @@ export default function QuotationInvoicePage() {
 
                 {/* List items */}
                 {loadingQuotes ? (
-                  <div className="py-12 text-center text-xs font-mono text-[#8f9099] flex items-center justify-center gap-2">
-                    <span className="w-4 h-4 border-2 border-[#6091c3] border-t-transparent rounded-full animate-spin" />
+                  <div className="py-12 text-center text-xs font-mono text-[#64748B] dark:text-[#94A3B8] flex items-center justify-center gap-2">
+                    <span className="w-4 h-4 border-2 border-[#0213B2] dark:border-[#60A5FA] border-t-transparent rounded-full animate-spin" />
                     <span>Loading quotations...</span>
                   </div>
                 ) : filteredQuotes.length === 0 ? (
-                  <div className="py-12 text-center text-xs font-mono text-[#8f9099]">
+                  <div className="py-12 text-center text-xs font-mono text-[#64748B] dark:text-[#94A3B8]">
                     No quotations found for "{quoteFilter}"
                   </div>
                 ) : (
-                  <div className="space-y-2 max-h-[600px] overflow-y-auto pr-1">
+                  <div className="space-y-2.5 max-h-[600px] overflow-y-auto pr-1">
                     {filteredQuotes.map(q => {
                       const isSelected = currentQuote?.id === q.id
-                      const statusColor = q.status === 'APPROVED' ? 'text-emerald-400 border-emerald-500/40 bg-emerald-950/40'
-                                        : q.status === 'SENT' ? 'text-blue-400 border-blue-500/40 bg-blue-950/40'
-                                        : q.status === 'REJECTED' ? 'text-rose-400 border-rose-500/40 bg-rose-950/40'
-                                        : 'text-amber-400 border-amber-500/40 bg-amber-950/40'
                       return (
                         <div
                           key={q.id}
                           onClick={() => setCurrentQuote(q)}
-                          className={`p-3 rounded-lg border transition-all cursor-pointer ${
+                          data-preserve-bg="true"
+                          className={`p-3.5 rounded-xl border transition-all cursor-pointer relative overflow-hidden ${
                             isSelected
-                              ? 'bg-[#1f2f57] border-[#6091c3] shadow-md ring-1 ring-[#6091c3]'
-                              : 'bg-[#0d131f]/70 border-white/10 hover:border-white/25 hover:bg-[#0d131f]'
+                              ? 'bg-gradient-to-r from-[#D7E1FF] via-[#E2EBFF] to-[#EDF3FF] dark:from-[#1A224D] dark:via-[#161D3F] dark:to-[#121733] border-2 border-[#0213B2] dark:border-[#60A5FA] border-l-[6px] border-l-[#0213B2] dark:border-l-[#60A5FA] shadow-md shadow-[#0213B2]/15 dark:shadow-blue-950/60'
+                              : 'bg-white dark:bg-[#1B1D28] border border-[#CBD5E1] dark:border-[#282A3A] hover:border-[#0213B2]/50 dark:hover:border-[#60A5FA]/50 hover:bg-[#F8FAFC] dark:hover:bg-[#222533] shadow-xs hover:shadow-sm'
                           }`}
                         >
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="font-mono text-xs font-bold text-white">{q.quotationNumber}</span>
-                            <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border ${statusColor}`}>
-                              {q.status}
-                            </span>
+                          <div className="flex items-center justify-between mb-1.5">
+                            <div className="flex items-center gap-1.5">
+                              {isSelected && (
+                                <span className="w-2 h-2 rounded-full bg-[#0213B2] dark:bg-[#60A5FA] animate-pulse shrink-0" />
+                              )}
+                              <span className={`font-mono text-xs ${isSelected ? 'font-black text-[#0213B2] dark:text-[#60A5FA]' : 'font-bold text-[#111827] dark:text-[#F8FAFC]'}`}>
+                                {q.quotationNumber}
+                              </span>
+                            </div>
+                            {renderStatusBadge(q.status)}
                           </div>
-                          <p className="text-xs text-[#c8d4ea] truncate font-medium">{q.carModel}</p>
-                          <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/5 text-[11px] font-mono">
-                            <span className="text-[#8f9099] truncate">{q.customerName}</span>
-                            <span className="text-[#6091c3] font-bold">{formatUsd(q.finalTotal)}</span>
+                          <p className={`text-xs font-semibold truncate ${isSelected ? 'text-[#0B1538] dark:text-white font-bold' : 'text-[#334155] dark:text-[#CBD5E1]'}`}>
+                            {q.carModel}
+                          </p>
+                          <div className={`flex items-center justify-between mt-2 pt-2 border-t text-[11px] font-mono ${
+                            isSelected
+                              ? 'border-[#0213B2]/20 dark:border-[#60A5FA]/25'
+                              : 'border-[#CBD5E1] dark:border-[#282A3A]'
+                          }`}>
+                            <span className={`${isSelected ? 'text-[#1E293B] dark:text-[#CBD5E1] font-semibold' : 'text-[#475569] dark:text-[#94A3B8]'} truncate`}>
+                              {q.customerName}
+                            </span>
+                            <span className={`font-black text-xs ${isSelected ? 'text-[#0213B2] dark:text-[#60A5FA] text-sm' : 'text-[#0213B2] dark:text-[#60A5FA]'}`}>
+                              {formatUsd(q.finalTotal)}
+                            </span>
                           </div>
                         </div>
                       )
@@ -454,28 +511,21 @@ export default function QuotationInvoicePage() {
               <div className="lg:col-span-8 space-y-6">
                 
                 {/* Quotation Header & Actions Bar */}
-                <div className="bg-[#162447] rounded-xl p-5 border border-[#6091c3]/30 shadow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="bg-[#E5E8F0] dark:bg-[#14151D] rounded-2xl p-5 border border-[#CBD5E1] dark:border-[#282A3A] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-mono text-sm font-bold text-[#6091c3]">{currentQuote.quotationNumber}</span>
-                      <span className={`px-2.5 py-0.5 rounded text-[11px] font-mono font-bold uppercase border ${
-                        currentQuote.status === 'APPROVED' ? 'text-emerald-400 border-emerald-500/40 bg-emerald-950/50'
-                        : currentQuote.status === 'SENT' ? 'text-blue-400 border-blue-500/40 bg-blue-950/50'
-                        : currentQuote.status === 'REJECTED' ? 'text-rose-400 border-rose-500/40 bg-rose-950/50'
-                        : 'text-amber-400 border-amber-500/40 bg-amber-950/50'
-                      }`}>
-                        {currentQuote.status}
-                      </span>
+                      <span className="font-mono text-sm font-bold text-[#0213B2] dark:text-[#60A5FA]">{currentQuote.quotationNumber}</span>
+                      {renderStatusBadge(currentQuote.status)}
                       {currentQuote.hasWorkOrder && (
-                        <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-[#10b981]/20 border border-[#10b981]/40 text-[#10b981] flex items-center gap-1">
+                        <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold bg-[#DCFCE7] dark:bg-[#16A34A]/20 border border-[#16A34A]/40 text-[#16A34A] dark:text-[#4ADE80] flex items-center gap-1">
                           <span className="material-symbols-outlined text-xs">precision_manufacturing</span>
                           <span>Dispatched: {currentQuote.workOrderNumber}</span>
                         </span>
                       )}
                     </div>
-                    <h2 className="font-['Montserrat'] text-xl font-bold text-white">{currentQuote.carModel}</h2>
-                    <p className="text-xs text-[#8f9099] font-mono mt-0.5">
-                      Client: <strong className="text-white">{currentQuote.customerName}</strong> ({currentQuote.customerPhone || 'N/A'}) • {currentQuote.garageName}
+                    <h2 className="font-['Montserrat'] text-xl font-bold text-[#111827] dark:text-[#F8FAFC]">{currentQuote.carModel}</h2>
+                    <p className="text-xs text-[#475569] dark:text-[#CBD5E1] font-mono mt-0.5">
+                      Client: <strong className="text-[#111827] dark:text-[#F8FAFC]">{currentQuote.customerName}</strong> ({currentQuote.customerPhone || 'N/A'}) • {currentQuote.garageName}
                     </p>
                   </div>
 
@@ -487,7 +537,7 @@ export default function QuotationInvoicePage() {
                         <button
                           type="button"
                           onClick={() => handleUpdateQuoteStatus('APPROVED')}
-                          className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-['Montserrat'] font-bold flex items-center gap-1.5 transition-all shadow cursor-pointer"
+                          className="px-3.5 py-2 bg-[#16A34A] hover:bg-[#15803D] text-white rounded-lg text-xs font-['Montserrat'] font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                         >
                           <span className="material-symbols-outlined text-sm">check_circle</span>
                           <span>Approve Quote</span>
@@ -495,7 +545,7 @@ export default function QuotationInvoicePage() {
                         <button
                           type="button"
                           onClick={() => handleUpdateQuoteStatus('REJECTED')}
-                          className="px-3.5 py-2 bg-rose-600/80 hover:bg-rose-500 text-white rounded-lg text-xs font-['Montserrat'] font-bold flex items-center gap-1.5 transition-all shadow cursor-pointer"
+                          className="px-3.5 py-2 bg-[#DC2626] hover:bg-[#B91C1C] text-white rounded-lg text-xs font-['Montserrat'] font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                         >
                           <span className="material-symbols-outlined text-sm">cancel</span>
                           <span>Reject</span>
@@ -508,7 +558,7 @@ export default function QuotationInvoicePage() {
                       <button
                         type="button"
                         onClick={handleCreateWorkOrder}
-                        className="px-4 py-2 bg-[#10b981] hover:brightness-110 text-white rounded-lg text-xs font-['Montserrat'] font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-lg transition-all cursor-pointer animate-pulse"
+                        className="px-4 py-2 bg-[#0213B2] hover:bg-[#0115BC] text-white rounded-lg text-xs font-['Montserrat'] font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
                       >
                         <span className="material-symbols-outlined text-base">precision_manufacturing</span>
                         <span>Dispatch & Create Work Order</span>
@@ -524,9 +574,9 @@ export default function QuotationInvoicePage() {
                           const target = workOrders.find(w => w.quotationId === currentQuote.id)
                           if (target) selectWorkOrder(target)
                         }}
-                        className="px-3.5 py-2 bg-[#1f2f57] border border-[#6091c3]/50 text-white rounded-lg text-xs font-['Montserrat'] font-bold flex items-center gap-1.5 transition-all cursor-pointer hover:bg-[#6091c3]/20"
+                        className="px-3.5 py-2 bg-[#EEF2FF] dark:bg-[#161C3B] border border-[#0213B2]/30 dark:border-[#60A5FA]/30 text-[#0213B2] dark:text-[#60A5FA] rounded-lg text-xs font-['Montserrat'] font-bold flex items-center gap-1.5 transition-all cursor-pointer hover:bg-[#EEF2FF]/80 shadow-xs"
                       >
-                        <span className="material-symbols-outlined text-sm text-[#6091c3]">visibility</span>
+                        <span className="material-symbols-outlined text-sm text-[#0213B2] dark:text-[#60A5FA]">visibility</span>
                         <span>View Active Work Order</span>
                       </button>
                     )}
@@ -534,21 +584,21 @@ export default function QuotationInvoicePage() {
                 </div>
 
                 {/* Quotation Line Items Table */}
-                <div className="bg-[#162447] rounded-xl p-5 border border-[#6091c3]/30 shadow space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                    <h3 className="font-['Montserrat'] text-sm font-bold text-white flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[#6091c3] text-base">tune</span>
+                <div className="bg-[#E5E8F0] dark:bg-[#14151D] rounded-2xl p-5 border border-[#CBD5E1] dark:border-[#282A3A] shadow-sm space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-[#CBD5E1] dark:border-[#282A3A]">
+                    <h3 className="font-['Montserrat'] text-sm font-bold text-[#111827] dark:text-[#F8FAFC] flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[#0213B2] dark:text-[#60A5FA] text-base">tune</span>
                       <span>Staged Performance Components & Hardware</span>
                     </h3>
-                    <span className="text-xs font-mono text-[#8f9099]">{currentQuote.items?.length || 0} Line Items</span>
+                    <span className="text-xs font-mono text-[#475569] dark:text-[#94A3B8]">{currentQuote.items?.length || 0} Line Items</span>
                   </div>
 
-                  <div className="divide-y divide-white/10">
+                  <div className="divide-y divide-[#CBD5E1] dark:divide-[#282A3A]">
                     {currentQuote.items && currentQuote.items.length > 0 ? (
                       currentQuote.items.map((it, idx) => (
                         <div key={it.itemId || idx} className="py-3 flex items-center justify-between gap-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-[#0d131f] flex items-center justify-center text-[#6091c3] shrink-0 border border-white/10">
+                            <div className="w-10 h-10 rounded-lg bg-white dark:bg-[#1B1D28] flex items-center justify-center text-[#0213B2] dark:text-[#60A5FA] shrink-0 border border-[#CBD5E1] dark:border-[#282A3A]" data-preserve-bg="true">
                               <span className="material-symbols-outlined text-xl">
                                 {it.category?.toLowerCase().includes('wheel') ? 'adjust'
                                  : it.category?.toLowerCase().includes('exhaust') ? 'mode_fan'
@@ -557,24 +607,24 @@ export default function QuotationInvoicePage() {
                               </span>
                             </div>
                             <div>
-                              <h4 className="font-['Montserrat'] text-sm font-bold text-white">{it.partName}</h4>
-                              <p className="text-xs text-[#8f9099] font-mono">
+                              <h4 className="font-['Montserrat'] text-sm font-bold text-[#111827] dark:text-[#F8FAFC]">{it.partName}</h4>
+                              <p className="text-xs text-[#475569] dark:text-[#94A3B8] font-mono">
                                 SKU: {it.partSku || 'OEM-SPEC'} • Qty: {it.quantity}
                               </p>
                             </div>
                           </div>
                           <div className="text-right shrink-0">
-                            <span className="font-mono text-sm font-bold text-white block">
+                            <span className="font-mono text-sm font-bold text-[#111827] dark:text-[#F8FAFC] block">
                               {formatUsd(it.totalPriceVnd)}
                             </span>
-                            <span className="text-[11px] font-mono text-[#8f9099]">
+                            <span className="text-[11px] font-mono text-[#475569] dark:text-[#94A3B8]">
                               {formatVnd(it.totalPriceVnd)}
                             </span>
                           </div>
                         </div>
                       ))
                     ) : (
-                      <div className="py-6 text-center text-xs font-mono text-[#8f9099]">
+                      <div className="py-6 text-center text-xs font-mono text-[#475569] dark:text-[#94A3B8]">
                         Baseline OEM Performance Staging Package included
                       </div>
                     )}
@@ -582,30 +632,30 @@ export default function QuotationInvoicePage() {
                 </div>
 
                 {/* Financial Summary Card */}
-                <div className="bg-[#162447] rounded-xl p-6 border border-[#6091c3]/30 shadow-xl space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                    <h3 className="font-['Montserrat'] font-bold text-sm text-white flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[#6091c3] text-lg">receipt_long</span>
+                <div className="bg-[#E5E8F0] dark:bg-[#14151D] rounded-2xl p-6 border border-[#CBD5E1] dark:border-[#282A3A] shadow-sm space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-[#CBD5E1] dark:border-[#282A3A]">
+                    <h3 className="font-['Montserrat'] font-bold text-sm text-[#111827] dark:text-[#F8FAFC] flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[#0213B2] dark:text-[#60A5FA] text-lg">receipt_long</span>
                       <span>Commercial Financial Breakdown</span>
                     </h3>
-                    <span className="text-xs font-mono text-[#8f9099]">TÜV & ECE Compliant Staging</span>
+                    <span className="text-xs font-mono text-[#475569] dark:text-[#94A3B8]">TÜV & ECE Compliant Staging</span>
                   </div>
 
                   <div className="space-y-3 text-xs font-mono">
-                    <div className="flex justify-between items-center text-[#c8d4ea]">
+                    <div className="flex justify-between items-center text-[#475569] dark:text-[#CBD5E1]">
                       <span>Parts Subtotal (Authentic OEM Stock):</span>
-                      <span className="font-bold text-white">
+                      <span className="font-bold text-[#111827] dark:text-[#F8FAFC]">
                         {formatUsd(currentQuote.partsTotal)} ({formatVnd(currentQuote.partsTotal)})
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-[#c8d4ea]">
+                    <div className="flex justify-between items-center text-[#475569] dark:text-[#CBD5E1]">
                       <span>Installation, Calibration & Dyno Labor:</span>
-                      <span className="font-bold text-white">
+                      <span className="font-bold text-[#111827] dark:text-[#F8FAFC]">
                         {formatUsd(currentQuote.laborTotal)} ({formatVnd(currentQuote.laborTotal)})
                       </span>
                     </div>
                     {currentQuote.discountAmount > 0 && (
-                      <div className="flex justify-between items-center text-emerald-400">
+                      <div className="flex justify-between items-center text-[#16A34A] dark:text-[#4ADE80]">
                         <span>Preferred Commercial VIP Discount:</span>
                         <span className="font-bold">
                           -{formatUsd(currentQuote.discountAmount)} (-{formatVnd(currentQuote.discountAmount)})
@@ -613,29 +663,29 @@ export default function QuotationInvoicePage() {
                       </div>
                     )}
                     {currentQuote.taxAmount > 0 && (
-                      <div className="flex justify-between items-center text-[#c8d4ea]">
+                      <div className="flex justify-between items-center text-[#475569] dark:text-[#CBD5E1]">
                         <span>Applicable VAT & Statutory Compliance Tax:</span>
-                        <span className="font-bold text-white">
+                        <span className="font-bold text-[#111827] dark:text-[#F8FAFC]">
                           +{formatUsd(currentQuote.taxAmount)} (+{formatVnd(currentQuote.taxAmount)})
                         </span>
                       </div>
                     )}
                   </div>
 
-                  <div className="mt-4 p-4 rounded-xl bg-[#0d131f] border border-[#6091c3]/40 flex items-center justify-between">
+                  <div className="mt-4 p-4 rounded-xl bg-[#D7E1FF] dark:bg-[#1A224D] border border-[#BCC7D8] dark:border-[#282A3A] flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-[#8f9099] block">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-[#06169B] block font-semibold">
                         TOTAL ESTIMATED PAYABLE
                       </span>
-                      <span className="text-[11px] text-[#6091c3] mt-0.5 block font-mono">
+                      <span className="text-[11px] text-[#06169B] mt-0.5 block font-mono font-medium">
                         VAT Included • 24M Warranty Protection Included
                       </span>
                     </div>
                     <div className="text-right">
-                      <span className="font-mono text-2xl font-extrabold text-[#6091c3] block">
+                      <span className="font-mono text-2xl font-extrabold text-[#06169B] block">
                         {formatUsd(currentQuote.finalTotal)}
                       </span>
-                      <span className="text-[11px] font-mono text-[#8f9099]">
+                      <span className="text-[11px] font-mono text-[#475569]">
                         {formatVnd(currentQuote.finalTotal)}
                       </span>
                     </div>
@@ -644,7 +694,7 @@ export default function QuotationInvoicePage() {
 
               </div>
             ) : (
-              <div className="lg:col-span-8 bg-[#162447] rounded-xl p-12 text-center text-xs font-mono text-[#8f9099] border border-white/10">
+              <div className="lg:col-span-8 bg-white rounded-xl p-12 text-center text-xs font-mono text-[#64748B] border border-[#E2E8F0]">
                 Please select a quotation from the list on the left to view details.
               </div>
             )}
@@ -660,26 +710,27 @@ export default function QuotationInvoicePage() {
             
             {/* LEFT: Work Orders List */}
             <div className="lg:col-span-4 space-y-4">
-              <div className="bg-[#162447] rounded-xl p-4 border border-[#10b981]/30 shadow space-y-3">
-                <div className="flex items-center justify-between pb-2 border-b border-white/10">
-                  <h2 className="font-['Montserrat'] text-xs font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[#10b981] text-base">precision_manufacturing</span>
+              <div className="bg-[#E5E8F0] dark:bg-[#14151D] rounded-2xl p-4 border border-[#CBD5E1] dark:border-[#282A3A] shadow-sm space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-[#CBD5E1] dark:border-[#282A3A]">
+                  <h2 className="font-['Montserrat'] text-xs font-bold uppercase tracking-wider text-[#111827] dark:text-[#F8FAFC] flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[#16A34A] dark:text-[#4ADE80] text-base">precision_manufacturing</span>
                     <span>Service Bay Work Orders</span>
                   </h2>
-                  <span className="text-[11px] font-mono text-[#8f9099]">{filteredWorkOrders.length} Orders</span>
+                  <span className="text-[11px] font-mono text-[#475569] dark:text-[#94A3B8] font-semibold">{filteredWorkOrders.length} Orders</span>
                 </div>
 
                 {/* Filter Pills */}
-                <div className="flex items-center gap-1 text-[11px] font-mono overflow-x-auto pb-1 scrollbar-none">
+                <div className="flex items-center gap-1.5 text-[11px] font-mono overflow-x-auto pb-1 scrollbar-none">
                   {['ALL', 'IN_PROGRESS', 'PENDING', 'COMPLETED', 'CANCELLED'].map(st => (
                     <button
                       key={st}
                       type="button"
                       onClick={() => setWorkOrderFilter(st)}
-                      className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                      data-preserve-bg={workOrderFilter !== st ? "true" : undefined}
+                      className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                         workOrderFilter === st
-                          ? 'bg-[#10b981] text-white font-bold'
-                          : 'bg-white/5 text-[#c8d4ea] hover:bg-white/10'
+                          ? 'bg-[#16A34A] text-white font-bold shadow-xs'
+                          : 'bg-white dark:bg-[#1B1D28] text-[#475569] dark:text-[#CBD5E1] border border-[#CBD5E1] dark:border-[#282A3A] hover:bg-[#DCFCE7] dark:hover:bg-[#16A34A]/20 hover:text-[#16A34A] dark:hover:text-[#4ADE80] shadow-2xs'
                       }`}
                     >
                       {st}
@@ -689,53 +740,61 @@ export default function QuotationInvoicePage() {
 
                 {/* List items */}
                 {loadingWorkOrders ? (
-                  <div className="py-12 text-center text-xs font-mono text-[#8f9099] flex items-center justify-center gap-2">
-                    <span className="w-4 h-4 border-2 border-[#10b981] border-t-transparent rounded-full animate-spin" />
+                  <div className="py-12 text-center text-xs font-mono text-[#64748B] dark:text-[#94A3B8] flex items-center justify-center gap-2">
+                    <span className="w-4 h-4 border-2 border-[#16A34A] border-t-transparent rounded-full animate-spin" />
                     <span>Loading work orders...</span>
                   </div>
                 ) : filteredWorkOrders.length === 0 ? (
-                  <div className="py-12 text-center text-xs font-mono text-[#8f9099]">
+                  <div className="py-12 text-center text-xs font-mono text-[#64748B] dark:text-[#94A3B8]">
                     No work orders found for "{workOrderFilter}"
                   </div>
                 ) : (
-                  <div className="space-y-2 max-h-[600px] overflow-y-auto pr-1">
+                  <div className="space-y-2.5 max-h-[600px] overflow-y-auto pr-1">
                     {filteredWorkOrders.map(wo => {
                       const isSelected = currentWorkOrder?.id === wo.id
-                      const statusColor = wo.status === 'COMPLETED' ? 'text-emerald-400 border-emerald-500/40 bg-emerald-950/40'
-                                        : wo.status === 'IN_PROGRESS' ? 'text-blue-400 border-blue-500/40 bg-blue-950/40'
-                                        : wo.status === 'CANCELLED' ? 'text-rose-400 border-rose-500/40 bg-rose-950/40'
-                                        : 'text-amber-400 border-amber-500/40 bg-amber-950/40'
                       return (
                         <div
                           key={wo.id}
                           onClick={() => selectWorkOrder(wo)}
-                          className={`p-3 rounded-lg border transition-all cursor-pointer ${
+                          data-preserve-bg="true"
+                          className={`p-3.5 rounded-xl border transition-all cursor-pointer relative overflow-hidden ${
                             isSelected
-                              ? 'bg-[#1f2f57] border-[#10b981] shadow-md ring-1 ring-[#10b981]'
-                              : 'bg-[#0d131f]/70 border-white/10 hover:border-white/25 hover:bg-[#0d131f]'
+                              ? 'bg-gradient-to-r from-[#DCFCE7] via-[#E7FBF0] to-[#F2FCF6] dark:from-[#064E3B]/60 dark:via-[#043E2E]/60 dark:to-[#022A1E]/60 border-2 border-[#16A34A] dark:border-[#4ADE80] border-l-[6px] border-l-[#16A34A] dark:border-l-[#4ADE80] shadow-md shadow-emerald-500/10 dark:shadow-emerald-950/50'
+                              : 'bg-white dark:bg-[#1B1D28] border border-[#CBD5E1] dark:border-[#282A3A] hover:border-[#16A34A]/50 dark:hover:border-[#4ADE80]/50 hover:bg-[#F8FAFC] dark:hover:bg-[#222533] shadow-xs hover:shadow-sm'
                           }`}
                         >
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="font-mono text-xs font-bold text-white">{wo.workOrderNumber}</span>
-                            <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border ${statusColor}`}>
-                              {wo.status}
-                            </span>
-                          </div>
-                          <p className="text-xs text-[#c8d4ea] truncate font-medium">{wo.vehicleModel}</p>
-                          <div className="mt-2 space-y-1">
-                            <div className="flex items-center justify-between text-[11px] font-mono text-[#8f9099]">
-                              <span>Progress:</span>
-                              <span className="text-[#10b981] font-bold">{wo.progress}%</span>
+                          <div className="flex items-center justify-between mb-1.5">
+                            <div className="flex items-center gap-1.5">
+                              {isSelected && (
+                                <span className="w-2 h-2 rounded-full bg-[#16A34A] dark:bg-[#4ADE80] animate-pulse shrink-0" />
+                              )}
+                              <span className={`font-mono text-xs ${isSelected ? 'font-black text-[#16A34A] dark:text-[#4ADE80]' : 'font-bold text-[#111827] dark:text-[#F8FAFC]'}`}>
+                                {wo.workOrderNumber}
+                              </span>
                             </div>
-                            <div className="w-full bg-[#0d131f] h-1.5 rounded-full overflow-hidden border border-white/10">
+                            {renderStatusBadge(wo.status)}
+                          </div>
+                          <p className={`text-xs font-semibold truncate ${isSelected ? 'text-[#06391A] dark:text-white font-bold' : 'text-[#334155] dark:text-[#CBD5E1]'}`}>
+                            {wo.vehicleModel}
+                          </p>
+                          <div className="mt-2 space-y-1">
+                            <div className="flex items-center justify-between text-[11px] font-mono text-[#475569] dark:text-[#CBD5E1]">
+                              <span>Progress:</span>
+                              <span className="text-[#16A34A] dark:text-[#4ADE80] font-bold">{wo.progress}%</span>
+                            </div>
+                            <div className="w-full bg-[#CBD5E1] dark:bg-[#282A3A] h-1.5 rounded-full overflow-hidden">
                               <div
-                                className="bg-[#10b981] h-full rounded-full transition-all duration-300"
+                                className="bg-[#16A34A] dark:bg-[#22C55E] h-full rounded-full transition-all duration-300"
                                 style={{ width: `${wo.progress}%` }}
                               />
                             </div>
                           </div>
-                          <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/5 text-[10px] font-mono text-[#8f9099]">
-                            <span>Tech: <strong className="text-white">{wo.technicianName || 'Unassigned'}</strong></span>
+                          <div className={`flex items-center justify-between mt-2 pt-2 border-t text-[10px] font-mono ${
+                            isSelected
+                              ? 'border-[#16A34A]/20 dark:border-[#4ADE80]/25'
+                              : 'border-[#CBD5E1] dark:border-[#282A3A]'
+                          } text-[#475569] dark:text-[#CBD5E1]`}>
+                            <span>Tech: <strong className="text-[#111827] dark:text-[#F8FAFC]">{wo.technicianName || 'Unassigned'}</strong></span>
                             <span>{wo.bayNumber?.split('-')[0] || 'Bay 01'}</span>
                           </div>
                         </div>
@@ -751,48 +810,46 @@ export default function QuotationInvoicePage() {
               <div className="lg:col-span-8 space-y-6">
                 
                 {/* Work Order Header */}
-                <div className="bg-[#162447] rounded-xl p-5 border border-[#10b981]/30 shadow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="bg-[#E5E8F0] dark:bg-[#14151D] rounded-2xl p-5 border border-[#CBD5E1] dark:border-[#282A3A] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-mono text-sm font-bold text-[#10b981]">{currentWorkOrder.workOrderNumber}</span>
-                      <span className="px-2.5 py-0.5 rounded text-[11px] font-mono font-bold uppercase bg-blue-950/60 border border-blue-500/40 text-blue-400">
-                        {currentWorkOrder.status}
-                      </span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-mono text-[#8f9099] border border-white/10">
+                      <span className="font-mono text-sm font-bold text-[#16A34A] dark:text-[#4ADE80]">{currentWorkOrder.workOrderNumber}</span>
+                      {renderStatusBadge(currentWorkOrder.status)}
+                      <span className="px-2 py-0.5 rounded text-[10px] font-mono text-[#475569] dark:text-[#94A3B8] border border-[#CBD5E1] dark:border-[#282A3A]">
                         Linked Quote: {currentWorkOrder.quotationNumber}
                       </span>
                     </div>
-                    <h2 className="font-['Montserrat'] text-xl font-bold text-white">{currentWorkOrder.vehicleModel}</h2>
-                    <p className="text-xs text-[#8f9099] font-mono mt-0.5">
-                      Client: <strong className="text-white">{currentWorkOrder.customerName}</strong> • {currentWorkOrder.bayNumber}
+                    <h2 className="font-['Montserrat'] text-xl font-bold text-[#111827] dark:text-[#F8FAFC]">{currentWorkOrder.vehicleModel}</h2>
+                    <p className="text-xs text-[#475569] dark:text-[#CBD5E1] font-mono mt-0.5">
+                      Client: <strong className="text-[#111827] dark:text-[#F8FAFC]">{currentWorkOrder.customerName}</strong> • {currentWorkOrder.bayNumber}
                     </p>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="px-3 py-1.5 rounded-lg bg-[#0d131f] border border-white/10 text-xs font-mono text-white flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                    <span className="px-3 py-1.5 rounded-lg bg-[#DCFCE7] dark:bg-[#16A34A]/20 border border-[#16A34A]/30 text-xs font-mono text-[#16A34A] dark:text-[#4ADE80] flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#16A34A] dark:bg-[#22C55E] animate-ping" />
                       <span>Bay Active</span>
                     </span>
                   </div>
                 </div>
 
                 {/* Progress Bar & Stage Controls */}
-                <div className="bg-[#162447] rounded-xl p-5 border border-[#10b981]/30 shadow space-y-4">
+                <div className="bg-[#E5E8F0] dark:bg-[#14151D] rounded-2xl p-5 border border-[#CBD5E1] dark:border-[#282A3A] shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-['Montserrat'] text-sm font-bold text-white flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[#10b981] text-base">speed</span>
+                      <h3 className="font-['Montserrat'] text-sm font-bold text-[#111827] dark:text-[#F8FAFC] flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[#16A34A] dark:text-[#4ADE80] text-base">speed</span>
                         <span>Service Bay Execution Progress</span>
                       </h3>
-                      <p className="text-xs text-[#8f9099] font-mono mt-0.5">Real-time workshop bay telemetry & staging checkpoints</p>
+                      <p className="text-xs text-[#475569] dark:text-[#CBD5E1] font-mono mt-0.5">Real-time workshop bay telemetry & staging checkpoints</p>
                     </div>
-                    <span className="font-mono text-2xl font-extrabold text-[#10b981]">{currentWorkOrder.progress}%</span>
+                    <span className="font-mono text-2xl font-extrabold text-[#16A34A] dark:text-[#4ADE80]">{currentWorkOrder.progress}%</span>
                   </div>
 
                   {/* Visual Progress Bar */}
-                  <div className="w-full bg-[#0d131f] h-3 rounded-full overflow-hidden border border-white/10 shadow-inner">
+                  <div className="w-full bg-[#CBD5E1] dark:bg-[#282A3A] h-3 rounded-full overflow-hidden shadow-inner">
                     <div
-                      className="bg-gradient-to-r from-[#6091c3] to-[#10b981] h-full rounded-full transition-all duration-500"
+                      className="bg-gradient-to-r from-[#0213B2] to-[#16A34A] h-full rounded-full transition-all duration-500"
                       style={{ width: `${currentWorkOrder.progress}%` }}
                     />
                   </div>
@@ -800,39 +857,43 @@ export default function QuotationInvoicePage() {
                   {/* Quick Stage Progression Buttons (For Technicians / Garage Staff) */}
                   {isGarageStaff && (
                     <div className="pt-2">
-                      <span className="text-[11px] font-mono uppercase text-[#8f9099] block mb-2">Execution Milestones:</span>
+                      <span className="text-[11px] font-mono uppercase text-[#475569] dark:text-[#CBD5E1] block mb-2">Execution Milestones:</span>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         <button
                           type="button"
                           onClick={() => handleUpdateWorkOrderStatus('IN_PROGRESS', 25)}
-                          className="px-2.5 py-1.5 rounded bg-[#0d131f] border border-white/10 hover:border-[#6091c3] text-xs font-mono text-left transition-all"
+                          data-preserve-bg="true"
+                          className="px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#1B1D28] border border-[#CBD5E1] dark:border-[#282A3A] hover:border-[#0213B2] dark:hover:border-[#60A5FA] text-xs font-mono text-left transition-all cursor-pointer shadow-2xs"
                         >
-                          <span className="text-[10px] text-[#6091c3] block font-bold">25%</span>
-                          <span className="text-white text-[11px] truncate block">Pre-Check & Alignment</span>
+                          <span className="text-[10px] text-[#0213B2] dark:text-[#60A5FA] block font-bold">25%</span>
+                          <span className="text-[#111827] dark:text-[#F8FAFC] text-[11px] truncate block font-semibold">Pre-Check & Alignment</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => handleUpdateWorkOrderStatus('IN_PROGRESS', 50)}
-                          className="px-2.5 py-1.5 rounded bg-[#0d131f] border border-white/10 hover:border-[#6091c3] text-xs font-mono text-left transition-all"
+                          data-preserve-bg="true"
+                          className="px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#1B1D28] border border-[#CBD5E1] dark:border-[#282A3A] hover:border-[#0213B2] dark:hover:border-[#60A5FA] text-xs font-mono text-left transition-all cursor-pointer shadow-2xs"
                         >
-                          <span className="text-[10px] text-[#6091c3] block font-bold">50%</span>
-                          <span className="text-white text-[11px] truncate block">Hardware Staging</span>
+                          <span className="text-[10px] text-[#0213B2] dark:text-[#60A5FA] block font-bold">50%</span>
+                          <span className="text-[#111827] dark:text-[#F8FAFC] text-[11px] truncate block font-semibold">Hardware Staging</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => handleUpdateWorkOrderStatus('IN_PROGRESS', 75)}
-                          className="px-2.5 py-1.5 rounded bg-[#0d131f] border border-white/10 hover:border-[#6091c3] text-xs font-mono text-left transition-all"
+                          data-preserve-bg="true"
+                          className="px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#1B1D28] border border-[#CBD5E1] dark:border-[#282A3A] hover:border-[#0213B2] dark:hover:border-[#60A5FA] text-xs font-mono text-left transition-all cursor-pointer shadow-2xs"
                         >
-                          <span className="text-[10px] text-[#6091c3] block font-bold">75%</span>
-                          <span className="text-white text-[11px] truncate block">Dyno Calibration</span>
+                          <span className="text-[10px] text-[#0213B2] dark:text-[#60A5FA] block font-bold">75%</span>
+                          <span className="text-[#111827] dark:text-[#F8FAFC] text-[11px] truncate block font-semibold">Dyno Calibration</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => handleUpdateWorkOrderStatus('COMPLETED', 100)}
-                          className="px-2.5 py-1.5 rounded bg-[#0d131f] border border-emerald-500/40 hover:bg-emerald-950/40 text-xs font-mono text-left transition-all"
+                          data-preserve-bg="true"
+                          className="px-2.5 py-1.5 rounded-lg bg-[#DCFCE7] dark:bg-[#16A34A]/20 border border-[#16A34A]/40 hover:bg-[#DCFCE7]/80 text-xs font-mono text-left transition-all cursor-pointer shadow-2xs"
                         >
-                          <span className="text-[10px] text-emerald-400 block font-bold">100%</span>
-                          <span className="text-emerald-300 text-[11px] truncate block font-bold">Final QC & Complete</span>
+                          <span className="text-[10px] text-[#16A34A] dark:text-[#4ADE80] block font-bold">100%</span>
+                          <span className="text-[#16A34A] dark:text-[#4ADE80] text-[11px] truncate block font-bold">Final QC & Complete</span>
                         </button>
                       </div>
                     </div>
@@ -841,24 +902,25 @@ export default function QuotationInvoicePage() {
 
                 {/* Technician Assignment & Operations Console (Staff Only) */}
                 {isGarageStaff && (
-                  <div className="bg-[#162447] rounded-xl p-5 border border-[#6091c3]/30 shadow space-y-4">
-                    <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                      <h3 className="font-['Montserrat'] text-sm font-bold text-white flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[#6091c3] text-base">engineering</span>
+                  <div className="bg-[#E5E8F0] dark:bg-[#14151D] rounded-2xl p-5 border border-[#CBD5E1] dark:border-[#282A3A] shadow-sm space-y-4">
+                    <div className="flex items-center justify-between pb-3 border-b border-[#CBD5E1] dark:border-[#282A3A]">
+                      <h3 className="font-['Montserrat'] text-sm font-bold text-[#111827] dark:text-[#F8FAFC] flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[#0213B2] dark:text-[#60A5FA] text-base">engineering</span>
                         <span>Technician Assignment & Bay Dispatch</span>
                       </h3>
-                      <span className="text-xs font-mono text-[#8f9099]">Garage Owner / Manager Control</span>
+                      <span className="text-xs font-mono text-[#64748B]">Garage Owner / Manager Control</span>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {/* Technician Selector */}
                       <div>
-                        <label className="text-xs font-mono text-[#8f9099] block mb-1.5">Assign Lead Technician:</label>
+                        <label className="text-xs font-mono text-[#64748B] block mb-1.5">Assign Lead Technician:</label>
                         <select
                           value={selectedTechId}
                           onChange={e => setSelectedTechId(e.target.value)}
                           disabled={!isOwnerOrAdmin}
-                          className="w-full px-3 py-2 rounded-lg bg-[#0d131f] border border-[#45464e]/40 text-xs font-mono text-white focus:border-[#6091c3] focus:outline-none"
+                          data-preserve-bg="true"
+                          className="w-full px-3 py-2 rounded-lg bg-white dark:bg-[#1B1D28] border border-[#CBD5E1] dark:border-[#282A3A] text-xs font-mono text-[#111827] dark:text-[#F8FAFC] focus:border-[#0213B2] dark:focus:border-[#60A5FA] focus:ring-1 focus:ring-[#0213B2] dark:focus:ring-[#60A5FA] focus:outline-none"
                         >
                           <option value="">-- Select Certified Technician --</option>
                           <option value="3">Long Nguyen (Master Technician - Lead)</option>
@@ -869,12 +931,13 @@ export default function QuotationInvoicePage() {
 
                       {/* Bay Selector */}
                       <div>
-                        <label className="text-xs font-mono text-[#8f9099] block mb-1.5">Service Bay Location:</label>
+                        <label className="text-xs font-mono text-[#475569] dark:text-[#CBD5E1] block mb-1.5">Service Bay Location:</label>
                         <select
                           value={selectedBay}
                           onChange={e => setSelectedBay(e.target.value)}
                           disabled={!isOwnerOrAdmin}
-                          className="w-full px-3 py-2 rounded-lg bg-[#0d131f] border border-[#45464e]/40 text-xs font-mono text-white focus:border-[#6091c3] focus:outline-none"
+                          data-preserve-bg="true"
+                          className="w-full px-3 py-2 rounded-lg bg-white dark:bg-[#1B1D28] border border-[#CBD5E1] dark:border-[#282A3A] text-xs font-mono text-[#111827] dark:text-[#F8FAFC] focus:border-[#0213B2] dark:focus:border-[#60A5FA] focus:ring-1 focus:ring-[#0213B2] dark:focus:ring-[#60A5FA] focus:outline-none"
                         >
                           <option value="Bay 01 - Dyno & Performance Alignment">Bay 01 - Dyno & Performance Alignment</option>
                           <option value="Bay 02 - Suspension & Clubsport Lift">Bay 02 - Suspension & Clubsport Lift</option>
@@ -886,13 +949,14 @@ export default function QuotationInvoicePage() {
 
                     {/* Operational Notes */}
                     <div>
-                      <label className="text-xs font-mono text-[#8f9099] block mb-1.5">Execution Notes / Diagnostic Log:</label>
+                      <label className="text-xs font-mono text-[#475569] dark:text-[#CBD5E1] block mb-1.5">Execution Notes / Diagnostic Log:</label>
                       <textarea
                         rows={2}
                         value={techNotes}
                         onChange={e => setTechNotes(e.target.value)}
                         placeholder="Add bay notes, torque specifications, sensor readings..."
-                        className="w-full px-3 py-2 rounded-lg bg-[#0d131f] border border-[#45464e]/40 text-xs font-mono text-white placeholder-white/30 focus:border-[#6091c3] focus:outline-none"
+                        data-preserve-bg="true"
+                        className="w-full px-3 py-2 rounded-lg bg-white dark:bg-[#1B1D28] border border-[#CBD5E1] dark:border-[#282A3A] text-xs font-mono text-[#111827] dark:text-[#F8FAFC] placeholder-[#94A3B8] focus:border-[#0213B2] dark:focus:border-[#60A5FA] focus:ring-1 focus:ring-[#0213B2] dark:focus:ring-[#60A5FA] focus:outline-none"
                       />
                     </div>
 
@@ -902,7 +966,7 @@ export default function QuotationInvoicePage() {
                         <button
                           type="button"
                           onClick={handleAssignTechnician}
-                          className="px-4 py-2 bg-[#6091c3] hover:brightness-110 text-white rounded-lg text-xs font-['Montserrat'] font-bold flex items-center gap-1.5 shadow transition-all cursor-pointer"
+                          className="px-4 py-2 bg-[#0213B2] hover:bg-[#0115BC] text-white rounded-lg text-xs font-['Montserrat'] font-bold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
                         >
                           <span className="material-symbols-outlined text-sm">badge</span>
                           <span>Save Bay & Technician Assignment</span>
@@ -911,7 +975,7 @@ export default function QuotationInvoicePage() {
                       <button
                         type="button"
                         onClick={() => handleUpdateWorkOrderStatus()}
-                        className="px-4 py-2 bg-[#10b981] hover:brightness-110 text-white rounded-lg text-xs font-['Montserrat'] font-bold flex items-center gap-1.5 shadow transition-all cursor-pointer"
+                        className="px-4 py-2 bg-[#16A34A] hover:bg-[#15803D] text-white rounded-lg text-xs font-['Montserrat'] font-bold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
                       >
                         <span className="material-symbols-outlined text-sm">save</span>
                         <span>Save Status & Notes</span>
@@ -922,7 +986,7 @@ export default function QuotationInvoicePage() {
 
               </div>
             ) : (
-              <div className="lg:col-span-8 bg-[#162447] rounded-xl p-12 text-center text-xs font-mono text-[#8f9099] border border-white/10">
+              <div className="lg:col-span-8 bg-[#E5E8F0] dark:bg-[#14151D] rounded-2xl p-12 text-center text-xs font-mono text-[#475569] dark:text-[#CBD5E1] border border-[#CBD5E1] dark:border-[#282A3A]">
                 Please select a work order from the list on the left to monitor or manage bay execution.
               </div>
             )}

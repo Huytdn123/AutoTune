@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="vi" class="dark">
+<html lang="vi" class="light">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/jpeg" href="/images/logo.jpg" />
@@ -14,6 +14,28 @@
     <!-- Material Symbols Outlined -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
+    <!-- Immediate Theme Initialization to eliminate flash of unstyled theme -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('vt_theme') || localStorage.getItem('theme');
+          var theme = (saved === 'dark' || saved === 'light') ? saved : 'light';
+          var doc = document.documentElement;
+          if (theme === 'dark') {
+            doc.classList.add('dark');
+            doc.classList.remove('light');
+            doc.setAttribute('data-theme', 'dark');
+            doc.style.colorScheme = 'dark';
+          } else {
+            doc.classList.add('light');
+            doc.classList.remove('dark');
+            doc.setAttribute('data-theme', 'light');
+            doc.style.colorScheme = 'light';
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Tailwind CSS CDN with Custom Theme Tokens (Virtual Tune Precision System) -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
@@ -22,59 +44,92 @@
         theme: {
           extend: {
             "colors": {
-              "primary": "#b6c5f6",
-              "secondary-fixed-dim": "#c8c6c5",
-              "on-surface": "#e3e2e2",
-              "surface-container-lowest": "#0d0e0f",
-              "on-primary-fixed-variant": "#36456f",
-              "tertiary-fixed-dim": "#9bcbff",
-              "surface-tint": "#b6c5f6",
-              "surface-container-low": "#1a1c1c",
-              "on-primary": "#1f2f57",
-              "on-secondary": "#303030",
-              "inverse-on-surface": "#2f3131",
-              "inverse-primary": "#4e5d88",
-              "outline-variant": "#45464e",
-              "on-surface-variant": "#c5c6cf",
-              "on-secondary-fixed": "#1b1c1b",
-              "on-tertiary-fixed": "#001d34",
-              "surface-dim": "#121414",
-              "surface-container-high": "#292a2a",
-              "on-error": "#690005",
-              "tertiary-container": "#003356",
-              "primary-container": "#1f2f57",
-              "on-tertiary-fixed-variant": "#094a77",
-              "surface-bright": "#38393a",
-              "primary-fixed-dim": "#b6c5f6",
-              "on-secondary-container": "#b7b5b4",
-              "on-tertiary": "#003256",
-              "on-secondary-fixed-variant": "#474746",
-              "on-primary-container": "#8897c6",
-              "secondary": "#c8c6c5",
-              "surface-container-highest": "#343535",
-              "outline": "#8f9099",
-              "surface-container": "#1e2020",
-              "error": "#ffb4ab",
-              "primary-fixed": "#dae2ff",
-              "tertiary": "#9bcbff",
-              "error-container": "#93000a",
-              "inverse-surface": "#e3e2e2",
-              "on-background": "#e3e2e2",
-              "secondary-container": "#474746",
-              "surface-variant": "#343535",
-              "secondary-fixed": "#e4e2e1",
-              "on-tertiary-container": "#6c9dcf",
-              "on-primary-fixed": "#071941",
-              "tertiary-fixed": "#d0e4ff",
-              "surface": "#121414",
-              "on-error-container": "#ffdad6",
-              "background": "#121414"
+              /* Brand & Interactions */
+              "primary": "#0213B2",
+              "primary-hover": "#0115BC",
+              "primary-pressed": "#06169B",
+              "on-primary": "#FFFFFF",
+              "primary-container": "#E8EDFF",
+              "on-primary-container": "#0213B2",
+              "primary-fixed": "#E8EDFF",
+              "primary-fixed-dim": "#C5D8FF",
+              "on-primary-fixed": "#0213B2",
+              "on-primary-fixed-variant": "#06169B",
+
+              /* Light Application Surfaces */
+              "background": "#F3F5FA",
+              "on-background": "#111827",
+              "surface": "#E5E8F0",
+              "on-surface": "#111827",
+              "surface-subtle": "#E9EDF5",
+              "surface-hover": "#EEF2F8",
+              "surface-selected": "#E8EDFF",
+              "surface-blue": "#D7E1FF",
+              "surface-pale-blue": "#E8EDFF",
+              "deep-blue": "#06169B",
+              "surface-container-lowest": "#E5E8F0",
+              "surface-container-low": "#F3F5FA",
+              "surface-container": "#E5E8F0",
+              "surface-container-high": "#E9EDF5",
+              "surface-container-highest": "#D8DFEA",
+              "surface-dim": "#F3F5FA",
+              "surface-bright": "#E5E8F0",
+              "surface-tint": "#0213B2",
+
+              /* Typography and Outlines */
+              "on-surface-variant": "#475569",
+              "outline": "#BCC7D8",
+              "outline-variant": "#D8DFEA",
+              "inverse-surface": "#111827",
+              "inverse-on-surface": "#FFFFFF",
+              "inverse-primary": "#C5D8FF",
+
+              /* Secondary Brand: Navy */
+              "secondary": "#1F2F57",
+              "on-secondary": "#FFFFFF",
+              "secondary-container": "#E9EDF5",
+              "on-secondary-container": "#1F2F57",
+              "secondary-fixed": "#E8EDFF",
+              "secondary-fixed-dim": "#D8DFEA",
+              "on-secondary-fixed": "#1F2F57",
+              "on-secondary-fixed-variant": "#475569",
+
+              /* Tertiary */
+              "tertiary": "#0213B2",
+              "on-tertiary": "#FFFFFF",
+              "tertiary-container": "#E8EDFF",
+              "on-tertiary-container": "#0213B2",
+              "tertiary-fixed": "#E8EDFF",
+              "tertiary-fixed-dim": "#C5D8FF",
+              "on-tertiary-fixed": "#0213B2",
+              "on-tertiary-fixed-variant": "#06169B",
+
+              /* Brand Specific Identity */
+              "primary-navy": "#1F2F57",
+              "tech-blue": "#6091C3",
+              "metallic-gray": "#A8A8A8",
+              "off-white": "#FDFAF9",
+
+              /* Feedback */
+              "success": "#16A34A",
+              "success-surface": "#DCFCE7",
+              "warning": "#D97706",
+              "warning-surface": "#FEF3C7",
+              "error": "#DC2626",
+              "error-container": "#FEE2E2",
+              "on-error": "#FFFFFF",
+              "on-error-container": "#991B1B",
+              "info": "#2563EB",
+              "info-surface": "#DBEAFE"
             },
             "borderRadius": {
-              "DEFAULT": "0.125rem",
-              "lg": "0.25rem",
-              "xl": "0.5rem",
-              "full": "0.75rem"
+              "sm": "6px",
+              "DEFAULT": "10px",
+              "md": "10px",
+              "lg": "14px",
+              "xl": "18px",
+              "2xl": "20px",
+              "full": "9999px"
             },
             "spacing": {
               "space-md": "1rem",
@@ -109,7 +164,15 @@
       /* Smooth scroll & Material Symbols base styles */
       html {
         scroll-behavior: smooth;
-        background-color: #121414;
+        background-color: #F3F5FA;
+      }
+      html.dark {
+        background-color: #0B0C10;
+        color-scheme: dark;
+      }
+      html.light {
+        background-color: #F3F5FA;
+        color-scheme: light;
       }
       .material-symbols-outlined {
         font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
