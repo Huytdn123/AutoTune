@@ -1,37 +1,82 @@
 @echo off
-title VIRTUAL TUNE - Smart Dev Launcher
+setlocal DisableDelayedExpansion
+title VIRTUAL TUNE - Automotive Development Console
 cd /d "%~dp0"
 
-echo =========================================================================
-echo       KHOI DONG HE THONG VIRTUAL TUNE (BACKEND + FRONTEND)
-echo =========================================================================
-echo.
+:: =========================================================================
+:: TERMINAL INITIALIZATION & ANSI COLOR SETUP WITH SAFE FALLBACK
+:: =========================================================================
+mode con: cols=80 lines=32 >nul 2>nul
+reg add HKCU\Console /v VirtualTerminalLevel /t REG_DWORD /d 1 /f >nul 2>nul
 
-:: -------------------------------------------------------------------------
-:: 0. CHO PHEP NGUOI DUNG LUA CHON (MAC DINH ENTER LA Y)
-:: -------------------------------------------------------------------------
+set "ESC="
+for /f "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do set "ESC=%%b"
+
+if not "%ESC%"=="" (
+    set "C_RESET=%ESC%[0m"
+    set "C_BOLD=%ESC%[1m"
+    set "C_BLUE=%ESC%[94m"
+    set "C_CYAN=%ESC%[96m"
+    set "C_GREEN=%ESC%[92m"
+    set "C_YELLOW=%ESC%[93m"
+    set "C_RED=%ESC%[91m"
+    set "C_GRAY=%ESC%[90m"
+    set "C_WHITE=%ESC%[97m"
+) else (
+    set "C_RESET="
+    set "C_BOLD="
+    set "C_BLUE="
+    set "C_CYAN="
+    set "C_GREEN="
+    set "C_YELLOW="
+    set "C_RED="
+    set "C_GRAY="
+    set "C_WHITE="
+)
+
+:: Padded status tags (strictly 11 chars wide) for aligned columnar output
+set "TAG_OK=%C_GREEN%[ OK ]     %C_RESET%"
+set "TAG_INFO=%C_CYAN%[ INFO ]   %C_RESET%"
+set "TAG_WARN=%C_YELLOW%[ WARN ]   %C_RESET%"
+set "TAG_ERROR=%C_RED%[ ERROR ]  %C_RESET%"
+set "TAG_WAIT=%C_CYAN%[ WAIT ]   %C_RESET%"
+set "TAG_PROMPT=%C_YELLOW%[ ? ]      %C_RESET%"
+
+echo.
+echo %C_CYAN%+----------------------------------------------------------------+%C_RESET%
+echo %C_CYAN%^|%C_BOLD%%C_BLUE%                          VIRTUAL TUNE                          %C_RESET%%C_CYAN%^|%C_RESET%
+echo %C_CYAN%^|%C_WHITE%                 AUTOMOTIVE DEVELOPMENT CONSOLE                 %C_RESET%%C_CYAN%^|%C_RESET%
+echo %C_CYAN%^|%C_GRAY%                   SMART ENVIRONMENT LAUNCHER                   %C_RESET%%C_CYAN%^|%C_RESET%
+echo %C_CYAN%+----------------------------------------------------------------+%C_RESET%
+
+:: =========================================================================
+:: 0. XAC NHAN KHOI DONG (ENTER DE TIEP TUC, N DE HUY)
+:: =========================================================================
 if "%1"=="--auto" goto :CHECK_JAVA
 
-set "START_APP=Y"
-set /p START_APP="Ban co muon khoi dong he thong Virtual Tune khong? [Y/n] (Nhan Enter de Khoi dong): "
-if /i "%START_APP%"=="N" goto :CANCELLED
 echo.
+echo %TAG_INFO%Nhan Enter de bat dau kiem tra va khoi chay he thong.
+set "START_APP=Y"
+set /p START_APP=%TAG_PROMPT%Khoi dong Virtual Tune ngay bay gio? [Y/n]: 
+if /i "%START_APP%"=="N" goto :CANCELLED
 
+:: =========================================================================
+:: 1. KIEM TRA VA NAP MOI TRUONG JAVA 25 (SPRING BOOT BACKEND)
+:: =========================================================================
 :CHECK_JAVA
-:: -------------------------------------------------------------------------
-:: 1. KIEM TRA VA NAP JAVA (JDK 25)
-:: -------------------------------------------------------------------------
-echo [*] Kiem tra moi truong Java 25 (Spring Boot Backend)...
+echo.
+echo %C_CYAN%------------------------------------------------------------------%C_RESET%
+echo %C_BOLD%%C_CYAN% [1/5] KIEM TRA MOI TRUONG JAVA 25 (SPRING BOOT BACKEND)%C_RESET%
+echo %C_CYAN%------------------------------------------------------------------%C_RESET%
 
-:: Quet tim thu muc JDK 25 tren may
 set "FOUND_JDK25="
 
-:: 1. Kiem tra thu muc mac dinh cua Oracle JDK
+:: 1. Quet thu muc mac dinh cua Oracle JDK 25
 for /d %%i in ("C:\Program Files\Java\jdk-25*") do (
     if exist "%%i\bin\java.exe" set "FOUND_JDK25=%%i"
 )
 
-:: 2. Kiem tra thu muc Eclipse Adoptium / Temurin / Microsoft
+:: 2. Quet thu muc Eclipse Adoptium / Temurin / Microsoft
 if "%FOUND_JDK25%"=="" (
     for /d %%i in ("C:\Program Files\Eclipse Adoptium\jdk-25*") do (
         if exist "%%i\bin\java.exe" set "FOUND_JDK25=%%i"
@@ -43,7 +88,7 @@ if "%FOUND_JDK25%"=="" (
     )
 )
 
-:: 3. Kiem tra tu Registry
+:: 3. Quet tu Registry Windows
 if "%FOUND_JDK25%"=="" (
     for /f "tokens=2*" %%a in ('reg query "HKLM\SOFTWARE\JavaSoft\JDK\25" /v JavaHome 2^>nul') do (
         if exist "%%b\bin\java.exe" set "FOUND_JDK25=%%b"
@@ -53,37 +98,38 @@ if "%FOUND_JDK25%"=="" (
     )
 )
 
-:: Neu tim thay thu muc JDK 25 thi nap ngay vao phien lam viec
+:: Neu tim thay thu muc JDK 25 thi nap vao phien lam viec
 if not "%FOUND_JDK25%"=="" (
     set "JAVA_HOME=%FOUND_JDK25%"
     set "PATH=%FOUND_JDK25%\bin;%PATH%"
-    echo [OK] Da tim thay va nap Java 25: %FOUND_JDK25%
+    echo %TAG_OK%Java 25 da san sang tren he thong.
+    echo %C_GRAY%           Thu muc: %FOUND_JDK25%%C_RESET%
     goto :CHECK_NODE
 )
 
-:: Neu chua tim thay bang thu muc, kiem tra lenh java hien tai co phai ban 25 khong
+:: Neu chua tim thay thu muc, kiem tra lenh java tren PATH
 where java >nul 2>nul
 if not errorlevel 1 (
     java -version 2>&1 | findstr /c:"25." >nul 2>nul
     if not errorlevel 1 (
-        echo [OK] Da tim thay Java 25 tren he thong.
+        echo %TAG_OK%Java 25 da san sang tren bien moi truong PATH.
         goto :CHECK_NODE
     )
 )
 
 :INSTALL_JAVA
-echo [CANH BAO] May ban chua co Java 25 (Spring Boot 3.5 yeu cau JDK 25).
+echo %TAG_WARN%Chua phat hien Java 25 (Spring Boot 3.5 yeu cau JDK 25).
 set "AUTO_JAVA=Y"
-set /p AUTO_JAVA="Ban co muon tu dong cai dat Oracle JDK 25 qua Winget khong? [Y/n] (Nhan Enter de Cai): "
+set /p AUTO_JAVA=%TAG_PROMPT%Tu dong cai Oracle JDK 25 qua Windows Winget? [Y/n]: 
 if /i "%AUTO_JAVA%"=="N" (
-    echo [BO QUA] Da bo qua cai dat Java 25. Backend co the se gap loi 'release version 25 not supported'!
+    echo %TAG_WARN%Da bo qua cai dat Java 25. Backend co the gap loi.
+    echo %TAG_INFO%Chuyen sang buoc tiep theo...
     goto :CHECK_NODE
 )
 
-echo Dang tai va cai dat Oracle JDK 25 qua Windows Winget...
+echo %TAG_INFO%Dang tai va cai dat Oracle JDK 25 qua Windows Winget...
 winget install Oracle.JDK.25 --accept-package-agreements --accept-source-agreements
 
-:: Sau khi winget cai xong, quet lai thu muc JDK 25
 for /d %%i in ("C:\Program Files\Java\jdk-25*") do (
     if exist "%%i\bin\java.exe" set "FOUND_JDK25=%%i"
 )
@@ -93,35 +139,37 @@ if "%FOUND_JDK25%"=="" (
     )
 )
 
-:: Neu da tim thay thi nap ngay va setx de luu vinh vien cho may nguoi dung
 if not "%FOUND_JDK25%"=="" (
     set "JAVA_HOME=%FOUND_JDK25%"
     set "PATH=%FOUND_JDK25%\bin;%PATH%"
     setx JAVA_HOME "%FOUND_JDK25%" >nul 2>nul
-    echo [OK] Da cai dat va nap Java 25 thanh cong tai: %FOUND_JDK25%!
+    echo %TAG_OK%Cai dat va nap Java 25 thanh cong.
+    echo %C_GRAY%           Thu muc: %FOUND_JDK25%%C_RESET%
     goto :CHECK_NODE
 )
 
-:: Neu van chua thay, thu nap lai toan bo PATH tu Registry
 for /f "tokens=2*" %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v Path 2^>nul') do set "SYS_PATH=%%b"
 for /f "tokens=2*" %%a in ('reg query "HKCU\Environment" /v Path 2^>nul') do set "USER_PATH=%%b"
 set "PATH=%SYS_PATH%;%USER_PATH%;%PATH%"
 
 where java >nul 2>nul
 if errorlevel 1 (
-    echo [LOI] Khong the tu dong nhan dien Java 25 sau khi cai.
-    echo Vui long mo lai file nay hoac tai thu cong tai: https://www.oracle.com/java/technologies/downloads/#java25
+    echo %TAG_ERROR%Khong the tu dong nhan dien Java 25 sau khi cai dat.
+    echo %TAG_INFO%Vui long tai va cai dat thu cong tai:
+    echo %C_GRAY%           https://www.oracle.com/java/technologies/downloads/#java25%C_RESET%
     pause
-    exit /b
+    exit /b 1
 )
-echo [OK] Da cai dat va nap Java 25 thanh cong!
+echo %TAG_OK%Cai dat va nap Java 25 thanh cong.
 
-:: -------------------------------------------------------------------------
-:: -------------------------------------------------------------------------
-:: 2. KIEM TRA VA NAP NODE.JS / NPM
-:: -------------------------------------------------------------------------
+:: =========================================================================
+:: 2. KIEM TRA VA NAP MOI TRUONG NODE.JS VA NPM (FRONTEND REACT)
+:: =========================================================================
 :CHECK_NODE
-echo [*] Kiem tra moi truong Node.js / NPM (Frontend React)...
+echo.
+echo %C_CYAN%------------------------------------------------------------------%C_RESET%
+echo %C_BOLD%%C_CYAN% [2/5] KIEM TRA MOI TRUONG NODE.JS VA NPM (FRONTEND REACT)%C_RESET%
+echo %C_CYAN%------------------------------------------------------------------%C_RESET%
 
 set "FOUND_NODE="
 if exist "C:\Program Files\nodejs\node.exe" set "FOUND_NODE=C:\Program Files\nodejs"
@@ -134,101 +182,211 @@ if not "%FOUND_NODE%"=="" (
 
 where node >nul 2>nul
 if not errorlevel 1 (
-    for /f "tokens=*" %%g in ('node -v 2^>nul') do echo [OK] Da tim thay Node.js %%g tren he thong.
+    for /f "tokens=*" %%g in ('node -v 2^>nul') do (
+        echo %TAG_OK%Node.js %%g da san sang tren he thong.
+    )
     goto :CHECK_FRONTEND_DEPS
 )
 
 :INSTALL_NODE
-echo [CANH BAO] May ban chua co Node.js (Frontend React yeu cau Node.js LTS).
+echo %TAG_WARN%Chua phat hien Node.js (Frontend React yeu cau Node LTS).
 set "AUTO_NODE=Y"
-set /p AUTO_NODE="Ban co muon tu dong cai dat Node.js LTS qua Winget khong? [Y/n] (Nhan Enter de Cai): "
+set /p AUTO_NODE=%TAG_PROMPT%Tu dong cai Node.js LTS qua Windows Winget? [Y/n]: 
 if /i "%AUTO_NODE%"=="N" (
-    echo [BO QUA] Da bo qua cai dat Node.js. Frontend co the se khong the chay!
+    echo %TAG_WARN%Da bo qua cai dat Node.js. Frontend co the khong chay.
+    echo %TAG_INFO%Chuyen sang buoc tiep theo...
     goto :CHECK_FRONTEND_DEPS
 )
 
 where winget >nul 2>nul
 if errorlevel 1 (
-    echo [LOI] May ban chua co Windows Winget de tu dong cai.
-    echo Vui long tai va cai dat Node.js LTS thu cong tai: https://nodejs.org/
+    echo %TAG_ERROR%Khong tim thay Windows Winget tren he thong.
+    echo %TAG_INFO%Vui long tai va cai dat Node.js LTS thu cong tai:
+    echo %C_GRAY%           https://nodejs.org/%C_RESET%
     pause
     goto :CHECK_FRONTEND_DEPS
 )
 
-echo Dang tai va cai dat Node.js LTS qua Windows Winget...
+echo %TAG_INFO%Dang tai va cai dat Node.js LTS qua Windows Winget...
 winget install OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements
 
-:: Quet lai thu muc Node.js sau khi cai
 if exist "C:\Program Files\nodejs\node.exe" set "FOUND_NODE=C:\Program Files\nodejs"
 if "%FOUND_NODE%"=="" if exist "C:\Program Files (x86)\nodejs\node.exe" set "FOUND_NODE=C:\Program Files (x86)\nodejs"
 
 if not "%FOUND_NODE%"=="" (
     set "PATH=%FOUND_NODE%;%PATH%"
-    setx PATH "%PATH%;%FOUND_NODE%" >nul 2>nul
-    for /f "tokens=*" %%g in ('node -v 2^>nul') do echo [OK] Da cai dat va nap Node.js %%g thanh cong!
+    for /f "tokens=*" %%g in ('node -v 2^>nul') do (
+        echo %TAG_OK%Cai dat va nap Node.js %%g thanh cong.
+    )
     goto :CHECK_FRONTEND_DEPS
 )
 
-:: Neu chua thay, nap lai PATH tu Registry
 for /f "tokens=2*" %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v Path 2^>nul') do set "SYS_PATH=%%b"
 for /f "tokens=2*" %%a in ('reg query "HKCU\Environment" /v Path 2^>nul') do set "USER_PATH=%%b"
 set "PATH=%SYS_PATH%;%USER_PATH%;%PATH%"
 
 where node >nul 2>nul
 if errorlevel 1 (
-    echo [LOI] Khong the tu dong nhan dien Node.js sau khi cai.
-    echo Vui long mo lai file nay hoac cai dat thu cong tai: https://nodejs.org/
+    echo %TAG_ERROR%Khong the tu dong nhan dien Node.js sau khi cai dat.
+    echo %TAG_INFO%Vui long mo lai console hoac cai dat thu cong tai:
+    echo %C_GRAY%           https://nodejs.org/%C_RESET%
     pause
     goto :CHECK_FRONTEND_DEPS
 )
-echo [OK] Da cai dat va nap Node.js thanh cong!
+echo %TAG_OK%Cai dat va nap Node.js thanh cong.
 
-:: -------------------------------------------------------------------------
-:: 3. KIEM TRA VA TU DONG CAI DEPENDENCIES CHO FRONTEND (npm install)
-:: -------------------------------------------------------------------------
+:: =========================================================================
+:: 3. KIEM TRA VA CAI DAT THU VIEN FRONTEND (NPM DEPENDENCIES)
+:: =========================================================================
 :CHECK_FRONTEND_DEPS
-if exist "%~dp0frontend\node_modules\vite" goto :START_SERVICES
 echo.
-echo [THONG BAO] Phat hien Frontend chua cai thu vien - Dang tu dong chay npm install...
+echo %C_CYAN%------------------------------------------------------------------%C_RESET%
+echo %C_BOLD%%C_CYAN% [3/5] KIEM TRA THU VIEN FRONTEND (NPM DEPENDENCIES)%C_RESET%
+echo %C_CYAN%------------------------------------------------------------------%C_RESET%
+
+if exist "%~dp0frontend\node_modules\vite" (
+    echo %TAG_OK%Thu vien frontend [node_modules] da san sang.
+    goto :ALLOCATE_PORTS
+)
+
+echo %TAG_INFO%Chua co thu vien frontend. Dang tien hanh cai dat...
+echo %TAG_WAIT%Dang chay npm install (co the mat 1-2 phut)...
 cd /d "%~dp0frontend"
 call npm install
 if errorlevel 1 (
-    echo [CANH BAO] npm install gap canh bao xung dot, dang thu lai voi --legacy-peer-deps...
+    echo %TAG_WARN%Thu lai voi co --legacy-peer-deps...
     call npm install --legacy-peer-deps
 )
 cd /d "%~dp0"
-echo [OK] Da cai dat xong thu vien Frontend!
 
-:: -------------------------------------------------------------------------
-:: 4. KHOI DONG BACKEND VA FRONTEND
-:: -------------------------------------------------------------------------
+if exist "%~dp0frontend\node_modules\vite" (
+    echo %TAG_OK%Cai dat xong toan bo thu vien frontend.
+) else (
+    echo %TAG_ERROR%Cai dat thu vien frontend that bai.
+    echo %TAG_WARN%Tiep tuc thu khoi chay he thong...
+)
+
+:: =========================================================================
+:: 4. PHAN BO CONG MANG (PORT CONFLICT RESOLVER)
+:: =========================================================================
+:ALLOCATE_PORTS
+echo.
+echo %C_CYAN%------------------------------------------------------------------%C_RESET%
+echo %C_BOLD%%C_CYAN% [4/5] PHAN BO CONG MANG (PORT CONFLICT RESOLVER)%C_RESET%
+echo %C_CYAN%------------------------------------------------------------------%C_RESET%
+
+:: Kiem tra cong Backend (Khoi dau 8080 - quet ca IPv4 va IPv6)
+set "BE_PORT=8080"
+:LOOP_BE_PORT
+netstat -ano | findstr /r ":%BE_PORT% " | findstr "LISTENING" >nul 2>nul
+if not errorlevel 1 (
+    echo %TAG_WARN%Cong Backend %BE_PORT% dang bi chiem boi ung dung khac.
+    set /a BE_PORT+=1
+    goto :LOOP_BE_PORT
+)
+if not "%BE_PORT%"=="8080" (
+    echo %TAG_INFO%Chuyen Backend Spring Boot sang cong moi: %C_BOLD%%C_GREEN%%BE_PORT%%C_RESET%
+) else (
+    echo %TAG_OK%Cong Backend 8080 san sang hoat dong.
+)
+
+:: Kiem tra cong Frontend (Khoi dau 5173, tranh trung voi BE_PORT - quet ca IPv4 va IPv6)
+set "FE_PORT=5173"
+:LOOP_FE_PORT
+if "%FE_PORT%"=="%BE_PORT%" (
+    set /a FE_PORT+=1
+    goto :LOOP_FE_PORT
+)
+netstat -ano | findstr /r ":%FE_PORT% " | findstr "LISTENING" >nul 2>nul
+if not errorlevel 1 (
+    echo %TAG_WARN%Cong Frontend %FE_PORT% dang bi chiem boi ung dung khac.
+    set /a FE_PORT+=1
+    goto :LOOP_FE_PORT
+)
+if not "%FE_PORT%"=="5173" (
+    echo %TAG_INFO%Chuyen Frontend React Vite sang cong moi: %C_BOLD%%C_GREEN%%FE_PORT%%C_RESET%
+) else (
+    echo %TAG_OK%Cong Frontend 5173 san sang hoat dong.
+)
+
+:: =========================================================================
+:: 5. KHOI DONG DICH VU VA DONG BO HE THONG
+:: =========================================================================
 :START_SERVICES
 echo.
-echo [1/2] Dang mo cua so Backend Spring Boot (Java 25 - Port 8080)...
-start "Virtual Tune - Backend (Spring Boot)" /D "%~dp0backend" cmd /k "set \"JAVA_HOME=%JAVA_HOME%\" && set \"PATH=%JAVA_HOME%\bin;%%PATH%%\" && echo [*] Dang khoi dong Spring Boot Backend (Java 25)... && mvnw.cmd compile exec:java"
+echo %C_CYAN%------------------------------------------------------------------%C_RESET%
+echo %C_BOLD%%C_CYAN% [5/5] KHOI DONG DICH VU VA DONG BO HE THONG%C_RESET%
+echo %C_CYAN%------------------------------------------------------------------%C_RESET%
 
-echo [2/2] Dang mo cua so Frontend React Vite (React 19 - Port 5173)...
-start "Virtual Tune - Frontend (React Vite)" /D "%~dp0frontend" cmd /k "set \"PATH=%PATH%\" && echo [*] Dang khoi dong Vite Dev Server (React 19)... && npm run dev"
+:: Ghi file moi truong frontend de Vite ket noi Backend dung cong thuc te
+echo VITE_BACKEND_PORT=%BE_PORT%> "%~dp0frontend\.env.local"
+echo VITE_PORT=%FE_PORT%>> "%~dp0frontend\.env.local"
+echo PORT=%FE_PORT%>> "%~dp0frontend\.env.local"
+
+echo %TAG_INFO%Khoi dong Backend Spring Boot (Java 25 - Port %BE_PORT%)...
+start "Virtual Tune - Backend (Spring Boot :%BE_PORT%)" /D "%~dp0backend" cmd /k "set JAVA_HOME=%JAVA_HOME%& set PATH=%JAVA_HOME%\bin;%%PATH%%& set SERVER_PORT=%BE_PORT%& echo [*] Dang khoi dong Spring Boot Backend tren cong %BE_PORT%...& mvnw.cmd compile exec:java -Dexec.args="--server.port=%BE_PORT%" -Dserver.port=%BE_PORT%"
+
+echo %TAG_INFO%Khoi dong Frontend React Vite (React 19 - Port %FE_PORT%)...
+start "Virtual Tune - Frontend (React Vite :%FE_PORT%)" /D "%~dp0frontend" cmd /k "set PATH=%PATH%& set VITE_PORT=%FE_PORT%& set VITE_BACKEND_PORT=%BE_PORT%& echo [*] Dang khoi dong Vite Dev Server tren cong %FE_PORT% (Proxy toi Backend :%BE_PORT%)...& npx vite --port %FE_PORT%"
 
 echo.
-echo =========================================================================
-echo   DA KHOI DONG HE THONG THANH CONG!
-echo   - Backend API          : http://localhost:8080
-echo   - Frontend Application : http://localhost:5173
-echo =========================================================================
-echo   (2 ung dung dang chay trong 2 terminal rieng tren man hinh)
+echo %C_GREEN%+----------------------------------------------------------------+%C_RESET%
+echo %C_GREEN%^|%C_BOLD%%C_WHITE%                  HE THONG SAN SANG HOAT DONG                   %C_RESET%%C_GREEN%^|%C_RESET%
+echo %C_GREEN%+----------------------------------------------------------------+%C_RESET%
+echo   %C_BOLD%%C_WHITE%* Frontend Web App :%C_RESET% %C_CYAN%http://localhost:%FE_PORT%%C_RESET%
+echo   %C_BOLD%%C_WHITE%* Backend REST API :%C_RESET% %C_GREEN%http://localhost:%BE_PORT%%C_RESET%
+echo   %C_BOLD%%C_WHITE%* H2 Database GUI  :%C_RESET% %C_YELLOW%http://localhost:%BE_PORT%/h2-console%C_RESET%
+echo %C_GREEN%+----------------------------------------------------------------+%C_RESET%
+echo %C_GREEN%^|%C_GRAY%         (Cac dich vu dang chay trong terminal rieng)           %C_RESET%%C_GREEN%^|%C_RESET%
+echo %C_GREEN%+----------------------------------------------------------------+%C_RESET%
 echo.
-echo [3/3] Dang tu dong mo ung dung tren trinh duyet...
-timeout /t 3 /nobreak >nul 2>nul
-start http://localhost:5173
+
+:: =========================================================================
+:: CHO CAC DICH VU SAN SANG VA MO TRINH DUYET
+:: =========================================================================
+echo %TAG_WAIT%Dang cho Backend Spring Boot va Frontend React khoi dong...
+
+set "BE_READY=0"
+set "FE_READY=0"
+set "WAIT_COUNT=0"
+
+:WAIT_SERVICES_READY
+timeout /t 1 /nobreak >nul 2>nul
+set /a WAIT_COUNT+=1
+
+:: Kiem tra Backend
+if "%BE_READY%"=="0" (
+    netstat -ano | findstr /r ":%BE_PORT% " | findstr "LISTENING" >nul 2>nul
+    if not errorlevel 1 (
+        set "BE_READY=1"
+        echo %TAG_OK%Backend Spring Boot [Port %BE_PORT%] da san sang hoat dong!
+    )
+)
+
+:: Kiem tra Frontend
+if "%FE_READY%"=="0" (
+    netstat -ano | findstr /r ":%FE_PORT% " | findstr "LISTENING" >nul 2>nul
+    if not errorlevel 1 (
+        set "FE_READY=1"
+        echo %TAG_OK%Frontend React Vite [Port %FE_PORT%] da san sang hoat dong!
+    )
+)
+
+:: Neu ca hai da san sang thi mo ngay trinh duyet
+if "%BE_READY%"=="1" if "%FE_READY%"=="1" goto :ALL_SERVICES_UP
+
+if %WAIT_COUNT% leq 60 goto :WAIT_SERVICES_READY
+
+:ALL_SERVICES_UP
 echo.
-echo Cua so dieu khien nay se tu dong dong sau 5 giay...
-timeout /t 5 /nobreak >nul 2>nul
+echo %TAG_INFO%Dang mo ung dung tren trinh duyet: http://localhost:%FE_PORT%
+start http://localhost:%FE_PORT%
+timeout /t 1 /nobreak >nul 2>nul
 exit
 
-:: -------------------------------------------------------------------------
-:: SUBROUTINES VA XU LY PHU
-:: -------------------------------------------------------------------------
+:: =========================================================================
+:: PHU TRO VA XU LY DIEU HUONG
+:: =========================================================================
 :SET_JAVA_PATH
 if not "%FOUND_JDK25%"=="" (
     set "JAVA_HOME=%FOUND_JDK25%"
@@ -244,12 +402,14 @@ set "PATH=C:\Program Files\nodejs;%PATH%"
 goto :eof
 
 :RELOAD_SYS
-echo [THONG BAO] Dang tu dong khoi dong lai de cap nhat he thong...
+echo.
+echo %TAG_INFO%Dang tu dong khoi dong lai de cap nhat he thong...
 start "" "%~f0" --auto
 exit
 
 :CANCELLED
 echo.
-echo Da huy khoi dong theo yeu cau cua ban(tu dong tat sau 5 giay).
-timeout /t 5 /nobreak >nul 2>nul
-exit /b
+echo %TAG_WARN%Da huy qua trinh khoi dong theo yeu cau.
+echo %C_GRAY%           Cua so se dong sau 3 giay...%C_RESET%
+timeout /t 3 /nobreak >nul 2>nul
+exit /b 0
