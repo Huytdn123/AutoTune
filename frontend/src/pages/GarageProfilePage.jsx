@@ -216,9 +216,9 @@ export default function GarageProfilePage() {
               <div className="grid grid-cols-1 lg:grid-cols-12">
                 <div className="lg:col-span-7 relative bg-[#CBD5E1] flex items-center justify-center p-3 border-b lg:border-b-0 lg:border-r border-[#CBD5E1]">
                   <div className="relative w-full overflow-hidden rounded-xl">
-                    <img alt="Nissan GT-R Track Edition transformation before and after" className="w-full h-auto object-cover rounded-xl" src="/images/gtr-transformation.jpg" />
+                    <img alt="Porsche 911 Carrera (991) transformation before and after" className="w-full h-auto object-cover rounded-xl" src="/images/sales-porsche-gt3.jpg" />
                     <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] text-[#111827] border border-[#E2E8F0] font-mono font-bold">
-                      TELEMETRY ID: #GTR-VR38-904
+                      TELEMETRY ID: #CARRERA-991-718
                     </div>
                     <div className="absolute bottom-3 right-3 bg-[#DCFCE7]/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] text-[#16A34A] border border-[#16A34A]/30 font-mono font-bold">
                       100% CAD SWEPT MATCH
@@ -232,20 +232,20 @@ export default function GarageProfilePage() {
                       <span className="bg-[#DCFCE7] text-[#16A34A] px-2 py-0.5 rounded border border-[#16A34A]/30 font-bold">TÜV Approved</span>
                     </div>
                     <h3 className="font-['Montserrat'] text-base sm:text-lg font-bold text-[#111827] uppercase leading-tight">
-                      Nissan GT-R Track Edition — Full Aero Widebody & Forged Wheel Conversion
+                      Porsche 911 Carrera (991) — Carbon Aero & Forged Wheel Conversion
                     </h3>
                     <div className="mt-5 space-y-2.5 bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0]">
                       <div className="flex justify-between text-xs pb-2 border-b border-[#E2E8F0]">
                         <span className="text-[#64748B]">Aero Package:</span>
-                        <span className="text-[#111827] font-semibold text-right">Pandem Widebody Kit + Carbon Hood</span>
+                        <span className="text-[#111827] font-semibold text-right">Manthey Racing Carbon Aero Kit + Active Wing</span>
                       </div>
                       <div className="flex justify-between text-xs pb-2 border-b border-[#E2E8F0]">
                         <span className="text-[#64748B]">Wheel Assembly:</span>
-                        <span className="text-[#111827] font-semibold text-right">20" Forged Bronze Staggered (-15 Offset)</span>
+                        <span className="text-[#111827] font-semibold text-right">20"/21" Forged Lightweight Staggered Centerlock</span>
                       </div>
                       <div className="flex justify-between text-xs pb-2 border-b border-[#E2E8F0]">
                         <span className="text-[#64748B]">Braking System:</span>
-                        <span className="text-[#111827] font-semibold text-right">6-Pot Monobloc 400mm Carbon Ceramic</span>
+                        <span className="text-[#111827] font-semibold text-right">PCCB 410mm Carbon Ceramic Matrix</span>
                       </div>
                       <div className="flex justify-between text-xs">
                         <span className="text-[#64748B]">Kinematic Verification:</span>

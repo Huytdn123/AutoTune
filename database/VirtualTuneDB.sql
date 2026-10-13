@@ -337,17 +337,14 @@ VALUES
 (2, 'lamborghini-aventador', 'Lamborghini', 'Aventador LP700', '2011–2021', 'Supercar Coupé', '6.5L V12 · 700hp · 0-100: 2.9s', '5x112', 20.0, 9.5, 40, 57.1, 400, 1575, 700, 393000, 'Sant''Agata Bolognese, Italy', '#F5C400', '#F5C400', '#1A1A1A', '#1A1A1A', '/models/lamborghini.glb', 'READY_FOR_3D',
  '{"performance":[{"label":"Engine","value":"6.5L L539 60° V12"},{"label":"Power","value":"700 hp @ 8,250 rpm"},{"label":"Torque","value":"509 lb-ft @ 5,500 rpm"},{"label":"0–100 km/h","value":"2.9 seconds"},{"label":"Top Speed","value":"350 km/h"},{"label":"Transmission","value":"7-speed ISR Independent Shifting"},{"label":"Weight","value":"1,575 kg"}],"aerodynamics":[{"label":"Downforce","value":"220 kg @ 250 km/h"},{"label":"Front Splitter","value":"Carbon Aero Inlets"},{"label":"Rear Wing","value":"Active 3-Position Electronically Managed"},{"label":"Cd","value":"0.33"},{"label":"Cl","value":"-0.35"}],"suspension":[{"label":"Front","value":"Formula 1 Style Pushrod Magneto"},{"label":"Rear","value":"Pushrod Horizontal Damper"},{"label":"Dampers","value":"Magneto-rheological Pushrod"},{"label":"Springs","value":"Öhlins Race Coilover"}]}'),
 
-(3, 'porsche-gt3', 'Porsche', '911 GT3 RS', '2022–2025', 'Track Coupé', '4.0L Flat-6 · 525hp · 0-100: 3.2s', '5x130', 20.0, 10.0, 45, 71.6, 408, 1450, 525, 224000, 'Stuttgart-Zuffenhausen, Germany', '#0A1A6E', '#FAFAFA', '#CCCCCC', '#C8D8F0', '/models/porsche.glb', 'READY_FOR_3D',
- '{"performance":[{"label":"Engine","value":"4.0L Flat-6 Natural Aspirated"},{"label":"Power","value":"525 hp @ 8,500 rpm"},{"label":"Torque","value":"343 lb-ft @ 6,300 rpm"},{"label":"0–100 km/h","value":"3.2 seconds"},{"label":"Top Speed","value":"296 km/h"},{"label":"Transmission","value":"7-speed PDK"},{"label":"Weight","value":"1,450 kg"}],"aerodynamics":[{"label":"Downforce","value":"860 kg @ 285 km/h"},{"label":"Swan-Neck Wing","value":"2-Position Manual DRS Active"},{"label":"Front Lid","value":"Carbon Aero Package With Vents"},{"label":"Cd","value":"0.36"},{"label":"Cl","value":"-1.25"}],"suspension":[{"label":"Front","value":"Double Wishbone Pushrod"},{"label":"Rear","value":"Multi-link Lightweight"},{"label":"Dampers","value":"PASM Sport 20mm Lowered"},{"label":"Springs","value":"GT3 RS Race-Tuned"}]}'),
+(3, 'porsche-gt3', 'Porsche', '911 Carrera (991)', '2012–2019', 'Sports Coupé', '3.0L TT Flat-6 · 370hp · 0-100: 4.2s', '5x130', 20.0, 10.0, 45, 71.6, 330, 1430, 370, 105000, 'Stuttgart-Zuffenhausen, Germany', '#0A1A6E', '#FAFAFA', '#CCCCCC', '#C8D8F0', '/models/porsche.glb', 'READY_FOR_3D',
+ '{"performance":[{"label":"Engine","value":"3.0L Twin-Turbo Flat-6 (991.2)"},{"label":"Power","value":"370 hp @ 6,500 rpm"},{"label":"Torque","value":"331 lb-ft @ 1,700–5,000 rpm"},{"label":"0–100 km/h","value":"4.2 seconds"},{"label":"Top Speed","value":"295 km/h"},{"label":"Transmission","value":"7-speed PDK Dual-Clutch"},{"label":"Weight","value":"1,430 kg"}],"aerodynamics":[{"label":"Downforce","value":"45 kg @ 200 km/h"},{"label":"Active Spoiler","value":"Electric Active Deployable Rear Spoiler"},{"label":"Air Inlets","value":"Active Cooling Air Flaps"},{"label":"Cd","value":"0.29"},{"label":"Cl","value":"-0.08"}],"suspension":[{"label":"Front","value":"MacPherson Strut with Anti-Roll Bar"},{"label":"Rear","value":"Multi-Link LSA Axle"},{"label":"Dampers","value":"PASM Porsche Active Suspension"},{"label":"Springs","value":"Sport-Tuned Progressive Coil Springs"}]}'),
 
 (4, 'mclaren-720s', 'McLaren', '720S', '2017–2023', 'Supercar Coupé', '4.0L TT V8 · 720hp · 0-100: 2.8s', '5x112', 19.0, 9.0, 38, 66.6, 390, 1332, 720, 312000, 'Woking, United Kingdom', '#FF6B00', '#FF6B00', '#CCCCCC', '#1A1A1A', '/models/mclaren.glb', 'READY_FOR_3D',
  '{"performance":[{"label":"Engine","value":"4.0L Twin-Turbo V8 M840T"},{"label":"Power","value":"720 hp @ 7,500 rpm"},{"label":"Torque","value":"568 lb-ft @ 5,500 rpm"},{"label":"0–100 km/h","value":"2.8 seconds"},{"label":"Top Speed","value":"341 km/h"},{"label":"Transmission","value":"7-speed SSG Dual Clutch"},{"label":"Weight","value":"1,332 kg"}],"aerodynamics":[{"label":"Downforce","value":"1,000+ kg @ 250 km/h"},{"label":"Active Wing","value":"Integrated Active Airbrake"},{"label":"Front","value":"Carbon MonoCell II Front Sub"},{"label":"Cd","value":"0.32"},{"label":"Cl","value":"-0.46"}],"suspension":[{"label":"Front","value":"Proactive Chassis Control II"},{"label":"Rear","value":"Wishbone Hydraulic Interconnect"},{"label":"Dampers","value":"3-Stage Variable PCC II"},{"label":"Springs","value":"High-Performance GTR Race"}]}'),
 
-(5, 'nissan-gtr', 'Nissan', 'GT-R Nismo (R35)', '2020–2024', 'Supercar AWD', '3.8L TT V6 · 600hp · 0-100: 2.7s', '5x114.3', 20.0, 10.0, 41, 66.1, 390, 1725, 600, 215000, 'Tochigi, Kanto, Japan', '#E60012', '#E60012', '#1A1A1A', '#1A1A1A', '/models/nissan_gtr.glb', 'READY_FOR_3D',
- '{"performance":[{"label":"Engine","value":"3.8L Twin-Turbo V6 VR38DETT"},{"label":"Power","value":"600 hp @ 6,800 rpm"},{"label":"Torque","value":"481 lb-ft @ 3,600–5,600 rpm"},{"label":"0–100 km/h","value":"2.7 seconds"},{"label":"Top Speed","value":"330 km/h"},{"label":"Transmission","value":"6-speed Dual Clutch ATTESA E-TS AWD"},{"label":"Weight","value":"1,725 kg"}],"aerodynamics":[{"label":"Downforce","value":"100 kg @ 300 km/h"},{"label":"Rear Wing","value":"Dry Carbon Fiber High Downforce"},{"label":"Front Fenders","value":"Carbon Louvers GT3 Style"},{"label":"Cd","value":"0.26"},{"label":"Cl","value":"-0.30"}],"suspension":[{"label":"Front","value":"Double Wishbone Aluminum"},{"label":"Rear","value":"Multi-link High-Rigidity"},{"label":"Dampers","value":"Bilstein DampTronic Custom Tuned"},{"label":"Springs","value":"Nismo Competition Spec"}]}'),
-
-(6, 'bmw-m4-csl', 'BMW', 'M4 Competition', '2022–2024', 'Performance Coupé', '3.0L TT I6 · 503hp · 0-100: 3.8s', '5x112', 19.0, 9.5, 20, 66.6, 380, 1725, 503, 82000, 'Munich, Bavaria, Germany', '#0066CC', '#1A1A1A', '#CCCCCC', '#1A1A1A', '/models/bmw.glb', 'READY_FOR_3D',
- '{"performance":[{"label":"Engine","value":"3.0L TwinPower Turbo Inline-6 S58"},{"label":"Power","value":"503 hp @ 6,250 rpm"},{"label":"Torque","value":"479 lb-ft @ 2,750–5,950 rpm"},{"label":"0–100 km/h","value":"3.8 seconds"},{"label":"Top Speed","value":"290 km/h"},{"label":"Transmission","value":"8-speed M Steptronic with Drivelogic"},{"label":"Weight","value":"1,725 kg"}],"aerodynamics":[{"label":"Downforce","value":"60 kg @ 200 km/h"},{"label":"Rear Spoiler","value":"M Carbon Ducktail"},{"label":"Front Splitter","value":"M Performance Carbon"},{"label":"Cd","value":"0.34"},{"label":"Cl","value":"-0.18"}],"suspension":[{"label":"Front","value":"Double-joint Spring Strut M Axle"},{"label":"Rear","value":"Five-link Lightweight Axle"},{"label":"Dampers","value":"Adaptive M Suspension Electronic"},{"label":"Springs","value":"M Competition Tuned"}]}');
+(5, 'bmw-m4-csl', 'BMW', 'Vision ConnectedDrive', '2011 Concept', 'Concept Roadster', 'Electric / TT Hybrid · Concept Roadster · 0-100: 4.5s', '5x112', 20.0, 9.5, 25, 72.6, 360, 1450, 340, 120000, 'Munich, Bavaria, Germany', '#0066CC', '#1A1A1A', '#CCCCCC', '#1A1A1A', '/models/bmw.glb', 'READY_FOR_3D',
+ '{"performance":[{"label":"Engine","value":"Electric / TwinPower Turbo Hybrid Concept"},{"label":"Power","value":"340 hp equivalent"},{"label":"Torque","value":"369 lb-ft equivalent"},{"label":"0–100 km/h","value":"4.5 seconds"},{"label":"Top Speed","value":"250 km/h"},{"label":"Transmission","value":"Single-Speed Direct Drive"},{"label":"Weight","value":"1,450 kg"}],"aerodynamics":[{"label":"Downforce","value":"50 kg @ 200 km/h"},{"label":"Active Grille","value":"Adaptive Kidney Grille Shutter"},{"label":"Fairings","value":"Streamlined Speedster Fairings"},{"label":"Cd","value":"0.26"},{"label":"Cl","value":"-0.12"}],"suspension":[{"label":"Front","value":"Double Wishbone Lightweight Aluminum"},{"label":"Rear","value":"Multi-Link Dynamic Suspension"},{"label":"Dampers","value":"BMW Dynamic Damper Control"},{"label":"Springs","value":"M Performance Progressive Springs"}]}');
 SET IDENTITY_INSERT dbo.cars OFF;
 
 -- 4.7 Parts (6 Official Performance Parts Catalog with CAD & Fitment Specs)
@@ -356,12 +353,12 @@ INSERT INTO dbo.parts (part_id, sku, part_name, category, brand, specifications,
 VALUES
 (1, 'BBS-FIR-992-TITAN', 'BBS FI-R Forged Monoblock Wheel Set 20"/21"', 'Wheels & Rims', 'BBS Germany',
     'Ultra-lightweight aerospace forged aluminum • PCD 5x112 / ET35 • 7.8 kg/wheel',
-    215000000, 8600, '/images/bbs-fi-r-wheel.jpg', 'Porsche 911 GT3 RS, BMW M4 Competition, McLaren 720S',
+    215000000, 8600, '/images/bbs-fi-r-wheel.jpg', 'Porsche 911 Carrera (991), BMW Vision ConnectedDrive, McLaren 720S',
     4.90, 'HOT / BESTSELLER', 8, 'PASS', '5x112', 20.0, 9.5, 35, 66.6, NULL, NULL, NULL, 'Aerospace Forged Aluminum'),
 
 (2, 'RAYS-TE37-ULTRA-20', 'Volk Racing TE37 Ultra M-Spec Forged 20"', 'Wheels & Rims', 'Rays Japan',
     'Motorsport-grade forged monoblock • PCD 5x114.3 • Bronze Anodized finish',
-    185000000, 7400, '/images/rays-te37-ultra.jpg', 'Ferrari 458 Italia, Nissan GT-R Nismo (R35)',
+    185000000, 7400, '/images/rays-te37-ultra.jpg', 'Ferrari 458 Italia',
     5.00, 'TRACK LEGEND', 6, 'PASS', '5x114.3', 20.0, 10.0, 30, 66.1, NULL, NULL, NULL, 'Motorsport Forged Monoblock'),
 
 (3, 'WORK-VSXX-19-F458', 'WORK VS-XX 19" Aftermarket Wheel', 'Wheels & Rims', 'WORK Wheels',
@@ -383,22 +380,22 @@ VALUES
 
 (7, 'AKR-EVO-TITAN-992', 'Akrapovic Evolution Line Titanium Exhaust System', 'Exhaust Systems', 'Akrapovic',
     'Full Titanium construction • Bluetooth active flap control • -11.4 kg weight savings',
-    185000000, 7400, '/images/akrapovic-evolution-line.jpg', 'Porsche 911 GT3 RS, Ferrari 458 Italia, Nissan GT-R Nismo (R35)',
+    185000000, 7400, '/images/akrapovic-evolution-line.jpg', 'Porsche 911 Carrera (991), Ferrari 458 Italia',
     4.95, 'SIGNATURE SOUND', 3, 'PASS', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Grade 5 Titanium'),
 
 (8, 'KW-35271842-V4CS', 'KW Suspensions V4 Clubsport 3-Way Coilover Kit', 'Coilovers & Shocks', 'KW Automotive',
     '16-click rebound & independent high/low speed compression • Uniball camber plates',
-    123000000, 4920, '/images/kw-v4-clubsport.jpg', 'BMW M4 Competition, Porsche 911 GT3 RS, McLaren 720S',
+    123000000, 4920, '/images/kw-v4-clubsport.jpg', 'BMW Vision ConnectedDrive, Porsche 911 Carrera (991), McLaren 720S',
     4.85, 'TRACK READY', 4, 'PASS', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Stainless Steel & Anodized Alloy'),
 
 (9, 'BRM-1N1.9042A2', 'Brembo GT-S 6-Piston Big Brake Kit 380x34mm', 'Brake Systems', 'Brembo Racing',
     'Radial monoblock caliper • 2-piece Type 3 slotted disc • 800°C thermal endurance',
-    96250000, 3850, '/images/brembo-gt-brake-kit.jpg', 'Universal Supercar Hubs (Ferrari 458, Porsche 911, McLaren 720S, Nissan GT-R)',
+    96250000, 3850, '/images/brembo-gt-brake-kit.jpg', 'Universal Supercar Hubs (Ferrari 458, Porsche 911, McLaren 720S)',
     4.98, 'RACING SPEC', 5, 'PASS', 'Universal', NULL, NULL, NULL, NULL, 380, 19.0, NULL, 'Forged Monoblock Aluminum'),
 
 (10, 'VOR-CF-AERO-992', 'Vorsteiner Aero Carbon Wing & Rear Diffuser Package', 'Carbon Aero Kits', 'Vorsteiner USA',
     'Pre-preg 2x2 weave vacuum autoclave carbon • Aerodynamic downforce profile',
-    145000000, 5800, '/images/vorsteiner-carbon-aero.jpg', 'Porsche 911 GT3 RS, McLaren 720S, BMW M4 Competition',
+    145000000, 5800, '/images/vorsteiner-carbon-aero.jpg', 'Porsche 911 Carrera (991), McLaren 720S, BMW Vision ConnectedDrive',
     4.90, 'ULTRA LIGHTWEIGHT', 2, 'PASS', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Pre-preg Autoclave Carbon');
 SET IDENTITY_INSERT dbo.parts OFF;
 
@@ -409,7 +406,7 @@ VALUES
 (1, 'VT-F458-TRACK99', 'Khoi Dang Stealth F458 Track Edition', 1, 5, '#CC0000', 'Metallic', '#CCCCCC', '#C8D8F0',
  '[{"partId":2,"sku":"RAYS-TE37-ULTRA-20","name":"Volk Racing TE37 Ultra M-Spec Forged 20\""},{"partId":3,"sku":"AKR-EVO-TITAN-992","name":"Akrapovic Evolution Line Titanium Exhaust System"}]', 370000000),
 
-(2, 'VT-GT3-WEISSACH', 'Porsche 911 GT3 RS Weissach Aero Edition', 3, 5, '#FAFAFA', 'Pearl', '#CCCCCC', '#C8D8F0',
+(2, 'VT-GT3-WEISSACH', 'Porsche 911 Carrera (991) Aero Edition', 3, 5, '#FAFAFA', 'Pearl', '#CCCCCC', '#C8D8F0',
  '[{"partId":1,"sku":"BBS-FIR-992-TITAN","name":"BBS FI-R Forged Monoblock Wheel Set"},{"partId":6,"sku":"VOR-CF-AERO-992","name":"Vorsteiner Aero Carbon Wing Package"}]', 360000000),
 
 (3, 'VT-AVENTADOR-V12', 'Lamborghini Aventador LP700 Giallo Edition', 2, 5, '#F5C400', 'Metallic', '#1A1A1A', '#1A1A1A',
@@ -420,7 +417,7 @@ SET IDENTITY_INSERT dbo.car_builds OFF;
 SET IDENTITY_INSERT dbo.quotations ON;
 INSERT INTO dbo.quotations (quotation_id, quotation_number, customer_id, car_build_id, car_model, customer_name, customer_phone, garage_id, garage_name, parts_total, labor_total, discount_amount, tax_amount, final_total, status, legal_status, notes)
 VALUES
-(1, 'VT-QTE-2026-089', 5, 2, 'Porsche 911 GT3 RS', 'Khoi Dang', '+84 988 776 655', 1, 'AutoTune Saigon Performance Hub', 345000000, 15000000, 20000000, 0, 340000000, 'APPROVED', 'PASS', 'High-downforce aero pack + BBS Forged Titanium wheels & Akrapovic Evolution Line exhaust'),
+(1, 'VT-QTE-2026-089', 5, 2, 'Porsche 911 Carrera (991)', 'Khoi Dang', '+84 988 776 655', 1, 'AutoTune Saigon Performance Hub', 345000000, 15000000, 20000000, 0, 340000000, 'APPROVED', 'PASS', 'High-downforce aero pack + BBS Forged Titanium wheels & Akrapovic Evolution Line exhaust'),
 (2, 'VT-QTE-2026-092', 5, 1, 'Ferrari 458 Italia', 'Khoi Dang', '+84 988 776 655', 1, 'AutoTune Saigon Performance Hub', 145000000, 10000000,  5000000, 0, 150000000, 'SENT',     'PASS', 'Brembo GT Big Brake Kit conversion package with 6-piston monobloc calipers');
 SET IDENTITY_INSERT dbo.quotations OFF;
 
@@ -436,7 +433,7 @@ SET IDENTITY_INSERT dbo.quotation_items OFF;
 SET IDENTITY_INSERT dbo.work_orders ON;
 INSERT INTO dbo.work_orders (work_order_id, work_order_number, quotation_id, customer_id, technician_id, car_build_id, vehicle_model, garage_id, bay_number, status, progress, priority, notes, started_at)
 VALUES
-(1, 'WO-2026-001', 1, 5, 3, 2, 'Porsche 911 GT3 RS', 1, 'Bay 02 - Dyno & Performance Alignment', 'IN_PROGRESS', 65, 'HIGH',
+(1, 'WO-2026-001', 1, 5, 3, 2, 'Porsche 911 Carrera (991)', 1, 'Bay 02 - Dyno & Performance Alignment', 'IN_PROGRESS', 65, 'HIGH',
  'BBS wheel balance & fitment inspection completed. Akrapovic titanium exhaust fitment in progress on lift 2.', DATEADD(HOUR, -4, SYSUTCDATETIME()));
 SET IDENTITY_INSERT dbo.work_orders OFF;
 
@@ -444,14 +441,14 @@ SET IDENTITY_INSERT dbo.work_orders OFF;
 SET IDENTITY_INSERT dbo.warranties ON;
 INSERT INTO dbo.warranties (warranty_id, certificate_number, work_order_id, car_model, customer_name, customer_phone, issue_date, expiry_date, legal_compliance_status, qr_verification_token, status)
 VALUES
-(1, 'CERT-VT-2026-8801', 1, 'Porsche 911 GT3 RS', 'Khoi Dang', '+84 988 776 655',
+(1, 'CERT-VT-2026-8801', 1, 'Porsche 911 Carrera (991)', 'Khoi Dang', '+84 988 776 655',
  DATEADD(DAY, -2, SYSUTCDATETIME()), DATEADD(YEAR, 2, SYSUTCDATETIME()),
  'PASSED_COMPLIANCE_2026', 'QR-VT-GT3-VIP999', 'ACTIVE');
 SET IDENTITY_INSERT dbo.warranties OFF;
 GO
 
 PRINT '>>> VirtualTuneDB schema and seed data deployed successfully (100% English)';
-PRINT '>>> 6 Official Supercars: Ferrari 458 Italia | Lamborghini Aventador LP700 | Porsche 911 GT3 RS | McLaren 720S | Nissan GT-R Nismo (R35) | BMW M4 Competition';
+PRINT '>>> 5 Official Supercars: Ferrari 458 Italia | Lamborghini Aventador LP700 | Porsche 911 Carrera (991) | McLaren 720S | BMW Vision ConnectedDrive';
 PRINT '>>> Accounts: admin | admin_garage | tech_lead | tech_junior | customer_vip';
 PRINT '>>> Default password: password123';
 GO

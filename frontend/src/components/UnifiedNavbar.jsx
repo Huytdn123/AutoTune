@@ -89,7 +89,7 @@ export const NAVIGATION_GROUPS = [
 export default function UnifiedNavbar() {
   const location = useLocation()
   const navigate = useNavigate()
-  const { currentUser, role, logout, setLoginModalOpen } = useAuth()
+  const { currentUser, role, logout, setLoginModalOpen, openLoginModal } = useAuth()
   const { isDark } = useTheme()
   const [activeDropdown, setActiveDropdown] = useState(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -313,7 +313,7 @@ export default function UnifiedNavbar() {
             type="button"
             onClick={() => {
               if (!currentUser) {
-                setLoginModalOpen(true)
+                openLoginModal()
               } else {
                 navigate('/cart')
               }
@@ -446,27 +446,6 @@ export default function UnifiedNavbar() {
                     type="button"
                     onClick={() => {
                       setUserMenuOpen(false)
-                      setLoginModalOpen(true)
-                    }}
-                    className="w-full flex items-center gap-2 p-2 rounded-lg text-xs font-medium transition-colors cursor-pointer"
-                    style={{ color: isDark ? '#CBD5E1' : '#475569' }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.backgroundColor = isDark ? '#1E202C' : '#F1F5F9'
-                      e.currentTarget.style.color = '#16A34A'
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.backgroundColor = 'transparent'
-                      e.currentTarget.style.color = isDark ? '#CBD5E1' : '#475569'
-                    }}
-                  >
-                    <span className="material-symbols-outlined text-base" style={{ color: '#16A34A' }}>switch_account</span>
-                    <span>Switch Demo Persona</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setUserMenuOpen(false)
                       logout()
                     }}
                     className="w-full flex items-center gap-2 p-2 rounded-lg text-xs font-semibold text-[#DC2626] hover:bg-[#FEE2E2] dark:hover:bg-[#DC2626]/20 transition-colors cursor-pointer border-t mt-1 pt-2"
@@ -479,9 +458,10 @@ export default function UnifiedNavbar() {
               )}
             </div>
           ) : (
-            <Link
-              to="/login"
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold font-['Montserrat'] uppercase tracking-wider transition-all duration-150 hover:bg-[#0115BC] active:bg-[#06169B] shadow-xs"
+            <button
+              type="button"
+              onClick={() => openLoginModal()}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold font-['Montserrat'] uppercase tracking-wider transition-all duration-150 hover:bg-[#0115BC] active:bg-[#06169B] shadow-xs cursor-pointer"
               style={{
                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
                 border: '1px solid rgba(255, 255, 255, 0.4)',
@@ -490,7 +470,7 @@ export default function UnifiedNavbar() {
             >
               <span className="material-symbols-outlined text-base" style={{ color: '#ffffff' }}>login</span>
               <span>SIGN IN</span>
-            </Link>
+            </button>
           )}
 
           {/* Mobile hamburger */}
@@ -647,21 +627,48 @@ export default function UnifiedNavbar() {
             <span>Knowledge Hub</span>
           </Link>
 
-          {currentUser && (
-            <Link
-              to="/account"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors"
-              style={{
-                fontFamily: "'Montserrat', sans-serif",
-                backgroundColor: location.pathname === '/account' ? (isDark ? '#161C3B' : '#EEF2FF') : 'transparent',
-                color: location.pathname === '/account' ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#F8FAFC' : '#111827'),
-                border: location.pathname === '/account' ? (isDark ? '1px solid #282A3A' : '1px solid #CBD5E1') : '1px solid transparent',
-              }}
-            >
-              <span className="material-symbols-outlined" style={{ fontSize: '17px', color: isDark ? '#93C5FD' : '#0213B2' }}>account_circle</span>
-              <span>My Account & Builds</span>
-            </Link>
+          {currentUser ? (
+            <div className="space-y-2 pt-2 border-t" style={{ borderColor: isDark ? '#282A3A' : '#E2E8F0' }}>
+              <Link
+                to="/account"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors"
+                style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  backgroundColor: location.pathname === '/account' ? (isDark ? '#161C3B' : '#EEF2FF') : 'transparent',
+                  color: location.pathname === '/account' ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#F8FAFC' : '#111827'),
+                  border: location.pathname === '/account' ? (isDark ? '1px solid #282A3A' : '1px solid #CBD5E1') : '1px solid transparent',
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '17px', color: isDark ? '#93C5FD' : '#0213B2' }}>account_circle</span>
+                <span>My Account & Builds</span>
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false)
+                  logout()
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-base">logout</span>
+                <span>Sign Out ({currentUser.fullName})</span>
+              </button>
+            </div>
+          ) : (
+            <div className="pt-2 border-t" style={{ borderColor: isDark ? '#282A3A' : '#E2E8F0' }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false)
+                  openLoginModal()
+                }}
+                className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-white uppercase tracking-wider bg-[#0213B2] hover:bg-[#0115BC] transition-colors cursor-pointer shadow-sm font-['Montserrat']"
+              >
+                <span className="material-symbols-outlined text-base">login</span>
+                <span>SIGN IN</span>
+              </button>
+            </div>
           )}
         </div>
       )}

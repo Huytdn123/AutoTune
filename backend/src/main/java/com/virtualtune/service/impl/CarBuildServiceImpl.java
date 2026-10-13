@@ -191,10 +191,9 @@ public class CarBuildServiceImpl implements CarBuildService {
         if (carSlug != null) {
             if (carSlug.contains("ferrari")) prefix = "F458";
             else if (carSlug.contains("lamborghini")) prefix = "AVENT";
-            else if (carSlug.contains("porsche")) prefix = "GT3RS";
+            else if (carSlug.contains("porsche") || carSlug.contains("carrera")) prefix = "CARR991";
             else if (carSlug.contains("mclaren")) prefix = "720S";
-            else if (carSlug.contains("nissan") || carSlug.contains("gtr")) prefix = "GTR35";
-            else if (carSlug.contains("bmw") || carSlug.contains("m4")) prefix = "M4CSL";
+            else if (carSlug.contains("bmw") || carSlug.contains("vision")) prefix = "BMWV";
         }
 
         String chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";

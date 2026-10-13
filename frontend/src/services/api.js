@@ -14,7 +14,7 @@ const client = axios.create({
 // Attach Bearer JWT token automatically to every outgoing request
 client.interceptors.request.use((config) => {
   const token = localStorage.getItem('vt_auth_token')
-  if (token && !token.startsWith('VT-TOKEN-OFFLINE-')) {
+  if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
   return config
@@ -184,8 +184,8 @@ export const legalCheckApi = {
       if (ENABLE_MOCK) {
         return {
           status: 'PASS',
-          regulation: 'Thông tư số 30/2026/TT-BXD',
-          message: 'Cấu hình đạt chuẩn đăng kiểm theo quy định an toàn kỹ thuật'
+          regulation: 'Safety Circular 30/2026/TT-BXD',
+          message: 'Vehicle configuration fully compliant with safety inspection regulations'
         }
       }
       throw err

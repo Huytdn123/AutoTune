@@ -139,20 +139,20 @@ export default function QuotationInvoicePage() {
       const payload = {
         shareCode: b.shareCode,
         carModel: cfg.carName || `${b.car?.brand || 'Ferrari'} ${b.car?.model || '458 Italia'}`,
-        customerName: currentUser?.fullName || 'Khách hàng VIP Virtual Tune',
+        customerName: currentUser?.fullName || 'Virtual Tune VIP Client',
         customerPhone: currentUser?.phone || '+84 908 123 456',
-        notes: `Cấu hình độ xe 3D (${b.shareCode}): Sơn ${cfg.bodyColorName || b.bodyColor}, Nội thất ${cfg.interiorColorName || 'Leather'}, Mâm ${cfg.selectedWheelSku || 'OEM'}, Bodykit ${cfg.selectedBodykitSku || 'OEM'}, Cánh gió ${cfg.selectedSpoilerSku || 'OEM'}.`,
+        notes: `3D Custom Build (${b.shareCode}): Paint ${cfg.bodyColorName || b.bodyColor}, Interior ${cfg.interiorColorName || 'Leather'}, Wheels ${cfg.selectedWheelSku || 'OEM'}, Bodykit ${cfg.selectedBodykitSku || 'OEM'}, Spoiler ${cfg.selectedSpoilerSku || 'OEM'}.`,
         items: itemsToSend
       }
 
       const res = await quotationApi.create(payload)
-      showToast(`Đã tạo Báo giá chính thức #${res.quotationNumber} từ bản độ 3D!`)
+      showToast(`Official Quotation #${res.quotationNumber} generated from 3D build!`)
       await fetchQuotations()
       setCurrentQuote(res)
       setBuildPreview(null)
     } catch (err) {
       console.error('Failed to create quotation from build:', err)
-      showToast(err.response?.data?.message || 'Không thể tạo báo giá từ bản độ 3D.')
+      showToast(err.response?.data?.message || 'Failed to generate quotation from 3D build.')
     } finally {
       setCreatingQuoteFromBuild(false)
     }
@@ -376,23 +376,23 @@ export default function QuotationInvoicePage() {
                     <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#D7E1FF] text-[#06169B] border border-[#0213B2]/30">
                       3D Configurator Staging
                     </span>
-                    <span className="text-xs font-mono text-[#475569]">Mã bản độ: {buildPreview.build.shareCode}</span>
+                    <span className="text-xs font-mono text-[#475569]">Build Code: {buildPreview.build.shareCode}</span>
                   </div>
                   <h2 className="text-lg font-black text-[#111827] mt-1">
                     {buildPreview.config?.carName || buildPreview.build.buildName || 'Ferrari 458 Italia Custom Build'}
                   </h2>
                   <p className="text-xs text-[#475569] mt-0.5">
-                    Ngoại thất: <strong className="text-[#111827]">{buildPreview.config?.bodyColorName || buildPreview.build.bodyColor}</strong> · 
-                    Nội thất: <strong className="text-[#111827]">{buildPreview.config?.interiorColorName || 'Nero'}</strong> · 
-                    Mâm: <strong className="text-[#111827]">{buildPreview.config?.selectedWheelSku ? 'NOVITEC 21"' : 'Ferrari OEM'}</strong> · 
+                    Exterior: <strong className="text-[#111827]">{buildPreview.config?.bodyColorName || buildPreview.build.bodyColor}</strong> · 
+                    Interior: <strong className="text-[#111827]">{buildPreview.config?.interiorColorName || 'Nero'}</strong> · 
+                    Wheels: <strong className="text-[#111827]">{buildPreview.config?.selectedWheelSku ? 'NOVITEC 21"' : 'Ferrari OEM'}</strong> · 
                     Bodykit: <strong className="text-[#111827]">{buildPreview.config?.selectedBodykitSku ? 'LB-WORKS Full Carbon' : 'OEM'}</strong> · 
-                    Cánh gió: <strong className="text-[#111827]">{buildPreview.config?.selectedSpoilerSku ? (buildPreview.config.selectedSpoilerSku.includes('ducktail') ? 'LB Ducktail' : 'LB GT Wing') : 'OEM Clean'}</strong>
+                    Spoiler: <strong className="text-[#111827]">{buildPreview.config?.selectedSpoilerSku ? (buildPreview.config.selectedSpoilerSku.includes('ducktail') ? 'LB Ducktail' : 'LB GT Wing') : 'OEM Clean'}</strong>
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-3 self-end sm:self-center">
                 <div className="text-right">
-                  <span className="text-[10px] font-mono text-[#475569] block uppercase font-medium">Tổng giá trị dự toán</span>
+                  <span className="text-[10px] font-mono text-[#475569] block uppercase font-medium">Estimated Total Value</span>
                   <span className="text-xl font-black font-mono text-[#06169B]">
                     ${(buildPreview.build.totalEstimatedCost || 328000).toLocaleString()} USD
                   </span>
@@ -404,7 +404,7 @@ export default function QuotationInvoicePage() {
                   className="px-4 py-2.5 bg-[#0213B2] hover:bg-[#0115BC] text-white rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-sm transition-all cursor-pointer disabled:opacity-50"
                 >
                   <span className="material-symbols-outlined text-base">receipt_long</span>
-                  <span>{creatingQuoteFromBuild ? 'Đang tạo...' : 'Lập Báo Giá Ngay'}</span>
+                  <span>{creatingQuoteFromBuild ? 'Generating...' : 'Generate Quote Now'}</span>
                 </button>
               </div>
             </div>

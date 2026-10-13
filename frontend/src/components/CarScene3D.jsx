@@ -8,9 +8,10 @@ export const CAR_MODEL_FILES = {
   'ferrari-458':           '/models/ferrari.glb',
   'lamborghini-aventador': '/models/lamborghini.glb',
   'porsche-gt3':           '/models/porsche.glb',
+  'porsche-carrera-991':   '/models/porsche.glb',
   'mclaren-720s':          '/models/mclaren.glb',
   'bmw-m4-csl':            '/models/bmw.glb',
-  'nissan-gtr':            '/models/nissan_gtr.glb',
+  'bmw-vision':            '/models/bmw.glb',
 }
 
 // ─── Official Real-Life Aftermarket 3D Part Assets ───────────────────────────
@@ -143,7 +144,6 @@ export function VehicleModel3D({
     const isPorsche = modelPath.includes('porsche')
     const isMcLaren = modelPath.includes('mclaren')
     const isBMW     = modelPath.includes('bmw')
-    const isNissan  = modelPath.includes('nissan')
 
     const platesToRemove = []
 
@@ -251,10 +251,6 @@ export function VehicleModel3D({
           if (matName.includes('car paint') || matName.includes('wire_228153184') || nodeName.includes('mirror')) child.material = bodyMaterial
           if (matName.includes('rims') || matName.includes('metalparts')) child.material = detailsMaterial
           if (matName.includes('glass') || matName.includes('stuklo')) child.material = glassMaterial
-        } else if (isNissan) {
-          if (matName.includes('bodycolor') || nodeName.includes('body') || nodeName.includes('mirror')) child.material = bodyMaterial
-          if (matName.includes('brakerotor') || nodeName.includes('wheel') || nodeName.includes('rim')) child.material = detailsMaterial
-          if (nodeName.includes('glass') || nodeName.includes('window')) child.material = glassMaterial
         }
       }
     })

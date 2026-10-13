@@ -40,17 +40,17 @@ export default function SalesWorkspacePage() {
           <div className="bg-[#E5E8F0] dark:bg-[#14151D] border border-[#CBD5E1] dark:border-[#282A3A] shadow-sm rounded-2xl p-5 space-y-4">
             <div>
               <span className="text-[11px] font-semibold uppercase tracking-wider text-[#475569] dark:text-[#94A3B8]">Staged Vehicle</span>
-              <h4 className="font-display font-bold text-[#111827] dark:text-[#F8FAFC] text-lg mt-1">Porsche 911 GT3</h4>
-              <p className="text-xs text-[#475569] dark:text-[#94A3B8] mt-0.5">Generation 992 • Agate Gray Metallic</p>
+              <h4 className="font-display font-bold text-[#111827] dark:text-[#F8FAFC] text-lg mt-1">Porsche 911 Carrera (991)</h4>
+              <p className="text-xs text-[#475569] dark:text-[#94A3B8] mt-0.5">Generation 991 • Agate Gray Metallic</p>
             </div>
             <div className="grid grid-cols-2 gap-3 pt-2">
               <div className="bg-white dark:bg-[#1B1D28] p-3 rounded-xl border border-[#CBD5E1] dark:border-[#282A3A]" data-preserve-bg="true">
                 <span className="text-[10px] uppercase text-[#475569] dark:text-[#94A3B8] block">Powertrain</span>
-                <span className="text-xs font-semibold text-[#111827] dark:text-[#F8FAFC] mt-0.5 block">518 HP • 4.0L</span>
+                <span className="text-xs font-semibold text-[#111827] dark:text-[#F8FAFC] mt-0.5 block">370 HP • 3.0L TT</span>
               </div>
               <div className="bg-white dark:bg-[#1B1D28] p-3 rounded-xl border border-[#CBD5E1] dark:border-[#282A3A]" data-preserve-bg="true">
                 <span className="text-[10px] uppercase text-[#475569] dark:text-[#94A3B8] block">Baseline Weight</span>
-                <span className="text-xs font-semibold text-[#111827] dark:text-[#F8FAFC] mt-0.5 block">1,435 kg</span>
+                <span className="text-xs font-semibold text-[#111827] dark:text-[#F8FAFC] mt-0.5 block">1,430 kg</span>
               </div>
             </div>
           </div>
@@ -105,7 +105,7 @@ export default function SalesWorkspacePage() {
           </div>
 
           <div className="flex-1 relative overflow-hidden flex items-center justify-center bg-[#0F172A]">
-            <img className="w-full h-full object-cover select-none" data-alt="Configured Porsche 911 GT3 with track pack" src="/images/sales-porsche-gt3.jpg" />
+            <img className="w-full h-full object-cover select-none" data-alt="Configured Porsche 911 Carrera (991) with aero pack" src="/images/sales-porsche-gt3.jpg" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/70 via-transparent to-transparent pointer-events-none"></div>
 
             <div className="absolute top-[44%] left-[22%] z-20 group cursor-pointer">

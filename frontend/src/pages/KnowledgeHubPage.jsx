@@ -152,10 +152,10 @@ export default function KnowledgeHubPage() {
                   <tr className="hover:bg-[#F8FAFC] transition-colors">
                     <td className="py-3.5 px-6 font-semibold text-[#111827] flex items-center gap-2.5">
                       <span className="w-2 h-2 rounded-full bg-[#16A34A]"></span>
-                      <span>Porsche 992 GT3 RS</span>
+                      <span>Porsche 911 Carrera (991)</span>
                     </td>
-                    <td className="py-3.5 px-6 text-[#475569]">20x10.0J (F) / 21x13.0J (R)</td>
-                    <td className="py-3.5 px-6 text-[#475569]">ET45 / ET38</td>
+                    <td className="py-3.5 px-6 text-[#475569]">20x8.5J (F) / 20x11.5J (R)</td>
+                    <td className="py-3.5 px-6 text-[#475569]">ET45 / ET45</td>
                     <td className="py-3.5 px-6 text-right">
                       <span className="inline-block px-2.5 py-0.5 rounded text-[10px] bg-[#DCFCE7] border border-[#16A34A]/30 text-[#16A34A] font-bold uppercase">Verified</span>
                     </td>
@@ -163,10 +163,10 @@ export default function KnowledgeHubPage() {
                   <tr className="hover:bg-[#F8FAFC] transition-colors">
                     <td className="py-3.5 px-6 font-semibold text-[#111827] flex items-center gap-2.5">
                       <span className="w-2 h-2 rounded-full bg-[#16A34A]"></span>
-                      <span>BMW M3 CS (G80)</span>
+                      <span>BMW Vision ConnectedDrive</span>
                     </td>
-                    <td className="py-3.5 px-6 text-[#475569]">19x9.5J (F) / 20x10.5J (R)</td>
-                    <td className="py-3.5 px-6 text-[#475569]">ET18 / ET15</td>
+                    <td className="py-3.5 px-6 text-[#475569]">20x9.0J (F) / 20x10.0J (R)</td>
+                    <td className="py-3.5 px-6 text-[#475569]">ET25 / ET22</td>
                     <td className="py-3.5 px-6 text-right">
                       <span className="inline-block px-2.5 py-0.5 rounded text-[10px] bg-[#DCFCE7] border border-[#16A34A]/30 text-[#16A34A] font-bold uppercase">Verified</span>
                     </td>

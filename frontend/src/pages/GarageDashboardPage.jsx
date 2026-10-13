@@ -42,7 +42,7 @@ export default function GarageDashboardPage() {
         setCars(Array.isArray(data) ? data : (data?.data || []))
       }
     } catch (err) {
-      setError('Không thể tải toàn bộ dữ liệu từ máy chủ. Vui lòng thử lại.')
+      setError('Unable to load all data from server. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -116,7 +116,7 @@ export default function GarageDashboardPage() {
 <span className="material-symbols-outlined text-xs mr-0.5" data-icon="trending_up">trending_up</span>
                 +18.4%
               </span>
-<span className="text-body-sm font-body-sm text-[#334155]">Tháng 9/2026</span>
+<span className="text-body-sm font-body-sm text-[#334155]">September 2026</span>
 </div>
 </div>
 <div className="w-full bg-[#D7E1FF] h-1.5 rounded-full mt-4 overflow-hidden">
@@ -126,7 +126,7 @@ export default function GarageDashboardPage() {
 
 <div className="bg-white p-5 rounded-xl border border-[#D8DFEA] relative overflow-hidden flex flex-col justify-between shadow-xs">
 <div className="flex items-center justify-between text-[#475569] mb-2">
-<span className="font-label-md text-label-md uppercase tracking-wider text-[#64748B]">Khoang Thi Công</span>
+<span className="font-label-md text-label-md uppercase tracking-wider text-[#64748B]">Work Bays</span>
 <div className="w-8 h-8 rounded-xl bg-[#E8EDFF] flex items-center justify-center text-[#0213B2]">
 <span className="material-symbols-outlined text-base" data-icon="car_repair">car_repair</span>
 </div>
@@ -137,11 +137,11 @@ export default function GarageDashboardPage() {
   {metrics?.baysOccupied || 3} <span className="text-headline-md font-headline-md text-outline">/ {metrics?.totalBays || 4}</span>
 </span>
 <span className="font-label-sm text-label-sm text-tertiary px-2 py-0.5 rounded-DEFAULT bg-tertiary-container/40">
-  {metrics ? Math.round((metrics.baysOccupied / metrics.totalBays) * 100) : 75}% Công suất
+  {metrics ? Math.round((metrics.baysOccupied / metrics.totalBays) * 100) : 75}% Capacity
 </span>
 </div>
 <p className="text-body-sm font-body-sm text-on-surface-variant mt-2">
-  {(metrics?.totalBays || 4) - (metrics?.baysOccupied || 3)} khoang sẵn sàng tiếp nhận xe
+  {(metrics?.totalBays || 4) - (metrics?.baysOccupied || 3)} bays available for intake
 </p>
 </div>
 <div className="flex gap-1.5 mt-4">
@@ -226,7 +226,7 @@ export default function GarageDashboardPage() {
 </div>
 
 <div className="mt-4">
-<h3 className="font-headline-sm text-headline-sm text-on-surface">Porsche 911 GT3 (992)</h3>
+<h3 className="font-headline-sm text-headline-sm text-on-surface">Porsche 911 Carrera (991)</h3>
 <p className="font-body-sm text-body-sm text-outline mt-0.5">Forged Wheel Fitment & Suspension Alignment</p>
 </div>
 
@@ -272,7 +272,7 @@ export default function GarageDashboardPage() {
 </div>
 
 <div className="mt-4">
-<h3 className="font-headline-sm text-headline-sm text-on-surface">BMW M4 G82 Competition</h3>
+<h3 className="font-headline-sm text-headline-sm text-on-surface">BMW Vision ConnectedDrive</h3>
 <p className="font-body-sm text-body-sm text-outline mt-0.5">Full Carbon Aero Kit & Dyno Tune Remap</p>
 </div>
 
@@ -425,10 +425,10 @@ export default function GarageDashboardPage() {
 </thead>
 <tbody className="divide-y divide-outline-variant/20">
 <tr className="hover:bg-surface-container transition-colors">
-<td className="py-3 px-3 font-medium text-on-surface">911 GT3 (992)</td>
-<td className="py-3 px-3 font-mono text-outline">Centerlock (84mm)</td>
-<td className="py-3 px-3 text-on-surface">ET45 F / ET42 R</td>
-<td className="py-3 px-3">PCCB 410mm Disc</td>
+<td className="py-3 px-3 font-medium text-on-surface">911 Carrera (991)</td>
+<td className="py-3 px-3 font-mono text-outline">5x130 (71.6mm)</td>
+<td className="py-3 px-3 text-on-surface">ET45 F / ET45 R</td>
+<td className="py-3 px-3">OEM 330mm Disc</td>
 <td className="py-3 px-3 text-right">
 <span className="inline-flex items-center gap-1 text-label-sm font-label-sm text-primary px-2 py-0.5 rounded-DEFAULT bg-primary-container/40">
 <span className="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span>
@@ -437,10 +437,10 @@ export default function GarageDashboardPage() {
 </td>
 </tr>
 <tr className="hover:bg-surface-container transition-colors">
-<td className="py-3 px-3 font-medium text-on-surface">M4 G82 Comp</td>
-<td className="py-3 px-3 font-mono text-outline">5x112 (66.6mm)</td>
-<td className="py-3 px-3 text-on-surface">ET20 F / ET18 R</td>
-<td className="py-3 px-3">M-Sport 380mm</td>
+<td className="py-3 px-3 font-medium text-on-surface">BMW Vision</td>
+<td className="py-3 px-3 font-mono text-outline">5x112 (72.6mm)</td>
+<td className="py-3 px-3 text-on-surface">ET25 F / ET22 R</td>
+<td className="py-3 px-3">BMW Sport 360mm</td>
 <td className="py-3 px-3 text-right">
 <span className="inline-flex items-center gap-1 text-label-sm font-label-sm text-primary px-2 py-0.5 rounded-DEFAULT bg-primary-container/40">
 <span className="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span>

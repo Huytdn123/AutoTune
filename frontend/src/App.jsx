@@ -121,10 +121,10 @@ function InteractiveAppWrapper() {
 
     // 4. Parts Store & B2B Shop shortcuts
     if (
-      rawText.includes('cửa hàng') ||
       rawText.includes('store') ||
-      rawText.includes('phụ tùng') ||
-      rawText.includes('mua sắm') ||
+      rawText.includes('parts') ||
+      rawText.includes('performance parts') ||
+      rawText.includes('shop') ||
       rawText.includes('b2b store') ||
       rawText.includes('bay dispatch') ||
       rawText.includes('work order') ||

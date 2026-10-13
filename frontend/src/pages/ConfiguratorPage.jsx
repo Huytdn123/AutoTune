@@ -31,7 +31,7 @@ import SaveBuildModal from '../components/configurator/SaveBuildModal'
  */
 
 // ─── Shared color presets ─────────────────────────────────────────────────────
-// Màu ngoại thất: dựa trên bảng màu OEM thực tế của từng hãng
+// Exterior colors: based on actual OEM paint catalogs
 const BODY_COLORS = [
   // Ferrari palette
   { hex: '#CC0000', name: 'Rosso Corsa', finish: 'Metallic' },
@@ -47,7 +47,7 @@ const BODY_COLORS = [
   { hex: '#0A1A6E', name: 'Blu Tour de France', finish: 'Metallic' },
 ]
 
-// Rim finish: material-based color swap trên mesh rim của GLB gốc
+// Rim finish: material-based color swap on rim meshes of the native model
 const RIM_COLORS = [
   { hex: '#CCCCCC', name: 'Argento (Silver)' },
   { hex: '#1A1A1A', name: 'Nero Lucido (Gloss Black)' },

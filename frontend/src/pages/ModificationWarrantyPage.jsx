@@ -35,7 +35,7 @@ export default function ModificationWarrantyPage() {
         setCurrentWarranty({
           id: 1,
           certificateId: 'VT-WAR-2026-992G',
-          carModel: 'Porsche 911 GT3 (992) Track Edition',
+          carModel: 'Porsche 911 Carrera (991) Aero Edition',
           customerName: currentUser?.fullName || 'Liam Henderson',
           vin: 'WP0AF2A97RS99201',
           garageName: 'AutoTune Saigon Performance Hub',
@@ -57,7 +57,7 @@ export default function ModificationWarrantyPage() {
       setCurrentWarranty({
         id: 1,
         certificateId: 'VT-WAR-2026-992G',
-        carModel: 'Porsche 911 GT3 (992) Track Edition',
+        carModel: 'Porsche 911 Carrera (991) Aero Edition',
         customerName: currentUser?.fullName || 'Liam Henderson',
         vin: 'WP0AF2A97RS99201',
         garageName: 'AutoTune Saigon Performance Hub',
@@ -129,7 +129,7 @@ export default function ModificationWarrantyPage() {
             <div className="flex items-center gap-2 font-mono text-xs text-[#64748B] mb-1">
               <span className="hover:text-[#0213B2] transition-colors cursor-pointer">Warranty & Build Records</span>
               <span className="material-symbols-outlined text-xs">chevron_right</span>
-              <span className="text-[#0213B2] font-semibold">{currentWarranty?.carModel || 'Porsche 911 GT3 (992)'}</span>
+              <span className="text-[#0213B2] font-semibold">{currentWarranty?.carModel || 'Porsche 911 Carrera (991)'}</span>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="font-['Montserrat'] text-2xl font-bold text-[#111827] tracking-tight">
@@ -175,7 +175,7 @@ export default function ModificationWarrantyPage() {
                 <span>Issued: <strong>{currentWarranty?.issueDate || '2026-03-15'}</strong></span>
               </div>
               <h2 className="font-['Montserrat'] text-xl font-bold text-[#111827] tracking-tight">
-                {currentWarranty?.carModel || 'Porsche 911 GT3 (992) Track Edition'}
+                {currentWarranty?.carModel || 'Porsche 911 Carrera (991) Aero Edition'}
               </h2>
               <p className="text-xs text-[#334155] max-w-2xl leading-relaxed">
                 All high-performance modifications including lightweight forged wheels, titanium valved exhaust, and competition coilovers are cryptographically verified and covered by the Virtual Tune Certified Bay Warranty and TÜV Rheinland homologation.

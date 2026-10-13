@@ -273,7 +273,7 @@ export default function FitmentMatrixPage() {
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="font-['Montserrat'] text-base md:text-lg font-bold text-[#111827] tracking-wide">
-                    {selectedCar?.modelName || selectedCar?.model || 'Porsche 911 GT3 RS'}
+                    {selectedCar?.modelName || selectedCar?.model || 'Porsche 911 Carrera (991)'}
                   </h1>
                   <span className="px-2 py-0.5 rounded bg-[#E8EDFF] border border-[#0213B2]/30 text-[#0213B2] font-mono font-bold text-[10px]">
                     {selectedCar?.stockBoltPattern || '5x112'} • ET{selectedCar?.stockOffsetEt || '35'}
@@ -449,11 +449,11 @@ export default function FitmentMatrixPage() {
                   {checkResult?.status === 'FAIL' ? (
                     <button
                       disabled
-                      title="Không thể thêm vào giỏ: Linh kiện bị xung đột kỹ thuật (FAIL)"
+                      title="Cannot add to cart: Mechanical interference detected (FAIL)"
                       className="py-2 px-3 bg-[#FEE2E2] border border-[#DC2626]/30 text-[#DC2626] font-['Montserrat'] font-bold text-xs uppercase tracking-wider rounded-lg text-center cursor-not-allowed flex items-center gap-1 opacity-70"
                     >
                       <span className="material-symbols-outlined text-sm">block</span>
-                      Chặn thêm vào Giỏ (FAIL)
+                      Add to Cart Blocked (FAIL)
                     </button>
                   ) : (
                     <Link

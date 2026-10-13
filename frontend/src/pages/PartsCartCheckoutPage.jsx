@@ -120,7 +120,7 @@ export default function PartsCartCheckoutPage() {
       const discountVnd = Math.round(b2bDiscount * 25000)
 
       const payload = {
-        carModel: 'Porsche 911 GT3 (992)',
+        carModel: 'Porsche 911 Carrera (991)',
         customerName: 'Alexander von Berg',
         notes: `B2B Tuning Package generated from Performance Store Cart (${selectedItems.length} items)`,
         laborFee: laborVnd,
@@ -128,7 +128,7 @@ export default function PartsCartCheckoutPage() {
         items: itemsPayload
       }
       const created = await quotationApi.create(payload)
-      showToast(`Đã tạo Báo giá chính thức #${created.quotationNumber} từ giỏ hàng!`)
+      showToast(`Official Quotation #${created.quotationNumber} created from cart!`)
       setTimeout(() => {
         navigate('/quotation')
       }, 700)
@@ -173,7 +173,7 @@ export default function PartsCartCheckoutPage() {
               <span className="material-symbols-outlined text-sm text-[#0213B2]">directions_car</span>
               <span className="font-mono text-xs text-[#06169B] font-semibold uppercase">Allocated to:</span>
               <span className="font-mono text-xs font-bold text-[#06169B] bg-[#D7E1FF] px-3 py-1.5 rounded-lg border border-[#0213B2]/30">
-                Porsche 911 GT3 (992)
+                Porsche 911 Carrera (991)
               </span>
             </div>
           </div>
@@ -385,7 +385,7 @@ export default function PartsCartCheckoutPage() {
                   {requestingQuote ? (
                     <>
                       <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Đang tạo Báo giá...</span>
+                      <span>Generating Quotation...</span>
                     </>
                   ) : (
                     <>
