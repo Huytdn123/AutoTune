@@ -105,7 +105,7 @@ export default function SalesWorkspacePage() {
           </div>
 
           <div className="flex-1 relative overflow-hidden flex items-center justify-center bg-[#0F172A]">
-            <img className="w-full h-full object-cover select-none" data-alt="Configured Porsche 911 Carrera (991) with aero pack" src="/images/sales-porsche-gt3.jpg" />
+            <img className="w-full h-full object-cover select-none" data-alt="Configured Porsche 911 Carrera (991) with aero pack" src="/images/cars/porsche-911-carrera.webp" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/70 via-transparent to-transparent pointer-events-none"></div>
 
             <div className="absolute top-[44%] left-[22%] z-20 group cursor-pointer">

@@ -64,6 +64,12 @@
   --color-canvas-base: var(--color-page-background);
   --color-surface-dim: var(--color-surface-subtle);
 
+  /* Premium Automotive Surface Tokens (Light Mode) */
+  --color-card-bg: #FFFFFF;
+  --color-card-border: #E2E8F0;
+  --color-card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.05);
+  --color-card-elevated-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+
   /* Fonts */
   --font-display: 'Montserrat', sans-serif;
   --font-body: 'Inter', sans-serif;
@@ -98,6 +104,12 @@ html.dark,
   --color-text-secondary: #CBD5E1;
   --color-text-muted: #94A3B8;
   --color-text-inverse: #0B0C10;
+
+  /* Premium Automotive Surface Tokens (Dark Mode) */
+  --color-card-bg: #14151D;
+  --color-card-border: #282A3A;
+  --color-card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35);
+  --color-card-elevated-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.45);
 
   /* Feedback in dark mode */
   --color-success: #22C55E;
@@ -139,29 +151,29 @@ body {
 }
 
 /* ── Light Mode UI Surface Softening (Pure White #FFFFFF -> Soft Blue-Gray Off-White #E5E8F0) ── */
-/* Replaces harsh #FFFFFF with gentle #E5E8F0 across light UI surfaces while preserving image photo frames and foreground text */
-html:not(.dark) .bg-white:not([data-preserve-white]):not([data-preserve-bg]),
-html:not(.dark) [class*="bg-white"]:not([class*="/"]):not([data-preserve-white]):not([data-preserve-bg]) {
+/* Replaces harsh #FFFFFF with gentle #E5E8F0 across light UI surfaces while preserving image photo frames, foreground text, and 3D configurator panels */
+html:not(.dark) .bg-white:not([data-preserve-white]):not([data-preserve-bg]):not(.vt-card):not(.vt-card-elevated):not(aside):not(aside *),
+html:not(.dark) [class*="bg-white"]:not([class*="/"]):not([data-preserve-white]):not([data-preserve-bg]):not(.vt-card):not(.vt-card-elevated):not(aside):not(aside *) {
   background-color: #E5E8F0 !important;
 }
 
-html:not(.dark) [class*="bg-white/95"]:not([data-preserve-white]):not([data-preserve-bg]) {
+html:not(.dark) [class*="bg-white/95"]:not([data-preserve-white]):not([data-preserve-bg]):not(aside):not(aside *) {
   background-color: rgba(229, 232, 240, 0.95) !important;
 }
 
-html:not(.dark) [class*="bg-white/90"]:not([data-preserve-white]):not([data-preserve-bg]) {
+html:not(.dark) [class*="bg-white/90"]:not([data-preserve-white]):not([data-preserve-bg]):not(aside):not(aside *) {
   background-color: rgba(229, 232, 240, 0.90) !important;
 }
 
-html:not(.dark) [class*="bg-white/85"]:not([data-preserve-white]):not([data-preserve-bg]) {
+html:not(.dark) [class*="bg-white/85"]:not([data-preserve-white]):not([data-preserve-bg]):not(aside):not(aside *) {
   background-color: rgba(229, 232, 240, 0.85) !important;
 }
 
-html:not(.dark) [class*="bg-white/80"]:not([data-preserve-white]):not([data-preserve-bg]) {
+html:not(.dark) [class*="bg-white/80"]:not([data-preserve-white]):not([data-preserve-bg]):not(aside):not(aside *) {
   background-color: rgba(229, 232, 240, 0.80) !important;
 }
 
-html:not(.dark) [class*="bg-white/70"]:not([data-preserve-white]):not([data-preserve-bg]) {
+html:not(.dark) [class*="bg-white/70"]:not([data-preserve-white]):not([data-preserve-bg]):not(aside):not(aside *) {
   background-color: rgba(229, 232, 240, 0.70) !important;
 }
 
@@ -608,4 +620,208 @@ button:disabled, [role="button"]:disabled {
 @keyframes spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
+}
+
+/* ── Premium Automotive SaaS Component Utilities (VT Foundation) ── */
+.vt-card {
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--color-card-shadow);
+  transition: border-color var(--duration-normal) ease, box-shadow var(--duration-normal) ease;
+}
+
+.vt-card-elevated {
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--color-card-elevated-shadow);
+  transition: border-color var(--duration-normal) ease, box-shadow var(--duration-normal) ease, transform var(--duration-normal) ease;
+}
+
+.vt-card-interactive {
+  cursor: pointer;
+}
+.vt-card-interactive:hover {
+  border-color: #6091C3;
+  box-shadow: var(--color-card-elevated-shadow);
+}
+html.dark .vt-card-interactive:hover {
+  border-color: #60A5FA;
+}
+
+/* Tabular figures for financial numbers, SKUs, and tolerances */
+.vt-tabular,
+.tabular-nums {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Primary Action Button (Brand Cobalt Blue #0213B2, AAA Contrast Ratio 10.5:1) */
+.vt-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-primary);
+  color: #FFFFFF !important;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
+  padding: 0.5625rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  box-shadow: 0 1px 2px 0 rgba(2, 19, 178, 0.2);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease, transform var(--duration-fast) ease;
+}
+.vt-btn-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 2px 4px 0 rgba(2, 19, 178, 0.28);
+}
+.vt-btn-primary:active:not(:disabled) {
+  background-color: var(--color-primary-pressed);
+  transform: translateY(1px);
+}
+.vt-btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Secondary Action Button (Crisp Neutral Card Surface) */
+.vt-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-card-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
+  padding: 0.5625rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) ease, border-color var(--duration-fast) ease, color var(--duration-fast) ease;
+}
+.vt-btn-secondary:hover:not(:disabled) {
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-border-strong);
+}
+.vt-btn-secondary:active:not(:disabled) {
+  background-color: var(--color-surface-subtle);
+  transform: translateY(1px);
+}
+.vt-btn-secondary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Accessible Focus Ring */
+.vt-focus-ring:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Standard Status Badge Geometry */
+.vt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.1875rem 0.625rem;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1rem;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+/* ── Cinematic Automotive Motion Design (Phase 3A.1) ── */
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes heroFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-hero-pill {
+  animation: heroFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-hero-title {
+  animation: heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.animate-hero-desc {
+  animation: heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+}
+
+.animate-hero-cta {
+  animation: heroFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.34s both;
+}
+
+.animate-hero-stats {
+  animation: heroFadeIn 0.75s ease 0.44s both;
+}
+
+.animate-hero-visual {
+  animation: heroFadeUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
+}
+
+/* Progressive Scroll Reveal (GPU Composited) */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.stagger-1 { transition-delay: 0.04s; }
+.stagger-2 { transition-delay: 0.12s; }
+.stagger-3 { transition-delay: 0.20s; }
+.stagger-4 { transition-delay: 0.28s; }
+
+/* Respect user preference for reduced motion without breaking functionality */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+    transform: none !important;
+  }
+  .reveal-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }

@@ -3,6 +3,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useTheme } from '../contexts/ThemeContext'
 import ThemeToggle from './ThemeToggle'
+import NavbarNotifications from './navbar/NavbarNotifications'
+import NavbarUserMenu from './navbar/NavbarUserMenu'
+import NavbarMobileDrawer from './navbar/NavbarMobileDrawer'
 
 const logoImg = '/images/logo.jpg'
 
@@ -139,11 +142,6 @@ export default function UnifiedNavbar() {
       style={{ backgroundColor: '#0213B2', borderBottom: '1px solid rgba(255, 255, 255, 0.15)' }}
       className="sticky top-0 z-50 h-16 text-white shadow-md select-none"
     >
-      {/*
-        Layout: 3 zones in one flex row
-        [logo: shrink-0] [nav: flex-1 justify-center] [actions: shrink-0]
-        This guarantees nav is always truly centered regardless of logo/action widths.
-      */}
       <div className="w-full px-5 lg:px-8 xl:px-12 h-full flex items-center justify-between gap-4 xl:gap-8">
 
         {/* ── ZONE 1: LOGO (left, fixed) ─────────────────── */}
@@ -163,7 +161,6 @@ export default function UnifiedNavbar() {
           className="hidden lg:flex flex-1 items-center justify-center gap-2 xl:gap-3"
           style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '13.5px', fontWeight: 600 }}
         >
-          {/* Grouped Dropdown Menus */}
           {filteredGroups.map((group) => {
             const isGroupActive = group.items.some(item => item.path === location.pathname)
             const isOpen = activeDropdown === group.groupId
@@ -186,7 +183,6 @@ export default function UnifiedNavbar() {
                   </span>
                 </button>
 
-                {/* Dropdown Panel — centered under trigger */}
                 {isOpen && (
                   <div
                     className="absolute left-1/2 -translate-x-1/2 mt-2 w-80 rounded-xl p-2 z-[100] transition-colors duration-150"
@@ -197,7 +193,6 @@ export default function UnifiedNavbar() {
                     }}
                     onMouseLeave={() => setActiveDropdown(null)}
                   >
-                    {/* Panel Header */}
                     <div
                       className="px-3 py-2 mb-1.5 rounded-lg flex items-center justify-between"
                       style={{
@@ -220,7 +215,6 @@ export default function UnifiedNavbar() {
                       </span>
                     </div>
 
-                    {/* Panel Items */}
                     <div className="space-y-1">
                       {group.items.map((item) => {
                         const isCurrent = location.pathname === item.path
@@ -293,7 +287,6 @@ export default function UnifiedNavbar() {
             )
           })}
 
-          {/* Knowledge */}
           <Link
             to="/knowledge"
             className="px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition-all duration-150 whitespace-nowrap hover:bg-[#0115BC] active:bg-[#06169B]"
@@ -305,8 +298,9 @@ export default function UnifiedNavbar() {
 
         {/* ── ZONE 3: ACTIONS (right, fixed) ──────────────── */}
         <div className="shrink-0 flex items-center gap-2 sm:gap-2.5">
-          {/* Theme Toggle (immediately to the LEFT of the shopping cart) */}
           <ThemeToggle />
+
+          <NavbarNotifications currentUser={currentUser} isDark={isDark} />
 
           {/* Shopping Cart Button */}
           <button
@@ -344,140 +338,21 @@ export default function UnifiedNavbar() {
             )}
           </button>
 
-          {/* Authentication State: User Info & Logout or Login Button */}
-          {currentUser ? (
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all duration-150 cursor-pointer hover:bg-[#0115BC]"
-                style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.18)',
-                  border: '1px solid rgba(255, 255, 255, 0.3)',
-                }}
-              >
-                <div 
-                  className="w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs"
-                  style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.25)',
-                    border: '1.5px solid rgba(255, 255, 255, 0.6)',
-                    color: '#FFFFFF'
-                  }}
-                >
-                  {currentUser.fullName ? currentUser.fullName.charAt(0) : 'U'}
-                </div>
-                <div className="hidden md:block text-left">
-                  <div className="text-xs font-bold text-white truncate max-w-[120px]">
-                    {currentUser.fullName || currentUser.username}
-                  </div>
-                  <div 
-                    className="text-[9px] font-mono font-bold uppercase tracking-wider truncate text-white/80"
-                  >
-                    {role.replace('_', ' ')}
-                  </div>
-                </div>
-                <span className="material-symbols-outlined text-white text-sm">expand_more</span>
-              </button>
-
-              {/* User Dropdown */}
-              {userMenuOpen && (
-                <div 
-                  className="absolute right-0 mt-2 w-56 rounded-xl p-2 z-[110] shadow-xl animate-in fade-in transition-colors duration-150"
-                  style={{
-                    backgroundColor: isDark ? '#14151D' : '#E5E8F0',
-                    border: isDark ? '1px solid #282A3A' : '1px solid #E2E8F0',
-                    boxShadow: isDark ? '0 12px 32px rgba(0, 0, 0, 0.5)' : '0 12px 32px rgba(15, 23, 42, 0.12)'
-                  }}
-                >
-                  <div className="p-2.5 border-b mb-1" style={{ borderColor: isDark ? '#282A3A' : '#E2E8F0' }}>
-                    <p className="text-xs font-bold" style={{ color: isDark ? '#F8FAFC' : '#111827' }}>{currentUser.fullName}</p>
-                    <p className="text-[10px] font-mono truncate" style={{ color: isDark ? '#94A3B8' : '#64748B' }}>{currentUser.email || currentUser.username}</p>
-                    <span 
-                      className="inline-block mt-1 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold uppercase"
-                      style={{
-                        backgroundColor: isDark ? '#161C3B' : '#EEF2FF',
-                        color: role === 'GARAGE_OWNER' ? (isDark ? '#93C5FD' : '#0213B2') : role === 'LEAD_TECHNICIAN' ? '#16A34A' : '#D97706',
-                        border: isDark ? '1px solid #282A3A' : '1px solid #CBD5E1'
-                      }}
-                    >
-                      {role}
-                    </span>
-                  </div>
-
-                  <Link
-                    to="/account"
-                    onClick={() => setUserMenuOpen(false)}
-                    className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium transition-colors"
-                    style={{ color: isDark ? '#CBD5E1' : '#475569' }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.backgroundColor = isDark ? '#1E202C' : '#F1F5F9'
-                      e.currentTarget.style.color = isDark ? '#93C5FD' : '#0213B2'
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.backgroundColor = 'transparent'
-                      e.currentTarget.style.color = isDark ? '#CBD5E1' : '#475569'
-                    }}
-                  >
-                    <span className="material-symbols-outlined text-base" style={{ color: isDark ? '#93C5FD' : '#0213B2' }}>account_circle</span>
-                    <span>My Account & Builds</span>
-                  </Link>
-
-                  {currentUser && ['GARAGE_OWNER', 'LEAD_TECHNICIAN', 'ADMIN'].includes(role) && (
-                    <Link
-                      to="/dashboard"
-                      onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium transition-colors"
-                      style={{ color: isDark ? '#CBD5E1' : '#475569' }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.backgroundColor = isDark ? '#1E202C' : '#F1F5F9'
-                        e.currentTarget.style.color = isDark ? '#93C5FD' : '#0213B2'
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.backgroundColor = 'transparent'
-                        e.currentTarget.style.color = isDark ? '#CBD5E1' : '#475569'
-                      }}
-                    >
-                      <span className="material-symbols-outlined text-base" style={{ color: isDark ? '#93C5FD' : '#0213B2' }}>dashboard</span>
-                      <span>Dashboard</span>
-                    </Link>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setUserMenuOpen(false)
-                      logout()
-                    }}
-                    className="w-full flex items-center gap-2 p-2 rounded-lg text-xs font-semibold text-[#DC2626] hover:bg-[#FEE2E2] dark:hover:bg-[#DC2626]/20 transition-colors cursor-pointer border-t mt-1 pt-2"
-                    style={{ borderColor: isDark ? '#282A3A' : '#E2E8F0' }}
-                  >
-                    <span className="material-symbols-outlined text-base">logout</span>
-                    <span>Sign Out</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => openLoginModal()}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold font-['Montserrat'] uppercase tracking-wider transition-all duration-150 hover:bg-[#0115BC] active:bg-[#06169B] shadow-xs cursor-pointer"
-              style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                border: '1px solid rgba(255, 255, 255, 0.4)',
-                color: '#ffffff',
-              }}
-            >
-              <span className="material-symbols-outlined text-base" style={{ color: '#ffffff' }}>login</span>
-              <span>SIGN IN</span>
-            </button>
-          )}
+          <NavbarUserMenu
+            currentUser={currentUser}
+            role={role}
+            userMenuOpen={userMenuOpen}
+            setUserMenuOpen={setUserMenuOpen}
+            logout={logout}
+            openLoginModal={openLoginModal}
+            isDark={isDark}
+          />
 
           {/* Mobile hamburger */}
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-lg transition-colors hover:bg-[#0115BC]"
+            className="lg:hidden p-2 rounded-lg transition-colors hover:bg-[#0115BC] cursor-pointer"
             style={{ color: '#FFFFFF', backgroundColor: 'rgba(255, 255, 255, 0.18)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
             aria-label="Toggle Navigation Menu"
           >
@@ -488,190 +363,18 @@ export default function UnifiedNavbar() {
         </div>
       </div>
 
-      {/* ── MOBILE DRAWER ───────────────────────────────── */}
-      {mobileMenuOpen && (
-        <div
-          className="lg:hidden px-4 py-4 space-y-4 max-h-[85vh] overflow-y-auto transition-colors duration-150"
-          style={{
-            backgroundColor: isDark ? '#14151D' : '#E5E8F0',
-            borderTop: isDark ? '1px solid #282A3A' : '1px solid #E2E8F0',
-            color: isDark ? '#F8FAFC' : '#111827'
-          }}
-        >
-          {/* Mobile Theme Toggle Row */}
-          <div
-            className="flex items-center justify-between p-2.5 rounded-lg"
-            style={{
-              backgroundColor: isDark ? '#1B1D28' : '#F8FAFC',
-              border: isDark ? '1px solid #282A3A' : '1px solid #E2E8F0',
-            }}
-          >
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-sm" style={{ color: isDark ? '#93C5FD' : '#0213B2' }}>
-                {isDark ? 'dark_mode' : 'light_mode'}
-              </span>
-              <span className="text-xs font-bold" style={{ color: isDark ? '#F8FAFC' : '#111827' }}>
-                {isDark ? 'Dark Mode' : 'Light Mode'}
-              </span>
-            </div>
-            <ThemeToggle />
-          </div>
-
-          <Link
-            to="/"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold"
-            style={{
-              fontFamily: "'Montserrat', sans-serif",
-              backgroundColor: location.pathname === '/' ? (isDark ? '#161C3B' : '#EEF2FF') : 'transparent',
-              color: location.pathname === '/' ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#F8FAFC' : '#111827'),
-              border: location.pathname === '/' ? (isDark ? '1px solid #282A3A' : '1px solid #CBD5E1') : '1px solid transparent',
-            }}
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: '17px', color: '#0213B2' }}>home</span>
-            <span>Platform Landing</span>
-          </Link>
-
-          {filteredGroups.map((group) => (
-            <div key={group.groupId} className="space-y-1">
-              <div
-                className="px-3 py-1 text-[10px] uppercase tracking-widest font-extrabold flex items-center gap-2"
-                style={{ color: isDark ? '#93C5FD' : '#0213B2' }}
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>{group.icon}</span>
-                <span>{group.label}</span>
-              </div>
-              <div className="space-y-1 pl-1">
-                {group.items.map((item) => {
-                  const isCurrent = location.pathname === item.path
-                  return (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-colors"
-                      style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        color: isCurrent ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#CBD5E1' : '#475569'),
-                        backgroundColor: isCurrent ? (isDark ? '#161C3B' : '#EEF2FF') : 'transparent',
-                        borderLeft: `3px solid ${isCurrent ? '#0213B2' : 'transparent'}`,
-                      }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined" style={{ fontSize: '17px', color: isCurrent ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#94A3B8' : '#64748B') }}>{item.icon}</span>
-                        <span>{item.label}</span>
-                      </div>
-                      {item.badge && (
-                        <span
-                          className="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold"
-                          style={{
-                            backgroundColor: isDark ? '#161C3B' : '#EEF2FF',
-                            border: isDark ? '1px solid #282A3A' : '1px solid #CBD5E1',
-                            color: isDark ? '#93C5FD' : '#0213B2',
-                          }}
-                        >
-                          {item.badge}
-                        </span>
-                      )}
-                    </Link>
-                  )
-                })}
-              </div>
-            </div>
-          ))}
-
-          <button
-            type="button"
-            onClick={() => {
-              setMobileMenuOpen(false)
-              if (!currentUser) {
-                setLoginModalOpen(true)
-              } else {
-                navigate('/cart')
-              }
-            }}
-            className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-bold transition-all text-left"
-            style={{
-              fontFamily: "'Montserrat', sans-serif",
-              backgroundColor: location.pathname === '/cart' ? (isDark ? '#161C3B' : '#EEF2FF') : 'transparent',
-              color: location.pathname === '/cart' ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#F8FAFC' : '#111827'),
-              border: location.pathname === '/cart' ? (isDark ? '1px solid #282A3A' : '1px solid #CBD5E1') : '1px solid transparent',
-            }}
-          >
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined" style={{ fontSize: '17px', color: isDark ? '#93C5FD' : '#0213B2' }}>shopping_cart</span>
-              <span>Parts Cart & Checkout</span>
-            </div>
-            {currentUser ? (
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#0213B2] text-white">4</span>
-            ) : (
-              <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-500 border border-amber-500/40 flex items-center gap-1">
-                <span className="material-symbols-outlined text-[10px]">lock</span>
-                <span>SIGN IN</span>
-              </span>
-            )}
-          </button>
-
-          <Link
-            to="/knowledge"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors"
-            style={{
-              fontFamily: "'Montserrat', sans-serif",
-              backgroundColor: location.pathname === '/knowledge' ? (isDark ? '#161C3B' : '#EEF2FF') : 'transparent',
-              color: location.pathname === '/knowledge' ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#F8FAFC' : '#111827'),
-              border: location.pathname === '/knowledge' ? (isDark ? '1px solid #282A3A' : '1px solid #CBD5E1') : '1px solid transparent',
-            }}
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: '17px', color: isDark ? '#93C5FD' : '#0213B2' }}>menu_book</span>
-            <span>Knowledge Hub</span>
-          </Link>
-
-          {currentUser ? (
-            <div className="space-y-2 pt-2 border-t" style={{ borderColor: isDark ? '#282A3A' : '#E2E8F0' }}>
-              <Link
-                to="/account"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors"
-                style={{
-                  fontFamily: "'Montserrat', sans-serif",
-                  backgroundColor: location.pathname === '/account' ? (isDark ? '#161C3B' : '#EEF2FF') : 'transparent',
-                  color: location.pathname === '/account' ? (isDark ? '#93C5FD' : '#0213B2') : (isDark ? '#F8FAFC' : '#111827'),
-                  border: location.pathname === '/account' ? (isDark ? '1px solid #282A3A' : '1px solid #CBD5E1') : '1px solid transparent',
-                }}
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: '17px', color: isDark ? '#93C5FD' : '#0213B2' }}>account_circle</span>
-                <span>My Account & Builds</span>
-              </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false)
-                  logout()
-                }}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-base">logout</span>
-                <span>Sign Out ({currentUser.fullName})</span>
-              </button>
-            </div>
-          ) : (
-            <div className="pt-2 border-t" style={{ borderColor: isDark ? '#282A3A' : '#E2E8F0' }}>
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false)
-                  openLoginModal()
-                }}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold text-white uppercase tracking-wider bg-[#0213B2] hover:bg-[#0115BC] transition-colors cursor-pointer shadow-sm font-['Montserrat']"
-              >
-                <span className="material-symbols-outlined text-base">login</span>
-                <span>SIGN IN</span>
-              </button>
-            </div>
-          )}
-        </div>
-      )}
+      <NavbarMobileDrawer
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
+        filteredGroups={filteredGroups}
+        currentUser={currentUser}
+        logout={logout}
+        openLoginModal={openLoginModal}
+        setLoginModalOpen={setLoginModalOpen}
+        isDark={isDark}
+        location={location}
+        navigate={navigate}
+      />
     </header>
   )
 }

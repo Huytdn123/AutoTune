@@ -1,6 +1,6 @@
 import { useRef, useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useGLTF, MeshReflectorMaterial, ContactShadows } from '@react-three/drei'
+import { useGLTF, ContactShadows } from '@react-three/drei'
 import * as THREE from 'three'
 
 // ─── Supported 3D Real-Life Car Models ─────────────────────────────────────────
@@ -68,11 +68,11 @@ export function VehicleModel3D({
   const bodyMaterial = useMemo(() => new THREE.MeshPhysicalMaterial({
     name: 'custom_body_paint',
     color: new THREE.Color(bodyColor),
-    metalness: 0.9,
-    roughness: 0.35,
+    metalness: 0.65,
+    roughness: 0.28,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.03,
-    envMapIntensity: 1.6,
+    clearcoatRoughness: 0.04,
+    envMapIntensity: 1.4,
   }), [])
 
   // Wheel Rims & Metal Trim Material
@@ -80,8 +80,8 @@ export function VehicleModel3D({
     name: 'custom_rim_details',
     color: new THREE.Color(detailsColor || '#CCCCCC'),
     metalness: 0.88,
-    roughness: 0.28,
-    envMapIntensity: 1.5,
+    roughness: 0.24,
+    envMapIntensity: 1.4,
   }), [])
 
   // Realistic Automotive Glass Material (tinted, transparent, anti-blowout)
@@ -89,20 +89,31 @@ export function VehicleModel3D({
     name: 'custom_automotive_glass',
     color: new THREE.Color(glassColor || '#141c24'),
     metalness: 0.1,
-    roughness: 0.05,
+    roughness: 0.04,
     transparent: true,
-    opacity: 0.38,
+    opacity: 0.42,
     depthWrite: false,
     envMapIntensity: 1.8,
+    ior: 1.52,
   }), [])
 
   // Luxury Cockpit & Interior Leather Material (applied strictly to seats & steering leather)
   const interiorMaterial = useMemo(() => new THREE.MeshStandardMaterial({
     name: 'custom_interior_leather',
     color: new THREE.Color(interiorColor || '#1A1A1A'),
-    roughness: 0.7,
-    metalness: 0.1,
+    roughness: 0.72,
+    metalness: 0.08,
   }), [])
+
+  // Dispose generated materials on unmount to prevent WebGL resource leaks
+  useEffect(() => {
+    return () => {
+      bodyMaterial.dispose()
+      detailsMaterial.dispose()
+      glassMaterial.dispose()
+      interiorMaterial.dispose()
+    }
+  }, [bodyMaterial, detailsMaterial, glassMaterial, interiorMaterial])
 
   // Reactively update material colors
   useEffect(() => {
@@ -459,18 +470,42 @@ export function VehicleModel3D({
       customGroup.add(wingMountGroup)
     }
 
-    // ── C. BODY & AERO: OEM ↔ CARBON AERO PACKAGE ──
+    // ── C. BODY & AERO: OEM ↔ CARBON AERO PACKAGE (Front Splitter, Side Skirts, Rear Fins) ──
     const isCarbonAero = Boolean(selectedBodykit)
     clonedScene.traverse(child => {
-      if (child.isMesh && (child.name === 'carbon fibre' || child.name === 'carbon_fibre_trim')) {
+      if (!child.isMesh) return
+
+      const nodeName = (child.name || '').toLowerCase()
+      const matName = (child.material?.name || '').toLowerCase()
+
+      // EXCLUDE interior cabin nodes: strictly leave cockpit, dashboard, and steering leather untouched
+      const isInteriorNode =
+        /interior|seat|cockpit|cabin|leather|salon|steering|carbon_fibre_trim|carbon fibre/i.test(nodeName) ||
+        /interior|seat|cockpit|cabin|leather|salon|steering/i.test(matName)
+
+      if (isInteriorNode) return
+
+      // In Ferrari 458: 'plastic_gray' is the authentic exterior lower aero suite:
+      // Front chin splitter, front bumper aero whiskers, side sill skirts, and rear aerodynamic diffuser
+      // In other cars: any exterior splitter, skirt, diffuser, or aero component
+      const isAeroComponent =
+        nodeName === 'plastic_gray' ||
+        matName === 'plastic_gray' ||
+        /splitter|diffuser|skirt|canard|front_lip|chin_spoiler|aero_fin/i.test(nodeName) ||
+        /splitter|diffuser|skirt|canard|aero/i.test(matName)
+
+      if (isAeroComponent) {
         if (!child.userData.origMaterial) {
           child.userData.origMaterial = child.material
         }
         if (isCarbonAero) {
-          child.material = new THREE.MeshStandardMaterial({
-            color: new THREE.Color('#141416'),
-            metalness: 0.85,
-            roughness: 0.22,
+          // High-gloss pre-preg 2x2 twill carbon aero finish
+          child.material = new THREE.MeshPhysicalMaterial({
+            color: new THREE.Color('#0c0c10'),
+            metalness: 0.88,
+            roughness: 0.16,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.04,
             name: 'custom_carbon_aero_spec'
           })
         } else if (child.userData.origMaterial) {
@@ -534,84 +569,193 @@ export function VehicleModel3D({
 // Alias for backwards compatibility
 export const FerrariModel = VehicleModel3D
 
-// ─── Showroom Floor ──────────────────────────────────────────────────────────
-export function ShowroomFloor() {
+// ─── Showroom Floor (Clean Matte Infinite Studio + Turntable Podium) ─────────
+export function ShowroomFloor({ isDark = true }) {
   return (
     <>
-      {/* Reflective floor */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
-        <circleGeometry args={[12, 64]} />
-        <MeshReflectorMaterial
-          blur={[400, 100]}
-          resolution={1024}
-          mixBlur={1}
-          mixStrength={40}
-          roughness={1}
-          depthScale={1.2}
-          minDepthThreshold={0.4}
-          maxDepthThreshold={1.4}
-          color="#080810"
-          metalness={0.6}
+      {/* 1. Raised Turntable Podium Cylinder (diameter ~5.7m, height 0.06m) */}
+      <mesh position={[0, -0.03, 0]} receiveShadow>
+        <cylinderGeometry args={[2.85, 2.85, 0.06, 64]} />
+        <meshStandardMaterial
+          color={isDark ? '#101018' : '#e2e8f0'}
+          metalness={isDark ? 0.3 : 0.15}
+          roughness={0.78}
         />
       </mesh>
-      {/* Dynamic contact shadow for any car shape */}
+
+      {/* 2. Top Matte Surface (Clean studio finish, no mirror reflections) */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.001, 0]} receiveShadow>
+        <circleGeometry args={[2.84, 64]} />
+        <meshStandardMaterial
+          color={isDark ? '#161622' : '#f8fafc'}
+          roughness={0.82}
+          metalness={0.12}
+        />
+      </mesh>
+
+      {/* 3. Chamfered Metallic Edge Bezel Ring */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.002, 0]}>
+        <ringGeometry args={[2.82, 2.85, 64]} />
+        <meshStandardMaterial
+          color={isDark ? '#475569' : '#94a3b8'}
+          metalness={0.85}
+          roughness={0.3}
+        />
+      </mesh>
+
+      {/* 4. Ambient Halo LED Ring under Podium */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.058, 0]}>
+        <ringGeometry args={[2.80, 2.86, 64]} />
+        <meshBasicMaterial
+          color={isDark ? '#0213B2' : '#94a3b8'}
+          transparent={true}
+          opacity={isDark ? 0.6 : 0.25}
+        />
+      </mesh>
+
+      {/* 5. Seamless Infinite Studio Outer Floor Plane (Matte architectural finish) */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.061, 0]} receiveShadow>
+        <circleGeometry args={[60, 64]} />
+        <meshStandardMaterial
+          color={isDark ? '#0a0a10' : '#edf0f5'}
+          roughness={0.92}
+          metalness={0.04}
+        />
+      </mesh>
+
+      {/* 6. Contact shadow grounding vehicle firmly to the podium surface */}
       <ContactShadows
-        position={[0, -0.005, 0]}
-        opacity={0.65}
-        scale={12}
-        blur={2.2}
-        far={8}
+        position={[0, 0.003, 0]}
+        opacity={isDark ? 0.82 : 0.45}
+        scale={7.5}
+        blur={2.0}
+        far={4}
+        color={isDark ? '#000000' : '#1e293b'}
       />
     </>
   )
 }
 
-// ─── Studio Lighting Rig ─────────────────────────────────────────────────────
-export function StudioLights() {
+// ─── Studio Lighting Rig (Dual-Mode: Dark Studio & Daylight Showroom) ─────────
+export function StudioLights({ isDark = true }) {
+  if (!isDark) {
+    // ── Daylight Showroom Lighting ──
+    return (
+      <>
+        {/* Soft daylight ambient fill */}
+        <ambientLight intensity={1.1} color="#ffffff" />
+
+        {/* Primary Key Light */}
+        <spotLight
+          position={[6, 9, 6]}
+          angle={0.5}
+          penumbra={0.8}
+          intensity={2.4}
+          color="#fffdf8"
+          castShadow
+          shadow-mapSize={[2048, 2048]}
+          shadow-bias={-0.0001}
+        />
+
+        {/* Flank Fill Light */}
+        <spotLight
+          position={[-6, 7, 4]}
+          angle={0.55}
+          penumbra={0.9}
+          intensity={1.8}
+          color="#f1f5f9"
+        />
+
+        {/* Roof & Rear Hip Contour Light */}
+        <spotLight
+          position={[-3, 6, -6]}
+          angle={0.5}
+          penumbra={0.7}
+          intensity={1.4}
+          color="#e2e8f0"
+        />
+
+        {/* Front-quarter clarity */}
+        <spotLight
+          position={[4, 4, -5]}
+          angle={0.55}
+          penumbra={0.8}
+          intensity={1.1}
+          color="#f8fafc"
+        />
+
+        {/* Overhead softbox diffuser */}
+        <spotLight
+          position={[0, 10, 0]}
+          angle={0.8}
+          penumbra={1.0}
+          intensity={1.6}
+          color="#ffffff"
+        />
+      </>
+    )
+  }
+
+  // ── Dark Studio Lighting ──
   return (
     <>
-      <ambientLight intensity={0.3} color="#ffffff" />
+      {/* Neutral Studio Ambient Fill */}
+      <ambientLight intensity={0.55} color="#F4F6F9" />
+
+      {/* Primary Key Light: Overhead angled 5500K daylight white with soft shadow */}
       <spotLight
-        position={[5, 8, -6]}
-        angle={0.35}
-        penumbra={0.6}
-        intensity={4}
-        color="#ffffff"
+        position={[6, 8, 6]}
+        angle={0.45}
+        penumbra={0.7}
+        intensity={3.2}
+        color="#FFFDF8"
         castShadow
         shadow-mapSize={[2048, 2048]}
         shadow-bias={-0.0001}
       />
+
+      {/* Balanced Soft Fill Light */}
       <spotLight
-        position={[-5, 6, 4]}
-        angle={0.4}
+        position={[-6, 6, 4]}
+        angle={0.5}
+        penumbra={0.85}
+        intensity={1.6}
+        color="#F2F5FA"
+      />
+
+      {/* Contour Rim / Backlight */}
+      <spotLight
+        position={[-3, 5, -6]}
+        angle={0.45}
+        penumbra={0.6}
+        intensity={2.2}
+        color="#EDF1F7"
+      />
+
+      {/* Secondary Rim Light */}
+      <spotLight
+        position={[4, 3, -5]}
+        angle={0.5}
         penumbra={0.7}
-        intensity={2.5}
-        color="#4060ff"
+        intensity={1.2}
+        color="#F5F7FA"
       />
+
+      {/* Overhead Softbox */}
       <spotLight
-        position={[0, 10, 0]}
-        angle={0.6}
-        penumbra={1}
-        intensity={1.5}
-        color="#ffffff"
+        position={[0, 9, 0]}
+        angle={0.75}
+        penumbra={1.0}
+        intensity={1.4}
+        color="#FFFFFF"
       />
-      <pointLight position={[0, 1.5, -4]} intensity={0.6} color="#2040ff" />
-      <pointLight position={[0, 0.5, 4]} intensity={0.4} color="#ff3010" />
     </>
   )
 }
 
-// ─── Grid Floor (Showroom floor grid) ─────────────────────────────────────────
+// ─── Grid Floor (Disabled to preserve infinite seamless floor aesthetic) ──────
 export function AnimatedGrid() {
-  return (
-    <gridHelper
-      args={[20, 40, '#ffffff', '#ffffff']}
-      position={[0, -0.005, 0]}
-      material-opacity={0.06}
-      material-transparent={true}
-      material-depthWrite={false}
-    />
-  )
+  return null
 }
 
 // ─── Loading Placeholder ─────────────────────────────────────────────────────

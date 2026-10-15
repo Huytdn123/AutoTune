@@ -46,4 +46,10 @@ database/*.ldf
 database/*.bak
 docs/
 
+# AI Agent Skills & Workspace Configurations
+.agents/
 
+
+
+.agents/
+scratch/

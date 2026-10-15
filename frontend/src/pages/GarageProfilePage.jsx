@@ -216,7 +216,7 @@ export default function GarageProfilePage() {
               <div className="grid grid-cols-1 lg:grid-cols-12">
                 <div className="lg:col-span-7 relative bg-[#CBD5E1] flex items-center justify-center p-3 border-b lg:border-b-0 lg:border-r border-[#CBD5E1]">
                   <div className="relative w-full overflow-hidden rounded-xl">
-                    <img alt="Porsche 911 Carrera (991) transformation before and after" className="w-full h-auto object-cover rounded-xl" src="/images/sales-porsche-gt3.jpg" />
+                    <img alt="Porsche 911 Carrera (991) transformation before and after" className="w-full h-auto object-cover rounded-xl" src="/images/cars/porsche-911-carrera.webp" />
                     <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] text-[#111827] border border-[#E2E8F0] font-mono font-bold">
                       TELEMETRY ID: #CARRERA-991-718
                     </div>
@@ -269,9 +269,9 @@ export default function GarageProfilePage() {
               <div className="grid grid-cols-1 lg:grid-cols-12">
                 <div className="lg:col-span-7 relative bg-[#CBD5E1] flex items-center justify-center p-3 border-b lg:border-b-0 lg:border-r border-[#CBD5E1]">
                   <div className="relative w-full overflow-hidden rounded-xl">
-                    <img alt="Audi R8 V10 Plus before and after transformation" className="w-full h-auto object-cover rounded-xl" src="/images/audi-r8-stealth.jpg" />
+                    <img alt="Lamborghini Aventador LP700 transformation" className="w-full h-auto object-cover rounded-xl" src="/images/cars/lamborghini-aventador.webp" />
                     <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] text-[#111827] border border-[#E2E8F0] font-mono font-bold">
-                      TELEMETRY ID: #R8-V10-441
+                      TELEMETRY ID: #AVENTADOR-LP700-4
                     </div>
                     <div className="absolute bottom-3 right-3 bg-[#D7E1FF]/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[10px] text-[#0213B2] border border-[#0213B2]/30 font-mono font-bold">
                       SURFACE THICKNESS 8.5 MIL SPEC
@@ -285,7 +285,7 @@ export default function GarageProfilePage() {
                       <span className="bg-[#EEF2FF] text-[#0213B2] px-2 py-0.5 rounded border border-[#0213B2]/20 font-bold">Completed in 3.5 Days</span>
                     </div>
                     <h3 className="font-['Montserrat'] text-base sm:text-lg font-bold text-[#111827] uppercase leading-tight">
-                      Audi R8 V10 Plus — Custom Stealth Satin Navy Wrap & Aerodynamic Package
+                      Lamborghini Aventador LP700-4 — Custom Stealth Satin Wrap & Aerodynamic Package
                     </h3>
                     <div className="mt-5 space-y-2.5 bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0]">
                       <div className="flex justify-between text-xs pb-2 border-b border-[#E2E8F0]">

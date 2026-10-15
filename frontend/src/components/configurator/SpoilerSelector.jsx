@@ -9,6 +9,7 @@ export default function SpoilerSelector({
   partsCatalog = [],
   selectedSpoiler,
   onToggleSpoiler,
+  isDark = true,
 }) {
   const gtWingPart = partsCatalog.find(p => p.sku === 'GEN-GTWING-F458') || {
     sku: 'GEN-GTWING-F458',
@@ -36,11 +37,15 @@ export default function SpoilerSelector({
       <div className="flex items-center justify-between pb-1">
         <div className="flex items-center gap-2">
           <span className="material-symbols-outlined text-sm text-[#6091C3]">air</span>
-          <h4 className="text-xs font-['Montserrat'] font-bold uppercase tracking-wider text-white">
+          <h4 className={`text-xs font-['Montserrat'] font-bold uppercase tracking-wider ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}>
             3. Rear Spoiler & Wing
           </h4>
         </div>
-        <span className="text-[10px] font-mono text-white/50">Track Downforce Wing</span>
+        <span className={`text-[10px] font-mono ${isDark ? 'text-white/50' : 'text-slate-500'}`}>
+          Track Downforce Wing
+        </span>
       </div>
 
       <div className="grid grid-cols-1 gap-2">
@@ -55,14 +60,25 @@ export default function SpoilerSelector({
             <div
               key={wing.sku}
               onClick={() => onToggleSpoiler && onToggleSpoiler(wing)}
-              className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center gap-2.5 ${
+              data-preserve-white="true"
+              data-preserve-bg="true"
+              className={`p-3 rounded-xl transition-all cursor-pointer flex items-center gap-2.5 ${
                 isThisChecked
-                  ? 'bg-[#0213B2]/15 border-[#0213B2] ring-1 ring-[#0213B2]/60 shadow-lg shadow-[#0213B2]/10'
-                  : 'bg-white/[0.03] border-white/10 hover:border-white/25 hover:bg-white/[0.06]'
+                  ? isDark
+                    ? 'border-2 border-[#3B82F6] bg-[#0213B2]/25 ring-2 ring-[#3B82F6]/50 shadow-lg shadow-[#0213B2]/15'
+                    : 'border-2 border-[#0213B2] bg-blue-50/95 ring-2 ring-[#0213B2]/30 shadow-md'
+                  : isDark
+                    ? 'border border-white/15 bg-white/[0.04] hover:border-white/30 hover:bg-white/[0.08]'
+                    : 'border-2 border-slate-300/90 bg-white hover:border-slate-400 hover:bg-slate-50/80 shadow-xs'
               }`}
             >
               {/* 2D Product Thumbnail */}
-              <div className="w-[72px] h-[72px] rounded-lg bg-black/50 border border-white/10 p-1 flex items-center justify-center shrink-0 overflow-hidden">
+              <div
+                data-preserve-white="true"
+                className={`w-[72px] h-[72px] rounded-lg border-2 p-1 flex items-center justify-center shrink-0 overflow-hidden ${
+                  isDark ? 'bg-black/50 border-white/15' : 'bg-white border-slate-300 shadow-2xs'
+                }`}
+              >
                 <img
                   src={wing.imageUrl || (wing.sku === 'GEN-GTWING-F458' ? '/images/carbon-gt-wing.jpg' : '/images/vorsteiner-carbon-aero.jpg')}
                   alt={wing.name || wing.partName}
@@ -73,23 +89,33 @@ export default function SpoilerSelector({
               {/* Details */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
-                  <span className="text-[9px] font-mono text-[#6091C3] uppercase font-bold tracking-wider">
+                  <span className={`text-[10px] font-mono uppercase font-black tracking-wider ${
+                    isDark ? 'text-[#6091C3]' : 'text-[#0213B2]'
+                  }`}>
                     {wing.brand || 'Track Spec'}
                   </span>
-                  <span className="px-1.5 py-0.5 rounded text-[8px] font-mono font-bold bg-[#DCFCE7]/15 text-[#16A34A] border border-[#16A34A]/30">
+                  <span className="px-1.5 py-0.5 rounded text-[8.5px] font-mono font-bold bg-[#DCFCE7]/20 text-[#16A34A] border border-[#16A34A]/30">
                     Track Wing
                   </span>
                 </div>
-                <h5 className="text-xs font-['Montserrat'] font-bold text-white leading-snug truncate" title={wing.name || wing.partName}>
+                <h5 className={`text-[13px] font-['Montserrat'] font-black leading-snug truncate ${
+                  isDark ? 'text-white' : 'text-slate-950'
+                }`} title={wing.name || wing.partName}>
                   {wing.name || wing.partName}
                 </h5>
-                <p className="text-[9.5px] text-white/40 font-mono mt-0.5 truncate">
+                <p className={`text-[10px] font-mono mt-0.5 truncate ${
+                  isDark ? 'text-white/40' : 'text-slate-600 font-medium'
+                }`}>
                   {wing.sku === 'VOR-CF-AERO-992'
                     ? 'Carbon Wing Blade + Rear Diffuser'
                     : 'Carbon Airfoil · Twin Uprights'}
                 </p>
                 <div className="mt-1 flex items-center justify-between">
-                  <span className={`text-xs font-mono font-bold ${isThisChecked ? 'text-[#6091C3]' : 'text-white/80'}`}>
+                  <span className={`text-xs font-mono font-black ${
+                    isThisChecked
+                      ? isDark ? 'text-[#6091C3]' : 'text-[#0213B2]'
+                      : isDark ? 'text-white/80' : 'text-slate-900'
+                  }`}>
                     +${(wing.priceUsd || (wing.priceVnd ? Math.round(wing.priceVnd / 25000) : 2450)).toLocaleString()} USD
                   </span>
                 </div>
@@ -97,7 +123,11 @@ export default function SpoilerSelector({
 
               {/* Checkbox State */}
               <div className="shrink-0 pl-0.5">
-                <span className={`material-symbols-outlined text-lg ${isThisChecked ? 'text-[#6091C3]' : 'text-white/20'}`}>
+                <span className={`material-symbols-outlined text-xl ${
+                  isThisChecked
+                    ? isDark ? 'text-[#6091C3]' : 'text-[#0213B2]'
+                    : isDark ? 'text-white/20' : 'text-slate-400'
+                }`}>
                   {isThisChecked ? 'check_box' : 'check_box_outline_blank'}
                 </span>
               </div>

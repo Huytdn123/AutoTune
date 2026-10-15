@@ -20,19 +20,28 @@ export default function ColorSelector({
   onInteriorColorChange,
   onGlassColorChange,
   onCustomBodyColorChange,
+  isDark = true,
 }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3.5">
       {/* Body Color */}
       <div>
-        <div className="flex items-center justify-between mb-1.5">
+        <div className="flex items-center justify-between mb-2">
           <div>
-            <h3 className="text-[10px] font-black uppercase tracking-widest text-white/50">Body Paint</h3>
-            <p className="text-xs font-bold text-white leading-tight">{selectedBody?.name}</p>
-            <p className="text-[9px] font-mono text-white/30">{selectedBody?.finish} · {selectedBody?.hex}</p>
+            <h3 className={`text-[11px] font-black uppercase tracking-wider ${
+              isDark ? 'text-white/50' : 'text-slate-800'
+            }`}>Body Paint</h3>
+            <p className={`text-sm font-black leading-tight mt-0.5 ${
+              isDark ? 'text-white' : 'text-slate-950'
+            }`}>{selectedBody?.name}</p>
+            <p className={`text-[10px] font-mono font-semibold ${
+              isDark ? 'text-white/40' : 'text-slate-600'
+            }`}>{selectedBody?.finish} · {selectedBody?.hex}</p>
           </div>
           <div
-            className="w-8 h-8 rounded-lg border-2 border-white/20 shadow-md shrink-0"
+            className={`w-9 h-9 rounded-xl border-2 shadow-sm shrink-0 ${
+              isDark ? 'border-white/20' : 'border-slate-300'
+            }`}
             style={{ backgroundColor: selectedBody?.hex }}
           />
         </div>
@@ -42,10 +51,14 @@ export default function ColorSelector({
               key={c.hex}
               onClick={() => onBodyColorChange && onBodyColorChange(c)}
               title={c.name}
-              className={`relative h-7 rounded-md transition-all duration-150 ${
+              className={`relative h-7 rounded-lg transition-all duration-150 border cursor-pointer ${
                 selectedBody?.hex === c.hex
-                  ? 'ring-2 ring-primary ring-offset-1 ring-offset-[#0f0f16] scale-105'
-                  : 'hover:scale-102 ring-1 ring-white/10'
+                  ? isDark
+                    ? 'ring-2 ring-primary ring-offset-2 ring-offset-[#0f0f16] scale-105 border-white'
+                    : 'ring-2 ring-[#0213B2] ring-offset-2 ring-offset-white scale-105 border-[#0213B2] shadow-sm'
+                  : isDark
+                    ? 'hover:scale-102 border-white/20'
+                    : 'hover:scale-102 border-slate-300/80 shadow-2xs'
               }`}
               style={{ backgroundColor: c.hex }}
             >
@@ -59,17 +72,23 @@ export default function ColorSelector({
         </div>
       </div>
 
-      <div className="h-px bg-white/6" />
+      <div className={`h-px ${isDark ? 'bg-white/10' : 'bg-slate-300/80'}`} />
 
       {/* Rim Color */}
       <div>
-        <div className="flex items-center justify-between mb-1.5">
+        <div className="flex items-center justify-between mb-2">
           <div>
-            <h3 className="text-[10px] font-black uppercase tracking-widest text-white/50">Rim Finish</h3>
-            <p className="text-xs font-bold text-white leading-tight">{selectedRim?.name}</p>
+            <h3 className={`text-[11px] font-black uppercase tracking-wider ${
+              isDark ? 'text-white/50' : 'text-slate-800'
+            }`}>Rim Finish</h3>
+            <p className={`text-sm font-black leading-tight mt-0.5 ${
+              isDark ? 'text-white' : 'text-slate-950'
+            }`}>{selectedRim?.name}</p>
           </div>
           <div
-            className="w-6 h-6 rounded-md border border-white/20 shadow shrink-0"
+            className={`w-8 h-8 rounded-lg border-2 shadow-sm shrink-0 ${
+              isDark ? 'border-white/20' : 'border-slate-300'
+            }`}
             style={{ backgroundColor: selectedRim?.hex }}
           />
         </div>
@@ -79,10 +98,14 @@ export default function ColorSelector({
               key={c.hex}
               onClick={() => onRimColorChange && onRimColorChange(c)}
               title={c.name}
-              className={`flex-1 h-6 rounded-md transition-all ${
+              className={`flex-1 h-7 rounded-lg transition-all border cursor-pointer ${
                 selectedRim?.hex === c.hex
-                  ? 'ring-2 ring-primary ring-offset-1 ring-offset-[#0f0f16] scale-105'
-                  : 'hover:scale-102 ring-1 ring-white/10'
+                  ? isDark
+                    ? 'ring-2 ring-primary ring-offset-2 ring-offset-[#0f0f16] scale-105 border-white'
+                    : 'ring-2 ring-[#0213B2] ring-offset-2 ring-offset-white scale-105 border-[#0213B2] shadow-sm'
+                  : isDark
+                    ? 'hover:scale-102 border-white/20'
+                    : 'hover:scale-102 border-slate-300/80'
               }`}
               style={{ backgroundColor: c.hex }}
             />
@@ -90,18 +113,26 @@ export default function ColorSelector({
         </div>
       </div>
 
-      <div className="h-px bg-white/6" />
+      <div className={`h-px ${isDark ? 'bg-white/10' : 'bg-slate-300/80'}`} />
 
       {/* Interior Cockpit Leather */}
       <div>
-        <div className="flex items-center justify-between mb-1.5">
+        <div className="flex items-center justify-between mb-2">
           <div>
-            <h3 className="text-[10px] font-black uppercase tracking-widest text-white/50">Cockpit Interior Leather</h3>
-            <p className="text-xs font-bold text-white leading-tight">{selectedInterior?.name}</p>
-            <p className="text-[9px] font-mono text-white/30">{selectedInterior?.finish}</p>
+            <h3 className={`text-[11px] font-black uppercase tracking-wider ${
+              isDark ? 'text-white/50' : 'text-slate-800'
+            }`}>Cockpit Interior Leather</h3>
+            <p className={`text-sm font-black leading-tight mt-0.5 ${
+              isDark ? 'text-white' : 'text-slate-950'
+            }`}>{selectedInterior?.name}</p>
+            <p className={`text-[10px] font-mono font-semibold ${
+              isDark ? 'text-white/40' : 'text-slate-600'
+            }`}>{selectedInterior?.finish}</p>
           </div>
           <div
-            className="w-6 h-6 rounded-md border border-white/20 shadow shrink-0"
+            className={`w-8 h-8 rounded-lg border-2 shadow-sm shrink-0 ${
+              isDark ? 'border-white/20' : 'border-slate-300'
+            }`}
             style={{ backgroundColor: selectedInterior?.hex }}
           />
         </div>
@@ -111,10 +142,14 @@ export default function ColorSelector({
               key={c.hex}
               onClick={() => onInteriorColorChange && onInteriorColorChange(c)}
               title={`${c.name} (${c.finish})`}
-              className={`h-7 rounded-md transition-all relative ${
+              className={`h-7 rounded-lg transition-all relative border cursor-pointer ${
                 selectedInterior?.hex === c.hex
-                  ? 'ring-2 ring-primary ring-offset-1 ring-offset-[#0f0f16] scale-105'
-                  : 'hover:scale-102 ring-1 ring-white/10'
+                  ? isDark
+                    ? 'ring-2 ring-primary ring-offset-2 ring-offset-[#0f0f16] scale-105 border-white'
+                    : 'ring-2 ring-[#0213B2] ring-offset-2 ring-offset-white scale-105 border-[#0213B2] shadow-sm'
+                  : isDark
+                    ? 'hover:scale-102 border-white/20'
+                    : 'hover:scale-102 border-slate-300/80'
               }`}
               style={{ backgroundColor: c.hex }}
             >
@@ -128,17 +163,23 @@ export default function ColorSelector({
         </div>
       </div>
 
-      <div className="h-px bg-white/6" />
+      <div className={`h-px ${isDark ? 'bg-white/10' : 'bg-slate-300/80'}`} />
 
       {/* Glass Color */}
       <div>
-        <div className="flex items-center justify-between mb-1.5">
+        <div className="flex items-center justify-between mb-2">
           <div>
-            <h3 className="text-[10px] font-black uppercase tracking-widest text-white/50">Glass Tint</h3>
-            <p className="text-xs font-bold text-white leading-tight">{selectedGlass?.name}</p>
+            <h3 className={`text-[11px] font-black uppercase tracking-wider ${
+              isDark ? 'text-white/50' : 'text-slate-800'
+            }`}>Glass Tint</h3>
+            <p className={`text-sm font-black leading-tight mt-0.5 ${
+              isDark ? 'text-white' : 'text-slate-950'
+            }`}>{selectedGlass?.name}</p>
           </div>
           <div
-            className="w-6 h-6 rounded-md border border-white/20 shadow shrink-0"
+            className={`w-8 h-8 rounded-lg border-2 shadow-sm shrink-0 ${
+              isDark ? 'border-white/20' : 'border-slate-300'
+            }`}
             style={{ backgroundColor: selectedGlass?.hex, opacity: 0.8 }}
           />
         </div>
@@ -148,10 +189,14 @@ export default function ColorSelector({
               key={c.hex}
               onClick={() => onGlassColorChange && onGlassColorChange(c)}
               title={c.name}
-              className={`flex-1 h-6 rounded-md transition-all ${
+              className={`flex-1 h-7 rounded-lg transition-all border cursor-pointer ${
                 selectedGlass?.hex === c.hex
-                  ? 'ring-2 ring-primary ring-offset-1 ring-offset-[#0f0f16] scale-105'
-                  : 'hover:scale-102 ring-1 ring-white/10'
+                  ? isDark
+                    ? 'ring-2 ring-primary ring-offset-2 ring-offset-[#0f0f16] scale-105 border-white'
+                    : 'ring-2 ring-[#0213B2] ring-offset-2 ring-offset-white scale-105 border-[#0213B2] shadow-sm'
+                  : isDark
+                    ? 'hover:scale-102 border-white/20'
+                    : 'hover:scale-102 border-slate-300/80'
               }`}
               style={{ backgroundColor: c.hex, opacity: 0.8 }}
             />
@@ -160,14 +205,23 @@ export default function ColorSelector({
       </div>
 
       {/* Custom hex input */}
-      <div className="p-2 rounded-lg bg-white/5 border border-white/8">
-        <p className="text-[9px] font-bold uppercase tracking-widest text-white/30 mb-1.5">Custom Body Color</p>
-        <div className="flex gap-1.5 items-center">
+      <div
+        data-preserve-white="true"
+        className={`p-3 rounded-xl border-2 ${
+          isDark ? 'bg-white/5 border-white/10' : 'bg-white border-slate-300 shadow-xs'
+        }`}
+      >
+        <p className={`text-[10px] font-black uppercase tracking-wider mb-2 font-mono ${
+          isDark ? 'text-white/50' : 'text-slate-800'
+        }`}>Custom Body Color</p>
+        <div className="flex gap-2 items-center">
           <input
             type="color"
             value={bodyColor}
             onChange={e => onCustomBodyColorChange && onCustomBodyColorChange(e.target.value)}
-            className="w-7 h-7 rounded border border-white/20 cursor-pointer bg-transparent"
+            className={`w-8 h-8 rounded-lg border-2 cursor-pointer bg-transparent ${
+              isDark ? 'border-white/20' : 'border-slate-300'
+            }`}
           />
           <div className="flex-1">
             <input
@@ -179,7 +233,10 @@ export default function ColorSelector({
                   onCustomBodyColorChange && onCustomBodyColorChange(val)
                 }
               }}
-              className="w-full bg-white/5 border border-white/10 rounded px-2.5 py-1 text-xs font-mono text-white/70 focus:outline-none focus:border-primary"
+              data-preserve-white="true"
+              className={`w-full rounded-lg px-3 py-1.5 text-xs font-mono font-bold focus:outline-none focus:border-[#0213B2] border-2 ${
+                isDark ? 'bg-white/5 border-white/15 text-white' : 'bg-slate-50 border-slate-300 text-slate-900 focus:bg-white'
+              }`}
               placeholder="#CC0000"
             />
           </div>

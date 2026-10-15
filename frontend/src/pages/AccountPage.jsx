@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { userApi, buildApi } from '../services/api'
+import ProfileSection from '../components/account/ProfileSection'
+import SecuritySection from '../components/account/SecuritySection'
+import SavedBuildsSection from '../components/account/SavedBuildsSection'
 
 export default function AccountPage() {
   const navigate = useNavigate()
   const { currentUser, role, updateCurrentUser } = useAuth()
 
   const [activeTab, setActiveTab] = useState('builds') // 'builds' | 'profile' | 'security'
-  const [loading, setLoading] = useState(false)
   const [toast, setToast] = useState(null)
 
   // Profile Form State
@@ -326,395 +328,41 @@ export default function AccountPage() {
           </div>
         </div>
 
-        {/* TAB 1: MY SAVED BUILDS */}
+        {/* TAB CONTENTS */}
         {activeTab === 'builds' && (
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
-              <div>
-                <h2 className="text-lg font-bold text-[#111827] flex items-center gap-2">
-                  <span>Custom Builds Library</span>
-                  <span className="text-xs font-mono text-[#0213B2]">({builds.length} Active Configurations)</span>
-                </h2>
-                <p className="text-xs text-[#475569]">
-                  All bespoke 3D vehicle configurations created by your account. Stored securely in database.
-                </p>
-              </div>
-
-              <button
-                onClick={() => navigate('/configurator')}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#0213B2] text-white hover:bg-[#0115BC] transition-all shadow-sm self-start sm:self-auto cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-sm">add_circle</span>
-                <span>New 3D Build</span>
-              </button>
-            </div>
-
-            {buildsLoading ? (
-              <div className="p-12 text-center rounded-2xl bg-white border border-[#E2E8F0] space-y-3">
-                <span className="material-symbols-outlined text-3xl text-[#0213B2] animate-spin">refresh</span>
-                <p className="text-sm text-[#475569] font-mono">Fetching saved builds from database...</p>
-              </div>
-            ) : builds.length === 0 ? (
-              <div 
-                className="p-12 text-center rounded-2xl border border-dashed border-[#CBD5E1] bg-white space-y-4"
-              >
-                <div className="w-14 h-14 rounded-full bg-[#EEF2FF] border border-[#CBD5E1] flex items-center justify-center mx-auto text-[#0213B2] shadow-sm">
-                  <span className="material-symbols-outlined text-2xl">directions_car</span>
-                </div>
-                <div className="max-w-md mx-auto space-y-1">
-                  <h3 className="text-base font-bold text-[#111827]">No Saved Builds Yet</h3>
-                  <p className="text-xs text-[#475569]">
-                    Launch the 3D Configurator to tune suspension, paint finishes, rims, and aerodynamic components, then save your setup here.
-                  </p>
-                </div>
-                <button
-                  onClick={() => navigate('/configurator')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#0213B2] text-white hover:bg-[#0115BC] transition-all shadow-md cursor-pointer"
-                >
-                  <span className="material-symbols-outlined text-sm">view_in_ar</span>
-                  <span>Launch 3D Configurator</span>
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {builds.map((build) => {
-                  const car = build.car || {}
-                  const isRenaming = renamingCode === build.shareCode
-
-                  return (
-                    <div 
-                      key={build.shareCode}
-                      className="rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 bg-white border border-[#E2E8F0] shadow-sm hover:border-[#0213B2] hover:shadow-md group"
-                    >
-                      <div className="space-y-3">
-                        {/* Build Header */}
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex-1 min-w-0">
-                            {isRenaming ? (
-                              <div className="flex items-center gap-1.5">
-                                <input
-                                  type="text"
-                                  value={renameInput}
-                                  onChange={(e) => setRenameInput(e.target.value)}
-                                  className="w-full text-xs font-bold bg-[#E5E8F0] dark:bg-[#14151D] border border-[#0213B2] dark:border-[#60A5FA] rounded px-2 py-1 text-[#111827] dark:text-[#F8FAFC] outline-none"
-                                  autoFocus
-                                />
-                                <button
-                                  onClick={() => handleSaveRename(build.shareCode)}
-                                  className="p-1 rounded bg-[#16A34A] text-white hover:brightness-110"
-                                  title="Save Name"
-                                >
-                                  <span className="material-symbols-outlined text-xs">check</span>
-                                </button>
-                                <button
-                                  onClick={() => setRenamingCode(null)}
-                                  className="p-1 rounded bg-[#F1F5F9] text-[#475569] hover:bg-[#E2E8F0]"
-                                  title="Cancel"
-                                >
-                                  <span className="material-symbols-outlined text-xs">close</span>
-                                </button>
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-1.5">
-                                <h3 className="text-sm font-bold text-[#111827] truncate" title={build.buildName}>
-                                  {build.buildName || 'Custom 3D Build'}
-                                </h3>
-                                <button
-                                  onClick={() => handleStartRename(build)}
-                                  className="opacity-0 group-hover:opacity-100 text-[#475569] hover:text-[#0213B2] transition-opacity cursor-pointer p-0.5"
-                                  title="Rename Build"
-                                >
-                                  <span className="material-symbols-outlined text-xs">edit</span>
-                                </button>
-                              </div>
-                            )}
-
-                            <p className="text-xs text-[#0213B2] font-semibold mt-0.5">
-                              {car.brand ? `${car.brand} ${car.model}` : 'Performance Supercar'}
-                            </p>
-                          </div>
-
-                          {/* Share Code Badge */}
-                          <button
-                            onClick={() => handleCopyShare(build.shareCode)}
-                            className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-mono font-bold bg-[#EEF2FF] border border-[#CBD5E1] text-[#0213B2] hover:bg-[#E0E7FF] transition-colors cursor-pointer"
-                            title="Click to copy share code"
-                          >
-                            <span>{build.shareCode}</span>
-                            <span className="material-symbols-outlined text-[12px]">content_copy</span>
-                          </button>
-                        </div>
-
-                        {/* Specs Palette Preview */}
-                        <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
-                          <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-[#475569]">Custom Finishes:</span>
-                            <div className="flex items-center gap-1.5">
-                              <span 
-                                className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-sm"
-                                style={{ backgroundColor: build.bodyColor || '#CC0000' }}
-                                title={`Body: ${build.bodyColor}`}
-                              />
-                              <span 
-                                className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-sm"
-                                style={{ backgroundColor: build.rimColor || '#CCCCCC' }}
-                                title={`Rims: ${build.rimColor}`}
-                              />
-                              <span 
-                                className="w-3.5 h-3.5 rounded-full border border-black/10 shadow-sm"
-                                style={{ backgroundColor: build.glassColor || '#C8D8F0' }}
-                                title={`Glass: ${build.glassColor}`}
-                              />
-                            </div>
-                          </div>
-
-                          <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-[#475569]">Finish Type:</span>
-                            <span className="text-[#111827] font-medium">{build.bodyFinish || 'Metallic'}</span>
-                          </div>
-
-                          <div className="flex items-center justify-between text-[11px] pt-1 border-t border-[#E2E8F0]">
-                            <span className="text-[#475569]">Estimated Cost:</span>
-                            <span className="text-[#16A34A] font-bold font-mono">
-                              ${(build.totalEstimatedCost || 250000).toLocaleString()}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Card Action Buttons */}
-                      <div className="pt-4 mt-3 border-t border-[#E2E8F0] flex items-center justify-between gap-1.5">
-                        <button
-                          onClick={() => navigate(`/configurator?build=${build.shareCode}`)}
-                          className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg bg-[#0213B2] text-white text-xs font-bold hover:bg-[#0115BC] transition-all cursor-pointer shadow-sm"
-                          title="Open in 3D Configurator"
-                        >
-                          <span className="material-symbols-outlined text-xs">view_in_ar</span>
-                          <span>Launch</span>
-                        </button>
-
-                        <button
-                          onClick={() => handleForkBuild(build.shareCode)}
-                          className="p-1.5 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-[#475569] hover:bg-[#F1F5F9] hover:text-[#0213B2] transition-colors cursor-pointer"
-                          title="Duplicate / Fork Build"
-                        >
-                          <span className="material-symbols-outlined text-sm">content_copy</span>
-                        </button>
-
-                        <button
-                          onClick={() => handleCopyShare(build.shareCode)}
-                          className="p-1.5 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-[#475569] hover:bg-[#F1F5F9] hover:text-[#0213B2] transition-colors cursor-pointer"
-                          title="Copy Share Link"
-                        >
-                          <span className="material-symbols-outlined text-sm">share</span>
-                        </button>
-
-                        <button
-                          onClick={() => handleDeleteBuild(build.shareCode, build.buildName)}
-                          className="p-1.5 rounded-lg bg-[#FEE2E2] border border-[#FCA5A5] text-[#DC2626] hover:bg-[#FECACA] transition-colors cursor-pointer"
-                          title="Delete Build"
-                        >
-                          <span className="material-symbols-outlined text-sm">delete</span>
-                        </button>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </div>
+          <SavedBuildsSection
+            builds={builds}
+            buildsLoading={buildsLoading}
+            renamingCode={renamingCode}
+            renameInput={renameInput}
+            setRenameInput={setRenameInput}
+            setRenamingCode={setRenamingCode}
+            handleSaveRename={handleSaveRename}
+            handleStartRename={handleStartRename}
+            handleDeleteBuild={handleDeleteBuild}
+            handleForkBuild={handleForkBuild}
+            handleCopyShare={handleCopyShare}
+            navigate={navigate}
+          />
         )}
 
-        {/* TAB 2: PROFILE INFORMATION */}
         {activeTab === 'profile' && (
-          <div 
-            className="rounded-2xl p-6 sm:p-8 bg-white border border-[#E2E8F0] shadow-sm"
-          >
-            <div className="max-w-2xl space-y-6">
-              <div>
-                <h2 className="text-lg font-bold text-[#111827]">Account Details</h2>
-                <p className="text-xs text-[#475569]">
-                  Manage your personal information and profile picture visible to certified tuning workshops.
-                </p>
-              </div>
-
-              <form onSubmit={handleProfileSubmit} className="space-y-4">
-                {/* Full Name */}
-                <div>
-                  <label className="block text-xs font-semibold text-[#475569] mb-1.5">
-                    Full Name <span className="text-[#DC2626]">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={profileForm.fullName}
-                    onChange={(e) => setProfileForm(prev => ({ ...prev, fullName: e.target.value }))}
-                    placeholder="Enter your full name"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] text-xs outline-none focus:border-[#0213B2] transition-colors"
-                  />
-                </div>
-
-                {/* Phone */}
-                <div>
-                  <label className="block text-xs font-semibold text-[#475569] mb-1.5">
-                    Contact Phone
-                  </label>
-                  <input
-                    type="tel"
-                    value={profileForm.phone}
-                    onChange={(e) => setProfileForm(prev => ({ ...prev, phone: e.target.value }))}
-                    placeholder="+84 901 234 567"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] text-xs outline-none focus:border-[#0213B2] transition-colors font-mono"
-                  />
-                </div>
-
-                {/* Avatar URL */}
-                <div>
-                  <label className="block text-xs font-semibold text-[#475569] mb-1.5">
-                    Avatar Image URL
-                  </label>
-                  <input
-                    type="url"
-                    value={profileForm.avatarUrl}
-                    onChange={(e) => setProfileForm(prev => ({ ...prev, avatarUrl: e.target.value }))}
-                    placeholder="https://images.unsplash.com/photo-..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] text-xs outline-none focus:border-[#0213B2] transition-colors font-mono"
-                  />
-                  <p className="text-[10px] text-[#64748B] mt-1">
-                    Provide a direct link to an avatar image (Unsplash, Gravatar, or CDN).
-                  </p>
-                </div>
-
-                {/* Read-Only Account Fields */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                  <div>
-                    <label className="block text-xs font-semibold text-[#475569] mb-1.5">
-                      Username (Immutable)
-                    </label>
-                    <input
-                      type="text"
-                      value={currentUser?.username || ''}
-                      disabled
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] text-xs font-mono cursor-not-allowed"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-[#475569] mb-1.5">
-                      Email Address (Protected)
-                    </label>
-                    <input
-                      type="email"
-                      value={currentUser?.email || ''}
-                      disabled
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#64748B] text-xs font-mono cursor-not-allowed"
-                    />
-                  </div>
-                </div>
-
-                {/* Submit Button */}
-                <div className="pt-4 border-t border-[#E2E8F0]">
-                  <button
-                    type="submit"
-                    disabled={profileSaving}
-                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#0213B2] text-white hover:bg-[#0115BC] transition-all shadow-sm cursor-pointer disabled:opacity-50"
-                  >
-                    {profileSaving ? (
-                      <>
-                        <span className="material-symbols-outlined text-sm animate-spin">refresh</span>
-                        <span>Saving...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="material-symbols-outlined text-sm">save</span>
-                        <span>Save Profile Changes</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+          <ProfileSection
+            profileForm={profileForm}
+            setProfileForm={setProfileForm}
+            handleProfileSubmit={handleProfileSubmit}
+            profileSaving={profileSaving}
+            currentUser={currentUser}
+          />
         )}
 
-        {/* TAB 3: SECURITY & PASSWORD */}
         {activeTab === 'security' && (
-          <div 
-            className="rounded-2xl p-6 sm:p-8 bg-white border border-[#E2E8F0] shadow-sm"
-          >
-            <div className="max-w-2xl space-y-6">
-              <div>
-                <h2 className="text-lg font-bold text-[#111827]">Security & Password</h2>
-                <p className="text-xs text-[#475569]">
-                  Update your authentication credentials. Passwords are encrypted using BCrypt salted hashing.
-                </p>
-              </div>
-
-              <form onSubmit={handlePasswordSubmit} className="space-y-4">
-                {/* Current Password */}
-                <div>
-                  <label className="block text-xs font-semibold text-[#475569] mb-1.5">
-                    Current Password <span className="text-[#DC2626]">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    value={securityForm.currentPassword}
-                    onChange={(e) => setSecurityForm(prev => ({ ...prev, currentPassword: e.target.value }))}
-                    placeholder="Enter current password"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] text-xs outline-none focus:border-[#0213B2] transition-colors"
-                  />
-                </div>
-
-                {/* New Password */}
-                <div>
-                  <label className="block text-xs font-semibold text-[#475569] mb-1.5">
-                    New Password <span className="text-[#DC2626]">*</span> (min. 6 characters)
-                  </label>
-                  <input
-                    type="password"
-                    value={securityForm.newPassword}
-                    onChange={(e) => setSecurityForm(prev => ({ ...prev, newPassword: e.target.value }))}
-                    placeholder="Enter new strong password"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] text-xs outline-none focus:border-[#0213B2] transition-colors"
-                  />
-                </div>
-
-                {/* Confirm Password */}
-                <div>
-                  <label className="block text-xs font-semibold text-[#475569] mb-1.5">
-                    Confirm New Password <span className="text-[#DC2626]">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    value={securityForm.confirmPassword}
-                    onChange={(e) => setSecurityForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                    placeholder="Confirm new password"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] text-xs outline-none focus:border-[#0213B2] transition-colors"
-                  />
-                </div>
-
-                {/* Submit Button */}
-                <div className="pt-4 border-t border-[#E2E8F0]">
-                  <button
-                    type="submit"
-                    disabled={passwordSaving}
-                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#0213B2] text-white hover:bg-[#0115BC] transition-all shadow-sm cursor-pointer disabled:opacity-50"
-                  >
-                    {passwordSaving ? (
-                      <>
-                        <span className="material-symbols-outlined text-sm animate-spin">refresh</span>
-                        <span>Verifying...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="material-symbols-outlined text-sm">lock_reset</span>
-                        <span>Update Password</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+          <SecuritySection
+            securityForm={securityForm}
+            setSecurityForm={setSecurityForm}
+            handlePasswordSubmit={handlePasswordSubmit}
+            passwordSaving={passwordSaving}
+          />
         )}
       </div>
     </div>
