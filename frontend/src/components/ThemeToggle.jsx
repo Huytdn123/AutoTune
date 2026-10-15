@@ -1,13 +1,60 @@
 import React from 'react'
-import { Sun, Moon } from 'lucide-react'
 import { useTheme } from '../contexts/ThemeContext'
+
+function SunIcon({ style, className }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={style}
+      className={className}
+    >
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2" />
+      <path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" />
+      <path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" />
+      <path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" />
+      <path d="m19.07 4.93-1.41 1.41" />
+    </svg>
+  )
+}
+
+function MoonIcon({ style, className }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={style}
+      className={className}
+    >
+      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+    </svg>
+  )
+}
 
 /**
  * ThemeToggle - Compact premium automotive pill-shaped Light/Dark Mode toggle
  * Positioned immediately to the left of the shopping cart in UnifiedNavbar
  */
 export default function ThemeToggle() {
-  const { theme, toggleTheme, setTheme, isDark } = useTheme()
+  const { toggleTheme, setTheme, isDark } = useTheme()
 
   const tooltipText = isDark ? 'Switch to light mode' : 'Switch to dark mode'
 
@@ -51,7 +98,7 @@ export default function ThemeToggle() {
         className="relative z-10 w-[28px] h-full flex items-center justify-center rounded-full transition-colors duration-200 cursor-pointer"
         aria-label="Activate light mode"
       >
-        <Sun
+        <SunIcon
           className="w-3.5 h-3.5 transition-all duration-200"
           style={{
             color: !isDark ? '#0213B2' : 'rgba(255, 255, 255, 0.65)',
@@ -71,7 +118,7 @@ export default function ThemeToggle() {
         className="relative z-10 w-[28px] h-full flex items-center justify-center rounded-full transition-colors duration-200 cursor-pointer"
         aria-label="Activate dark mode"
       >
-        <Moon
+        <MoonIcon
           className="w-3.5 h-3.5 transition-all duration-200"
           style={{
             color: isDark ? '#93C5FD' : 'rgba(255, 255, 255, 0.65)',

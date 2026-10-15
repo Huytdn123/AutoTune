@@ -3,8 +3,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { fitmentApi, carApi, partApi } from '../services/api'
 
 /**
- * FitmentMatrixPage - Technical Fitment & Legal Compliance Matrix
+ * FitmentMatrixPage - Technical Fitment & Engineering Compliance Matrix
  * Fully connected to Spring Boot /api/fitment, /api/cars, /api/parts
+ * Elevated with dark/light mode parity, high-contrast engineering gates, and CAD clearance feedback.
  */
 export default function FitmentMatrixPage() {
   const navigate = useNavigate()
@@ -135,34 +136,37 @@ export default function FitmentMatrixPage() {
   const getGateStatusStyles = (status) => {
     if (status === 'PASS') {
       return {
-        cardBorder: 'border-[#16A34A]/30 hover:border-[#16A34A]',
-        badgeBg: 'bg-[#DCFCE7] border-[#16A34A]/40 text-[#16A34A]',
-        textValue: 'text-[#16A34A]',
-        iconColor: 'text-[#16A34A]'
+        cardBorder: 'border-emerald-500/40 dark:border-emerald-500/30 hover:border-emerald-500',
+        badgeBg: 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400',
+        textValue: 'text-emerald-600 dark:text-emerald-400',
+        iconColor: 'text-emerald-500',
+        indicator: 'bg-emerald-500'
       }
     }
     if (status === 'WARNING') {
       return {
-        cardBorder: 'border-[#D97706]/30 hover:border-[#D97706]',
-        badgeBg: 'bg-[#FEF3C7] border-[#D97706]/40 text-[#D97706]',
-        textValue: 'text-[#D97706]',
-        iconColor: 'text-[#D97706]'
+        cardBorder: 'border-amber-500/40 dark:border-amber-500/30 hover:border-amber-500',
+        badgeBg: 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-400',
+        textValue: 'text-amber-600 dark:text-amber-400',
+        iconColor: 'text-amber-500',
+        indicator: 'bg-amber-500'
       }
     }
     return {
-      cardBorder: 'border-[#DC2626]/30 hover:border-[#DC2626]',
-      badgeBg: 'bg-[#FEE2E2] border-[#DC2626]/40 text-[#DC2626]',
-      textValue: 'text-[#DC2626]',
-      iconColor: 'text-[#DC2626]'
+      cardBorder: 'border-rose-500/40 dark:border-rose-500/30 hover:border-rose-500',
+      badgeBg: 'bg-rose-50 dark:bg-rose-950/40 border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-400',
+      textValue: 'text-rose-600 dark:text-rose-400',
+      iconColor: 'text-rose-500',
+      indicator: 'bg-rose-500'
     }
   }
 
   return (
-    <div className="bg-[#F3F5FA] text-[#111827] min-h-[calc(100vh-4rem)] flex flex-col font-['Inter',sans-serif] antialiased selection:bg-[#0213B2]/20 selection:text-[#0213B2]">
+    <div className="bg-[#F3F5FA] dark:bg-[#0B0C10] text-[#111827] dark:text-[#F8FAFC] min-h-[calc(100vh-4rem)] flex flex-col font-sans antialiased selection:bg-[#0213B2]/20 selection:text-[#0213B2] transition-colors duration-200">
       
       {/* Toast Feedback */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#0213B2] border border-[#0213B2] text-white text-xs font-['Montserrat'] font-bold rounded-lg shadow-2xl flex items-center gap-2.5 animate-in fade-in duration-200">
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#0213B2] border border-[#0213B2] text-white text-xs font-semibold rounded-xl shadow-2xl flex items-center gap-2.5 animate-in fade-in duration-200">
           <span className="material-symbols-outlined text-base text-white">check_circle</span>
           <span>{toastMessage}</span>
         </div>
@@ -171,23 +175,24 @@ export default function FitmentMatrixPage() {
       <main className="flex-1 flex flex-col overflow-y-auto">
         
         {/* INTERACTIVE CAR & COMPONENT SELECTOR TOOLBAR */}
-        <section className="border-b border-[#BCC7D8] bg-[#E8EDFF] px-6 py-4 shadow-xs">
-          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <section className="border-b border-slate-200 dark:border-[#282A3A] bg-white dark:bg-[#14151D] px-4 md:px-8 py-5 shadow-xs" data-preserve-white="true">
+          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-5">
             
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6">
               {/* Vehicle Select */}
               <div className="flex flex-col">
-                <label className="text-[10px] font-mono text-[#06169B] uppercase font-bold tracking-wider mb-1">
-                  1. Select Staged Vehicle
+                <label className="text-[10px] font-mono text-[#0213B2] dark:text-[#60A5FA] uppercase font-bold tracking-wider mb-1 flex items-center gap-1">
+                  <span className="material-symbols-outlined text-[12px]">directions_car</span>
+                  <span>1. Staged Chassis</span>
                 </label>
                 <div className="relative">
                   <select
                     value={selectedCar?.carId || selectedCar?.id || ''}
                     onChange={(e) => handleCarChange(e.target.value)}
-                    className="bg-white text-[#111827] border border-[#BCC7D8] rounded-lg px-3 py-2 text-xs font-semibold focus:border-[#0213B2] focus:ring-1 focus:ring-[#0213B2] focus:outline-none pr-8 cursor-pointer font-['Montserrat']"
+                    className="bg-[#F8FAFC] dark:bg-[#1A1C26] text-[#111827] dark:text-[#F8FAFC] border border-slate-300 dark:border-[#282A3A] rounded-xl px-3.5 py-2 text-xs font-semibold focus:border-[#0213B2] focus:ring-1 focus:ring-[#0213B2] focus:outline-none pr-8 cursor-pointer shadow-xs"
                   >
                     {cars.map(c => (
-                      <option key={c.carId || c.id} value={c.carId || c.id}>
+                      <option key={c.carId || c.id} value={c.carId || c.id} className="bg-white dark:bg-[#14151D] text-[#111827] dark:text-white">
                         {c.modelName || c.model} ({c.yearManufactured || c.year || '2024'})
                       </option>
                     ))}
@@ -197,17 +202,18 @@ export default function FitmentMatrixPage() {
 
               {/* Component Select */}
               <div className="flex flex-col">
-                <label className="text-[10px] font-mono text-[#06169B] uppercase font-bold tracking-wider mb-1">
-                  2. Select Performance Part
+                <label className="text-[10px] font-mono text-[#0213B2] dark:text-[#60A5FA] uppercase font-bold tracking-wider mb-1 flex items-center gap-1">
+                  <span className="material-symbols-outlined text-[12px]">build</span>
+                  <span>2. Upgrade Component</span>
                 </label>
                 <div className="relative">
                   <select
                     value={selectedPart?.partId || selectedPart?.id || ''}
                     onChange={(e) => handlePartChange(e.target.value)}
-                    className="bg-white text-[#111827] border border-[#BCC7D8] rounded-lg px-3 py-2 text-xs font-semibold focus:border-[#0213B2] focus:ring-1 focus:ring-[#0213B2] focus:outline-none pr-8 cursor-pointer font-['Montserrat']"
+                    className="bg-[#F8FAFC] dark:bg-[#1A1C26] text-[#111827] dark:text-[#F8FAFC] border border-slate-300 dark:border-[#282A3A] rounded-xl px-3.5 py-2 text-xs font-semibold focus:border-[#0213B2] focus:ring-1 focus:ring-[#0213B2] focus:outline-none pr-8 cursor-pointer shadow-xs max-w-xs truncate"
                   >
                     {parts.map(p => (
-                      <option key={p.partId || p.id} value={p.partId || p.id}>
+                      <option key={p.partId || p.id} value={p.partId || p.id} className="bg-white dark:bg-[#14151D] text-[#111827] dark:text-white">
                         {p.brand} - {p.partName}
                       </option>
                     ))}
@@ -217,15 +223,15 @@ export default function FitmentMatrixPage() {
 
               {/* Engineering Database Metrics */}
               {overview && (
-                <div className="hidden xl:flex items-center gap-3 pl-4 border-l border-[#BCC7D8] text-[11px] font-mono">
-                  <span className="px-2 py-0.5 rounded bg-white border border-[#BCC7D8] text-[#111827]">
+                <div className="hidden xl:flex items-center gap-3 pl-5 border-l border-slate-200 dark:border-[#282A3A] text-[11px] font-mono">
+                  <span className="px-2.5 py-1 rounded-lg bg-[#F8FAFC] dark:bg-[#1A1C26] border border-slate-200 dark:border-[#282A3A] text-[#111827] dark:text-[#F8FAFC]">
                     {overview.totalCars} Chassis
                   </span>
-                  <span className="px-2 py-0.5 rounded bg-[#D7E1FF] border border-[#0213B2]/30 text-[#0213B2] font-semibold">
+                  <span className="px-2.5 py-1 rounded-lg bg-[#EEF2FF] dark:bg-[#1E293B] border border-[#0213B2]/20 dark:border-blue-900/40 text-[#0213B2] dark:text-[#60A5FA] font-semibold">
                     {overview.totalParts} Parts
                   </span>
-                  <span className="px-2 py-0.5 rounded bg-[#DCFCE7] border border-[#16A34A]/30 text-[#16A34A] font-bold">
-                    {overview.accuracyRate} Accurate
+                  <span className="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 font-bold">
+                    {overview.accuracyRate} Verified
                   </span>
                 </div>
               )}
@@ -236,7 +242,7 @@ export default function FitmentMatrixPage() {
               <button
                 onClick={handleRunCheck}
                 disabled={checking || !selectedCar || !selectedPart}
-                className="px-5 py-2.5 bg-[#0213B2] hover:bg-[#0115BC] active:bg-[#06169B] disabled:opacity-50 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider rounded-lg flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+                className="px-5 py-2.5 bg-[#0213B2] hover:bg-[#0115BC] active:bg-[#06169B] disabled:opacity-50 text-white font-semibold text-xs uppercase tracking-wider rounded-xl flex items-center gap-2 shadow-md shadow-[#0213B2]/20 transition-all cursor-pointer"
               >
                 {checking ? (
                   <>
@@ -253,61 +259,61 @@ export default function FitmentMatrixPage() {
 
               <Link
                 to="/configurator"
-                className="px-4 py-2.5 bg-white hover:bg-[#EEF2FF] border border-[#CBD5E1] hover:border-[#0213B2] text-[#111827] hover:text-[#0213B2] font-['Montserrat'] font-bold text-xs uppercase tracking-wider rounded-lg flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
+                className="px-4 py-2.5 bg-[#F8FAFC] dark:bg-[#1A1C26] hover:bg-[#EEF2FF] dark:hover:bg-[#1E293B] border border-slate-300 dark:border-[#282A3A] hover:border-[#0213B2] text-[#111827] dark:text-[#F8FAFC] hover:text-[#0213B2] font-semibold text-xs uppercase tracking-wider rounded-xl flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
               >
-                <span className="material-symbols-outlined text-base text-[#0213B2]">view_in_ar</span>
-                <span>Stage in 3D</span>
+                <span className="material-symbols-outlined text-base text-[#0213B2] dark:text-[#60A5FA]">view_in_ar</span>
+                <span>Stage 3D CAD</span>
               </Link>
             </div>
 
           </div>
         </section>
 
-        {/* Selected Vehicle & Part Banner */}
-        <section className="border-b border-[#E2E8F0] bg-white px-6 py-4">
+        {/* Selected Vehicle & Part Active Status Banner */}
+        <section className="border-b border-slate-200 dark:border-[#282A3A] bg-white dark:bg-[#14151D] px-4 md:px-8 py-4" data-preserve-white="true">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#D7E1FF] border border-[#0213B2]/30 flex items-center justify-center text-[#0213B2]">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#EEF2FF] to-[#D7E1FF] dark:from-[#1E293B] dark:to-[#0F172A] border border-[#0213B2]/20 dark:border-blue-900/40 flex items-center justify-center text-[#0213B2] dark:text-[#60A5FA] shadow-xs">
                 <span className="material-symbols-outlined text-2xl">directions_car</span>
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="font-['Montserrat'] text-base md:text-lg font-bold text-[#111827] tracking-wide">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="font-display text-base md:text-lg font-bold text-[#111827] dark:text-[#F8FAFC] tracking-tight">
                     {selectedCar?.modelName || selectedCar?.model || 'Porsche 911 Carrera (991)'}
                   </h1>
-                  <span className="px-2 py-0.5 rounded bg-[#E8EDFF] border border-[#0213B2]/30 text-[#0213B2] font-mono font-bold text-[10px]">
+                  <span className="px-2 py-0.5 rounded-md bg-[#EEF2FF] dark:bg-[#1E293B] border border-[#0213B2]/20 dark:border-blue-900/40 text-[#0213B2] dark:text-[#60A5FA] font-mono font-bold text-[10px]">
                     {selectedCar?.stockBoltPattern || '5x112'} • ET{selectedCar?.stockOffsetEt || '35'}
                   </span>
                 </div>
-                <div className="flex items-center gap-3 text-[#64748B] text-xs font-mono mt-0.5">
-                  <span>VIN: <strong className="text-[#111827]">VT-CHASSIS-{selectedCar?.carId || '01'}</strong></span>
+                <div className="flex items-center gap-3 text-[#64748B] dark:text-[#94A3B8] text-xs font-mono mt-0.5 flex-wrap">
+                  <span>VIN: <strong className="text-[#111827] dark:text-[#F8FAFC]">VT-CHASSIS-{selectedCar?.carId || '01'}</strong></span>
                   <span>•</span>
-                  <span>Target: <strong className="text-[#0213B2]">{selectedPart?.partName || 'Selected Part'}</strong></span>
+                  <span>Target Component: <strong className="text-[#0213B2] dark:text-[#60A5FA]">{selectedPart?.partName || 'Selected Part'}</strong></span>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
               {checkResult ? (
-                <span className={`inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-lg font-bold ${
+                <span className={`inline-flex items-center gap-2 text-xs font-mono px-3.5 py-1.5 rounded-xl font-bold border shadow-xs ${
                   checkResult.status === 'PASS' 
-                    ? 'text-[#16A34A] bg-[#DCFCE7] border border-[#16A34A]/30'
+                    ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800'
                     : checkResult.status === 'WARNING'
-                    ? 'text-[#D97706] bg-[#FEF3C7] border border-[#D97706]/30'
-                    : 'text-[#DC2626] bg-[#FEE2E2] border border-[#DC2626]/30'
+                    ? 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-800'
+                    : 'text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border-rose-300 dark:border-rose-800'
                 }`}>
-                  <span className={`w-2 h-2 rounded-full ${
-                    checkResult.status === 'PASS' ? 'bg-[#16A34A]' : checkResult.status === 'WARNING' ? 'bg-[#D97706]' : 'bg-[#DC2626]'
+                  <span className={`w-2.5 h-2.5 rounded-full animate-pulse ${
+                    checkResult.status === 'PASS' ? 'bg-emerald-500' : checkResult.status === 'WARNING' ? 'bg-amber-500' : 'bg-rose-500'
                   }`} />
                   {checkResult.status === 'PASS' 
-                    ? 'CAD FITMENT: 100% PASS' 
+                    ? 'CAD FITMENT: 100% CLEARANCE PASS' 
                     : checkResult.status === 'WARNING' 
                     ? 'CAD FITMENT: ADVISORY WARNING' 
-                    : 'CAD FITMENT: INCOMPATIBLE FAIL'}
+                    : 'CAD FITMENT: INCOMPATIBLE INTERFERENCE'}
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 text-xs font-mono text-[#64748B] bg-[#F1F5F9] border border-[#CBD5E1] px-3 py-1.5 rounded-lg font-bold">
-                  READY FOR VERIFICATION
+                <span className="inline-flex items-center gap-1.5 text-xs font-mono text-[#64748B] dark:text-[#94A3B8] bg-[#F8FAFC] dark:bg-[#1A1C26] border border-slate-300 dark:border-[#282A3A] px-3 py-1.5 rounded-xl font-bold">
+                  AWAITING VERIFICATION
                 </span>
               )}
             </div>
@@ -315,7 +321,7 @@ export default function FitmentMatrixPage() {
         </section>
 
         {/* 4 CRITICAL FITMENT GATES */}
-        <section className="px-6 py-6 max-w-7xl mx-auto w-full space-y-6">
+        <section className="px-4 md:px-8 py-6 max-w-7xl mx-auto w-full space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             
             {checkResult?.checks && checkResult.checks.length > 0 ? (
@@ -324,27 +330,28 @@ export default function FitmentMatrixPage() {
                 return (
                   <div 
                     key={gate.gateId} 
-                    className={`bg-white border ${styles.cardBorder} rounded-xl p-4 flex flex-col justify-between transition-all shadow-xs`}
+                    className={`bg-white dark:bg-[#14151D] border ${styles.cardBorder} rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md`}
+                    data-preserve-white="true"
                   >
                     <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-mono text-[#64748B] uppercase font-bold">
-                          0{gate.gateId} / {gate.gateName}
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-[10px] font-mono text-[#64748B] dark:text-[#94A3B8] uppercase font-bold tracking-wider">
+                          Gate 0{gate.gateId} • {gate.gateName}
                         </span>
-                        <span className={`material-symbols-outlined ${styles.iconColor} text-base`}>
+                        <span className={`material-symbols-outlined ${styles.iconColor} text-lg`}>
                           {getGateIcon(gate.gateId)}
                         </span>
                       </div>
-                      <h3 className="font-['Montserrat'] font-bold text-sm text-[#111827] mb-1">
+                      <h3 className="font-display font-bold text-sm text-[#111827] dark:text-[#F8FAFC] mb-1.5">
                         {gate.value}
                       </h3>
-                      <p className="font-mono text-xs text-[#475569] leading-relaxed">
+                      <p className="font-sans text-xs text-[#64748B] dark:text-[#94A3B8] leading-relaxed">
                         {gate.message}
                       </p>
                     </div>
-                    <div className="mt-4 pt-3 border-t border-[#E2E8F0] flex justify-between items-center text-xs">
-                      <span className="text-[10px] font-mono text-[#64748B]">Tolerance Spec:</span>
-                      <span className={`px-2 py-0.5 rounded ${styles.badgeBg} font-mono text-[10px] font-bold`}>
+                    <div className="mt-4 pt-3 border-t border-slate-100 dark:border-[#282A3A] flex justify-between items-center text-xs">
+                      <span className="text-[10px] font-mono text-[#64748B] dark:text-[#94A3B8]">Tolerance Spec:</span>
+                      <span className={`px-2 py-0.5 rounded-md ${styles.badgeBg} font-mono text-[10px] font-bold border`}>
                         {gate.status} ({gate.tolerance || 'OEM Spec'})
                       </span>
                     </div>
@@ -352,12 +359,12 @@ export default function FitmentMatrixPage() {
                 )
               })
             ) : (
-              // Default Gates Placeholder
+              // Default Gates Loading Placeholder
               [1, 2, 3, 4].map(id => (
-                <div key={id} className="bg-white border border-[#E2E8F0] rounded-xl p-4 animate-pulse shadow-xs">
-                  <div className="h-4 bg-[#F1F5F9] rounded w-1/2 mb-3" />
-                  <div className="h-6 bg-[#F1F5F9] rounded w-3/4 mb-2" />
-                  <div className="h-10 bg-[#F8FAFC] rounded w-full" />
+                <div key={id} className="bg-white dark:bg-[#14151D] border border-slate-200 dark:border-[#282A3A] rounded-2xl p-5 animate-pulse shadow-sm" data-preserve-white="true">
+                  <div className="h-4 bg-slate-200 dark:bg-[#1E293B] rounded w-1/2 mb-3" />
+                  <div className="h-6 bg-slate-200 dark:bg-[#1E293B] rounded w-3/4 mb-2" />
+                  <div className="h-10 bg-slate-100 dark:bg-[#1A1C26] rounded w-full" />
                 </div>
               ))
             )}
@@ -365,47 +372,50 @@ export default function FitmentMatrixPage() {
           </div>
 
           {/* Active Verification Results Package */}
-          <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 space-y-4 shadow-sm">
-            <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#0213B2] text-xl">analytics</span>
-                <h2 className="font-['Montserrat'] font-bold text-base text-[#111827]">
+          <div className="bg-white dark:bg-[#14151D] rounded-2xl border border-slate-200 dark:border-[#282A3A] p-6 space-y-5 shadow-sm" data-preserve-white="true">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-[#282A3A]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-[#EEF2FF] dark:bg-[#1E293B] text-[#0213B2] dark:text-[#60A5FA] flex items-center justify-center">
+                  <span className="material-symbols-outlined text-lg">analytics</span>
+                </div>
+                <h2 className="font-display font-bold text-base text-[#111827] dark:text-[#F8FAFC]">
                   Technical Fitment Analysis Package
                 </h2>
               </div>
-              <span className="text-xs font-mono text-[#64748B] flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]"></span>
-                <span>Engineering Fitment Verification</span>
+              <span className="text-xs font-mono text-[#64748B] dark:text-[#94A3B8] flex items-center gap-1.5 bg-[#F8FAFC] dark:bg-[#1A1C26] px-3 py-1 rounded-lg border border-slate-200 dark:border-[#282A3A]">
+                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Direct CAD Verification</span>
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-3 text-xs font-mono bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0]">
-                <div className="flex justify-between py-1 border-b border-[#E2E8F0]">
-                  <span className="text-[#64748B]">Vehicle Profile:</span>
-                  <span className="text-[#111827] font-bold">{selectedCar?.modelName || selectedCar?.model || 'Supercar Chassis'}</span>
+              {/* Left Column: Spec Breakdown */}
+              <div className="space-y-3 text-xs font-mono bg-[#F8FAFC] dark:bg-[#1A1C26] p-5 rounded-xl border border-slate-200 dark:border-[#282A3A]">
+                <div className="flex justify-between py-1.5 border-b border-slate-200 dark:border-[#282A3A]">
+                  <span className="text-[#64748B] dark:text-[#94A3B8]">Vehicle Profile:</span>
+                  <span className="text-[#111827] dark:text-[#F8FAFC] font-bold">{selectedCar?.modelName || selectedCar?.model || 'Supercar Chassis'}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-[#E2E8F0]">
-                  <span className="text-[#64748B]">Component SKU:</span>
-                  <span className="text-[#0213B2] font-bold">{selectedPart?.sku || 'VT-PART'}</span>
+                <div className="flex justify-between py-1.5 border-b border-slate-200 dark:border-[#282A3A]">
+                  <span className="text-[#64748B] dark:text-[#94A3B8]">Component SKU:</span>
+                  <span className="text-[#0213B2] dark:text-[#60A5FA] font-bold">{selectedPart?.sku || 'VT-PART'}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-[#E2E8F0]">
-                  <span className="text-[#64748B]">Overall Compatibility:</span>
+                <div className="flex justify-between py-1.5 border-b border-slate-200 dark:border-[#282A3A]">
+                  <span className="text-[#64748B] dark:text-[#94A3B8]">Overall Compatibility:</span>
                   <span className={`font-bold ${
-                    checkResult?.status === 'PASS' ? 'text-[#16A34A]' : checkResult?.status === 'WARNING' ? 'text-[#D97706]' : 'text-[#DC2626]'
+                    checkResult?.status === 'PASS' ? 'text-emerald-600 dark:text-emerald-400' : checkResult?.status === 'WARNING' ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400'
                   }`}>
-                    {checkResult ? `${checkResult.status} (${checkResult.compatible ? 'Mechanically Feasible' : 'Blocked Interference'})` : 'PENDING'}
+                    {checkResult ? `${checkResult.status} (${checkResult.compatible ? 'Direct Bolt-On Feasible' : 'Blocked Interference'})` : 'PENDING'}
                   </span>
                 </div>
-                <div className="flex justify-between py-1">
-                  <span className="text-[#64748B]">Standard Homologation:</span>
-                  <span className="text-[#111827]">{checkResult?.regulation || 'Engineering Fitment Verification (PCD • Offset • Clearance)'}</span>
+                <div className="flex justify-between py-1.5">
+                  <span className="text-[#64748B] dark:text-[#94A3B8]">Standard Homologation:</span>
+                  <span className="text-[#111827] dark:text-[#F8FAFC]">{checkResult?.regulation || 'Engineering Fitment Verification (PCD • Offset • Clearance)'}</span>
                 </div>
 
                 {checkResult?.reasons && checkResult.reasons.length > 0 && (
-                  <div className="pt-2 border-t border-[#E2E8F0]">
-                    <span className="text-[#64748B] block mb-1">Engineering Notes:</span>
-                    <ul className="list-disc list-inside space-y-0.5 text-[#D97706]">
+                  <div className="pt-2.5 border-t border-slate-200 dark:border-[#282A3A]">
+                    <span className="text-[#64748B] dark:text-[#94A3B8] block mb-1">Engineering Notes:</span>
+                    <ul className="list-disc list-inside space-y-1 text-amber-600 dark:text-amber-400">
                       {checkResult.reasons.map((r, i) => (
                         <li key={i}>{r}</li>
                       ))}
@@ -414,12 +424,13 @@ export default function FitmentMatrixPage() {
                 )}
               </div>
 
-              <div className="flex flex-col justify-between space-y-3 bg-[#E8EDFF] p-4 rounded-xl border border-[#BCC7D8]">
-                <div className="space-y-1">
-                  <p className="text-xs font-['Montserrat'] font-bold text-[#06169B]">
-                    Next Recommended Actions:
+              {/* Right Column: Next Steps & Direct Commercial Actions */}
+              <div className="flex flex-col justify-between space-y-4 bg-[#EEF2FF] dark:bg-[#14151D] p-5 rounded-xl border border-[#0213B2]/20 dark:border-[#282A3A]">
+                <div className="space-y-1.5">
+                  <p className="text-xs font-display font-bold text-[#0213B2] dark:text-[#60A5FA] uppercase tracking-wider">
+                    Recommended Workshop Actions:
                   </p>
-                  <p className="text-xs text-[#334155] leading-relaxed">
+                  <p className="text-xs text-[#334155] dark:text-[#94A3B8] leading-relaxed">
                     {checkResult?.status === 'PASS' && (
                       'This specification is verified for commercial quotation and workshop dispatch. Direct bolt-on fitment with zero arch rolling or spigot adapters required.'
                     )}
@@ -435,12 +446,12 @@ export default function FitmentMatrixPage() {
                   </p>
                 </div>
 
-                <div className="flex gap-3 pt-2">
+                <div className="flex flex-wrap sm:flex-nowrap gap-3 pt-3">
                   <Link
                     to="/quotation"
-                    className={`flex-1 py-2 px-3 text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider rounded-lg text-center shadow-xs ${
+                    className={`flex-1 py-2.5 px-4 text-white font-semibold text-xs uppercase tracking-wider rounded-xl text-center shadow-sm transition-all ${
                       checkResult?.status === 'FAIL' 
-                        ? 'bg-[#E2E8F0] text-[#94A3B8] opacity-50 cursor-not-allowed pointer-events-none' 
+                        ? 'bg-slate-300 dark:bg-slate-800 text-slate-500 opacity-50 cursor-not-allowed pointer-events-none' 
                         : 'bg-[#0213B2] hover:bg-[#0115BC]'
                     }`}
                   >
@@ -450,15 +461,15 @@ export default function FitmentMatrixPage() {
                     <button
                       disabled
                       title="Cannot add to cart: Mechanical interference detected (FAIL)"
-                      className="py-2 px-3 bg-[#FEE2E2] border border-[#DC2626]/30 text-[#DC2626] font-['Montserrat'] font-bold text-xs uppercase tracking-wider rounded-lg text-center cursor-not-allowed flex items-center gap-1 opacity-70"
+                      className="py-2.5 px-4 bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800 text-rose-600 dark:text-rose-400 font-semibold text-xs uppercase tracking-wider rounded-xl text-center cursor-not-allowed flex items-center justify-center gap-1 opacity-70"
                     >
                       <span className="material-symbols-outlined text-sm">block</span>
-                      Add to Cart Blocked (FAIL)
+                      Add to Cart Blocked
                     </button>
                   ) : (
                     <Link
                       to="/cart"
-                      className="py-2 px-3 bg-[#16A34A] hover:bg-[#15803D] text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider rounded-lg text-center flex items-center gap-1 shadow-xs transition-all"
+                      className="py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs uppercase tracking-wider rounded-xl text-center flex items-center justify-center gap-1.5 shadow-sm transition-all"
                     >
                       <span className="material-symbols-outlined text-sm">add_shopping_cart</span>
                       Add to Cart

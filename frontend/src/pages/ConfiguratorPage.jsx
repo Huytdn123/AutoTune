@@ -1,18 +1,14 @@
 import React, { useState, useEffect, useCallback, Suspense, useRef, useMemo } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Environment } from '@react-three/drei'
 import * as THREE from 'three'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTheme } from '../contexts/ThemeContext'
 import {
   VehicleModel3D,
-  FerrariModel,
   ShowroomFloor,
   StudioLights,
-  AnimatedGrid,
   CarLoadingFallback,
-  CAR_MODEL_FILES,
-  WHEEL_FINISH_PRESETS,
 } from '../components/CarScene3D'
 import { carApi, buildApi, partApi } from '../services/api'
 import ModelSelector from '../components/configurator/ModelSelector'
@@ -25,90 +21,16 @@ import SpoilerSelector from '../components/configurator/SpoilerSelector'
 import PerformanceHardwareSelector from '../components/configurator/PerformanceHardwareSelector'
 import ConfiguratorFooterSummary from '../components/configurator/ConfiguratorFooterSummary'
 import SaveBuildModal from '../components/configurator/SaveBuildModal'
+import CameraRig from '../components/configurator/CameraRig'
 import {
   BODY_COLORS,
   RIM_COLORS,
   GLASS_COLORS,
   INTERIOR_COLORS,
-  DEFAULT_CAR_SLUG
 } from '../constants/configuratorPresets'
 import { useBuildPricing } from '../hooks/useBuildPricing'
 
 export { INTERIOR_COLORS }
-
-/**
- * CameraRig - Smooth camera glide controller inside Three.js Canvas.
- * Smoothly interpolates camera position and OrbitControls target to presets or focused parts.
- * Cancels automated glide immediately when user manually orbits, pans, or zooms.
- * Snaps instantly if user has prefers-reduced-motion active.
- */
-function CameraRig({
-  targetPosition,
-  targetLookAt,
-  isTransitioning,
-  setIsTransitioning,
-  orbitRef,
-  prefersReducedMotion,
-  onManualInteraction,
-  autoRotate
-}) {
-  const targetPosVec = useMemo(() => new THREE.Vector3(), [])
-  const targetLookVec = useMemo(() => new THREE.Vector3(), [])
-
-  useEffect(() => {
-    if (!orbitRef?.current) return
-    const controls = orbitRef.current
-
-    const onControlsStart = () => {
-      if (setIsTransitioning) {
-        setIsTransitioning(false)
-      }
-      if (onManualInteraction) {
-        onManualInteraction()
-      }
-    }
-
-    controls.addEventListener('start', onControlsStart)
-    return () => {
-      controls.removeEventListener('start', onControlsStart)
-    }
-  }, [orbitRef, setIsTransitioning, onManualInteraction])
-
-  useFrame((state, delta) => {
-    // If 360 auto-rotate is active, CameraRig yields completely so OrbitControls can rotate without conflict
-    if (autoRotate) return
-    if (!isTransitioning || !targetPosition || !orbitRef?.current) return
-
-    if (prefersReducedMotion) {
-      state.camera.position.set(...targetPosition)
-      if (targetLookAt) {
-        orbitRef.current.target.set(...targetLookAt)
-      }
-      orbitRef.current.update()
-      setIsTransitioning(false)
-      return
-    }
-
-    targetPosVec.set(...targetPosition)
-    targetLookVec.set(...(targetLookAt || [0, 0.45, 0]))
-
-    const factor = Math.min(delta * 4.5, 0.22)
-    state.camera.position.lerp(targetPosVec, factor)
-    orbitRef.current.target.lerp(targetLookVec, factor)
-    orbitRef.current.update()
-
-    const posDist = state.camera.position.distanceTo(targetPosVec)
-    const lookDist = orbitRef.current.target.distanceTo(targetLookVec)
-    if (posDist < 0.05 && lookDist < 0.02) {
-      state.camera.position.copy(targetPosVec)
-      orbitRef.current.target.copy(targetLookVec)
-      orbitRef.current.update()
-      setIsTransitioning(false)
-    }
-  })
-
-  return null
-}
 
 export default function ConfiguratorPage() {
   const navigate = useNavigate()
@@ -213,6 +135,7 @@ export default function ConfiguratorPage() {
         // Turning ON: terminate any camera transition immediately so there is zero lockup
         setIsCameraTransitioning(false)
         if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current)
+        setCameraGoal(cg => ({ ...cg, presetName: null }))
         if (orbitRef.current) {
           // Re-center orbit target smoothly on car origin so turntable rotation is centered
           orbitRef.current.target.set(0, 0.45, 0)

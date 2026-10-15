@@ -22,13 +22,6 @@ export const NAVIGATION_GROUPS = [
         icon: 'view_in_ar',
         badge: 'Core 3D'
       },
-      {
-        path: '/sales',
-        label: 'Showroom Sales',
-        desc: 'Interactive client presentation & sales consultation',
-        icon: 'tablet_mac',
-        badge: 'Showroom'
-      },
     ]
   },
   {
@@ -103,9 +96,9 @@ export default function UnifiedNavbar() {
   const filteredGroups = NAVIGATION_GROUPS.map((group) => {
     let items = group.items
     if (!currentUser || role === 'GUEST') {
-      items = items.filter(it => ['/configurator', '/sales', '/warranty', '/shop'].includes(it.path))
+      items = items.filter(it => ['/configurator', '/warranty', '/shop'].includes(it.path))
     } else if (role === 'CAR_OWNER') {
-      items = items.filter(it => ['/configurator', '/sales', '/quotation', '/warranty', '/shop'].includes(it.path))
+      items = items.filter(it => ['/configurator', '/quotation', '/warranty', '/shop'].includes(it.path))
     } else if (role === 'LEAD_TECHNICIAN') {
       items = items.filter(it => ['/configurator', '/fitment', '/shop', '/inventory', '/warranty', '/dashboard'].includes(it.path))
     }

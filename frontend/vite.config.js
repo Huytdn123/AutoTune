@@ -25,8 +25,7 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks: {
             'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
-            'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-            'lucide-icons': ['lucide-react']
+            'react-vendor': ['react', 'react-dom', 'react-router-dom']
           }
         }
       }

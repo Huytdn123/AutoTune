@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Suspense, lazy } from 'react'
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import UnifiedNavbar from './components/UnifiedNavbar'
 import LoginModal from './components/LoginModal'
 import ProtectedRoute from './components/ProtectedRoute'
+import PageLoadingFallback from './components/PageLoadingFallback'
 
-import HomePage from './pages/HomePage'
-import ConfiguratorPage from './pages/ConfiguratorPage'
-import SalesWorkspacePage from './pages/SalesWorkspacePage'
-import FitmentMatrixPage from './pages/FitmentMatrixPage'
-import GarageDashboardPage from './pages/GarageDashboardPage'
-import InventoryProcurementPage from './pages/InventoryProcurementPage'
-import QuotationInvoicePage from './pages/QuotationInvoicePage'
-import ModificationWarrantyPage from './pages/ModificationWarrantyPage'
-import GarageProfilePage from './pages/GarageProfilePage'
-import KnowledgeHubPage from './pages/KnowledgeHubPage'
-import PartsCartCheckoutPage from './pages/PartsCartCheckoutPage'
-import PartsStorePage from './pages/PartsStorePage'
-import AccountPage from './pages/AccountPage'
+const HomePage = lazy(() => import('./pages/HomePage'))
+const ConfiguratorPage = lazy(() => import('./pages/ConfiguratorPage'))
+const FitmentMatrixPage = lazy(() => import('./pages/FitmentMatrixPage'))
+const GarageDashboardPage = lazy(() => import('./pages/GarageDashboardPage'))
+const QuotationInvoicePage = lazy(() => import('./pages/QuotationInvoicePage'))
+const ModificationWarrantyPage = lazy(() => import('./pages/ModificationWarrantyPage'))
+const GarageProfilePage = lazy(() => import('./pages/GarageProfilePage'))
+const KnowledgeHubPage = lazy(() => import('./pages/KnowledgeHubPage'))
+const PartsCartCheckoutPage = lazy(() => import('./pages/PartsCartCheckoutPage'))
+const PartsStorePage = lazy(() => import('./pages/PartsStorePage'))
+const AccountPage = lazy(() => import('./pages/AccountPage'))
 
 // Replaces the old /login page — just opens the LoginModal overlay on the home screen
 function LoginRedirect() {
@@ -89,19 +88,6 @@ function InteractiveAppWrapper() {
       return
     }
 
-    // 2. Showroom Sales Consultation shortcuts
-    if (
-      rawText.includes('request demo') ||
-      rawText.includes('showroom') ||
-      rawText.includes('consultation') ||
-      rawText.includes('schedule live demo') ||
-      rawText.includes('sales mode') ||
-      rawText.includes('client consultation')
-    ) {
-      e.preventDefault()
-      navigate('/sales')
-      return
-    }
 
     // 3. Technical Fitment & Compliance shortcuts
     if (
@@ -247,7 +233,7 @@ function InteractiveAppWrapper() {
 
   return (
     <div 
-      className="min-h-screen bg-[#F3F5FA] text-[#111827] flex flex-col font-['Inter',sans-serif]"
+      className="min-h-screen bg-[#F3F5FA] dark:bg-[#0B0C10] text-[#111827] dark:text-[#F8FAFC] flex flex-col font-['Inter',sans-serif] transition-colors duration-200"
       onClick={handleGlobalClick}
     >
       {/* STRICTLY SINGLE UNIFIED NAVBAR */}
@@ -266,85 +252,86 @@ function InteractiveAppWrapper() {
 
       {/* Dynamic Viewport Container */}
       <main className="flex-1 flex flex-col">
-        <Routes>
-          {/* Authentication: open the modal overlay and go home */}
-          <Route path="/login" element={<LoginRedirect />} />
+        <Suspense fallback={<PageLoadingFallback />}>
+          <Routes>
+            {/* Authentication: open the modal overlay and go home */}
+            <Route path="/login" element={<LoginRedirect />} />
 
-          {/* Main Precision Modules with RBAC */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/configurator" element={<ConfiguratorPage />} />
-          <Route path="/sales" element={<SalesWorkspacePage />} />
-          <Route path="/shop" element={<PartsStorePage />} />
-          <Route path="/warranty" element={<ModificationWarrantyPage />} />
-          <Route path="/knowledge" element={<KnowledgeHubPage />} />
+            {/* Main Precision Modules with RBAC */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/configurator" element={<ConfiguratorPage />} />
+            <Route path="/shop" element={<PartsStorePage />} />
+            <Route path="/warranty" element={<ModificationWarrantyPage />} />
+            <Route path="/knowledge" element={<KnowledgeHubPage />} />
 
-          {/* Protected Modules (Require Authentication & Specific Roles) */}
-          <Route 
-            path="/cart" 
-            element={
-              <ProtectedRoute requireAuth={true}>
-                <PartsCartCheckoutPage />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/inventory" 
-            element={
-              <ProtectedRoute allowedRoles={['GARAGE_OWNER', 'LEAD_TECHNICIAN', 'ADMIN']}>
-                <PartsStorePage defaultTab="inventory" />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/fitment" 
-            element={
-              <ProtectedRoute allowedRoles={['GARAGE_OWNER', 'LEAD_TECHNICIAN', 'ADMIN']}>
-                <FitmentMatrixPage />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/quotation" 
-            element={
-              <ProtectedRoute requireAuth={true}>
-                <QuotationInvoicePage />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/dashboard" 
-            element={
-              <ProtectedRoute allowedRoles={['GARAGE_OWNER', 'LEAD_TECHNICIAN']}>
-                <GarageDashboardPage />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/profile" 
-            element={
-              <ProtectedRoute requireAuth={true}>
-                <GarageProfilePage />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/account" 
-            element={
-              <ProtectedRoute requireAuth={true}>
-                <AccountPage />
-              </ProtectedRoute>
-            } 
-          />
+            {/* Protected Modules (Require Authentication & Specific Roles) */}
+            <Route 
+              path="/cart" 
+              element={
+                <ProtectedRoute requireAuth={true}>
+                  <PartsCartCheckoutPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/inventory" 
+              element={
+                <ProtectedRoute allowedRoles={['GARAGE_OWNER', 'LEAD_TECHNICIAN', 'ADMIN']}>
+                  <PartsStorePage defaultTab="inventory" />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/fitment" 
+              element={
+                <ProtectedRoute allowedRoles={['GARAGE_OWNER', 'LEAD_TECHNICIAN', 'ADMIN']}>
+                  <FitmentMatrixPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/quotation" 
+              element={
+                <ProtectedRoute requireAuth={true}>
+                  <QuotationInvoicePage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute allowedRoles={['GARAGE_OWNER', 'LEAD_TECHNICIAN']}>
+                  <GarageDashboardPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute requireAuth={true}>
+                  <GarageProfilePage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/account" 
+              element={
+                <ProtectedRoute requireAuth={true}>
+                  <AccountPage />
+                </ProtectedRoute>
+              } 
+            />
 
-          {/* Legacy & Shortcut Aliases */}
-          <Route path="/my-builds" element={<Navigate to="/account" replace />} />
-          <Route path="/compatibility" element={<Navigate to="/fitment" replace />} />
-          <Route path="/data-mapping" element={<Navigate to="/fitment" replace />} />
-          <Route path="/marketplace" element={<Navigate to="/profile" replace />} />
+            {/* Legacy & Shortcut Aliases */}
+            <Route path="/my-builds" element={<Navigate to="/account" replace />} />
+            <Route path="/compatibility" element={<Navigate to="/fitment" replace />} />
+            <Route path="/data-mapping" element={<Navigate to="/fitment" replace />} />
+            <Route path="/marketplace" element={<Navigate to="/profile" replace />} />
 
-          {/* Catch-all redirect to Home */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+            {/* Catch-all redirect to Home */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
       </main>
     </div>
   )

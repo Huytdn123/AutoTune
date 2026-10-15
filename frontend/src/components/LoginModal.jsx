@@ -48,6 +48,7 @@ export default function LoginModal() {
       }}
     >
       <div 
+        data-preserve-white="true"
         className="relative w-full max-w-md rounded-2xl overflow-hidden shadow-2xl bg-white dark:bg-[#14151D] border border-slate-200 dark:border-[#282A3A] transition-all"
         style={{
           boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.35)'

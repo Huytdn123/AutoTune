@@ -29,7 +29,7 @@ export default function CameraPresetsBar({
     }`}>
       <div className="flex items-center gap-1">
         {PRESET_VIEWS.map(view => {
-          const isActive = activePreset === view.label || activePreset === view.id
+          const isActive = !autoRotate && (activePreset === view.label || activePreset === view.id)
           return (
             <button
               key={view.id}

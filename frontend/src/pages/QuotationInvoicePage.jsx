@@ -302,38 +302,38 @@ export default function QuotationInvoicePage() {
   }
 
   return (
-    <div className="bg-[#F3F5FA] text-[#111827] min-h-[calc(100vh-4rem)] flex flex-col font-['Inter',sans-serif] antialiased selection:bg-[#0213B2]/20 selection:text-[#0213B2]">
+    <div className="bg-[#F3F5FA] dark:bg-[#0B0C10] text-[#111827] dark:text-[#F8FAFC] min-h-[calc(100vh-4rem)] flex flex-col font-sans antialiased selection:bg-[#0213B2]/20 selection:text-[#0213B2] transition-colors duration-200">
       {/* Toast Feedback */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#0213B2] border border-[#0213B2] text-white text-xs font-['Montserrat'] font-bold rounded-lg shadow-2xl flex items-center gap-2.5 animate-in fade-in duration-200">
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#0213B2] border border-[#0213B2] text-white text-xs font-semibold rounded-xl shadow-2xl flex items-center gap-2.5 animate-in fade-in duration-200">
           <span className="material-symbols-outlined text-base text-white">check_circle</span>
           <span>{toastMessage}</span>
         </div>
       )}
 
       {/* TOP WORKSPACE NAVIGATION & TAB SWITCHER */}
-      <section className="bg-[#E8EDFF] border-b border-[#BCC7D8] px-6 py-4 shadow-xs">
+      <section className="bg-white dark:bg-[#14151D] border-b border-slate-200 dark:border-[#282A3A] px-4 md:px-8 py-4 shadow-xs" data-preserve-white="true">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs font-mono text-[#06169B] uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-xs font-mono text-[#0213B2] dark:text-[#60A5FA] uppercase tracking-wider">
               <span>COMMERCIAL WORKSHOP</span>
               <span>/</span>
-              <span className="text-[#0213B2] font-bold">WORKFLOW EXECUTION</span>
+              <span className="font-bold">WORKFLOW DISPATCH</span>
             </div>
-            <h1 className="font-['Montserrat'] text-2xl font-extrabold text-[#111827] tracking-tight flex items-center gap-3">
+            <h1 className="font-display text-2xl font-extrabold text-[#111827] dark:text-[#F8FAFC] tracking-tight flex items-center gap-3">
               <span>Quotation & Work Order Workflow</span>
             </h1>
           </div>
 
           {/* Mode Switcher Tabs */}
-          <div className="flex items-center p-1 rounded-xl bg-[#D7E1FF] border border-[#BCC7D8] shadow-inner self-start sm:self-auto">
+          <div className="flex items-center p-1 rounded-xl bg-[#F8FAFC] dark:bg-[#1A1C26] border border-slate-200 dark:border-[#282A3A] shadow-inner self-start sm:self-auto">
             <button
               type="button"
               onClick={() => setActiveTab('quotations')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-['Montserrat'] font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === 'quotations'
                   ? 'bg-[#0213B2] text-white shadow-xs'
-                  : 'text-[#06169B] hover:text-[#111827] hover:bg-white/50'
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0213B2] dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5'
               }`}
             >
               <span className="material-symbols-outlined text-sm">receipt_long</span>
@@ -343,10 +343,10 @@ export default function QuotationInvoicePage() {
             <button
               type="button"
               onClick={() => setActiveTab('work-orders')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-['Montserrat'] font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === 'work-orders'
-                  ? 'bg-[#16A34A] text-white shadow-xs'
-                  : 'text-[#06169B] hover:text-[#111827] hover:bg-white/50'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0213B2] dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-white/5'
               }`}
             >
               <span className="material-symbols-outlined text-sm">precision_manufacturing</span>
@@ -357,26 +357,26 @@ export default function QuotationInvoicePage() {
       </section>
 
       {/* MAIN WORKSPACE CONTENT */}
-      <main className="flex-1 p-6 max-w-7xl mx-auto w-full space-y-6">
+      <main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full space-y-6">
         {/* Staged 3D Build Quotation Link Banner */}
         {buildPreview && (
-          <div className="bg-[#E8EDFF] border-2 border-[#0213B2]/40 rounded-2xl p-5 shadow-sm space-y-4">
+          <div className="bg-white dark:bg-[#14151D] border-2 border-[#0213B2]/40 dark:border-[#282A3A] rounded-2xl p-5 shadow-sm space-y-4" data-preserve-white="true">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-start gap-3">
-                <div className="w-12 h-12 rounded-xl bg-[#D7E1FF] border border-[#0213B2]/30 flex items-center justify-center text-[#0213B2] shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-[#EEF2FF] dark:bg-[#1E293B] border border-[#0213B2]/20 dark:border-blue-900/40 flex items-center justify-center text-[#0213B2] dark:text-[#60A5FA] shrink-0">
                   <span className="material-symbols-outlined text-2xl">view_in_ar</span>
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#D7E1FF] text-[#06169B] border border-[#0213B2]/30">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#EEF2FF] text-[#0213B2] dark:bg-[#1E293B] dark:text-[#60A5FA] border border-[#0213B2]/20 dark:border-blue-900/40">
                       3D Configurator Staging
                     </span>
-                    <span className="text-xs font-mono text-[#475569]">Build Code: {buildPreview.build.shareCode}</span>
+                    <span className="text-xs font-mono text-[#64748B] dark:text-[#94A3B8]">Build Code: {buildPreview.build.shareCode}</span>
                   </div>
-                  <h2 className="text-lg font-black text-[#111827] mt-1">
+                  <h2 className="text-lg font-black text-[#111827] dark:text-[#F8FAFC] mt-1">
                     {buildPreview.config?.carName || buildPreview.build.buildName || 'Ferrari 458 Italia Custom Build'}
                   </h2>
-                  <p className="text-xs text-[#475569] mt-0.5">
+                  <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-0.5">
                     Exterior: <strong className="text-[#111827]">{buildPreview.config?.bodyColorName || buildPreview.build.bodyColor}</strong> · 
                     Interior: <strong className="text-[#111827]">{buildPreview.config?.interiorColorName || 'Leather'}</strong> · 
                     Wheels: <strong className="text-[#111827]">{buildPreview.config?.selectedWheelSku ? 'NOVITEC 21"' : 'Ferrari OEM'}</strong> · 

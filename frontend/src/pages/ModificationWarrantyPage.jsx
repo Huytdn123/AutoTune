@@ -4,8 +4,9 @@ import { warrantyApi } from '../services/api'
 import { useAuth } from '../contexts/AuthContext'
 
 /**
- * ModificationWarrantyPage - Modification Records & Digital Warranty
+ * ModificationWarrantyPage - Modification Records & Digital Warranty Passport
  * Fully connected to Spring Boot /api/warranties
+ * Redesigned with complete dark/light mode tokens, countdown telemetry, and cryptographic QR ledger.
  */
 export default function ModificationWarrantyPage() {
   const navigate = useNavigate()
@@ -38,7 +39,7 @@ export default function ModificationWarrantyPage() {
           carModel: 'Porsche 911 Carrera (991) Aero Edition',
           customerName: currentUser?.fullName || 'Liam Henderson',
           vin: 'WP0AF2A97RS99201',
-          garageName: 'AutoTune Saigon Performance Hub',
+          garageName: 'Virtual Tune Certified Speed Shop',
           issueDate: '2026-03-15',
           expiryDate: '2028-03-15',
           status: 'ACTIVE',
@@ -60,7 +61,7 @@ export default function ModificationWarrantyPage() {
         carModel: 'Porsche 911 Carrera (991) Aero Edition',
         customerName: currentUser?.fullName || 'Liam Henderson',
         vin: 'WP0AF2A97RS99201',
-        garageName: 'AutoTune Saigon Performance Hub',
+        garageName: 'Virtual Tune Certified Speed Shop',
         issueDate: '2026-03-15',
         expiryDate: '2028-03-15',
         status: 'ACTIVE',
@@ -111,35 +112,35 @@ export default function ModificationWarrantyPage() {
   }
 
   return (
-    <div className="bg-[#F3F5FA] text-[#111827] min-h-[calc(100vh-4rem)] flex flex-col font-['Inter',sans-serif] antialiased selection:bg-[#0213B2]/20 selection:text-[#0213B2]">
+    <div className="bg-[#F3F5FA] dark:bg-[#0B0C10] text-[#111827] dark:text-[#F8FAFC] min-h-[calc(100vh-4rem)] flex flex-col font-sans antialiased selection:bg-[#0213B2]/20 selection:text-[#0213B2] transition-colors duration-200">
       
       {/* Toast Feedback */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#0213B2] border border-[#0213B2] text-white text-xs font-['Montserrat'] font-bold rounded-lg shadow-2xl flex items-center gap-2.5 animate-in fade-in duration-200">
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 bg-[#0213B2] border border-[#0213B2] text-white text-xs font-semibold rounded-xl shadow-2xl flex items-center gap-2.5 animate-in fade-in duration-200">
           <span className="material-symbols-outlined text-base text-white">check_circle</span>
           <span>{toastMessage}</span>
         </div>
       )}
 
-      <main className="flex-1 p-6 max-w-7xl mx-auto w-full space-y-6">
+      <main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full space-y-6">
         
         {/* Top Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-[#E2E8F0]">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-200 dark:border-[#282A3A]">
           <div>
-            <div className="flex items-center gap-2 font-mono text-xs text-[#64748B] mb-1">
-              <span className="hover:text-[#0213B2] transition-colors cursor-pointer">Warranty & Build Records</span>
+            <div className="flex items-center gap-2 font-mono text-xs text-[#64748B] dark:text-[#94A3B8] mb-1">
+              <span className="hover:text-[#0213B2] dark:hover:text-[#60A5FA] transition-colors cursor-pointer">Warranty & Build Records</span>
               <span className="material-symbols-outlined text-xs">chevron_right</span>
-              <span className="text-[#0213B2] font-semibold">{currentWarranty?.carModel || 'Porsche 911 Carrera (991)'}</span>
+              <span className="text-[#0213B2] dark:text-[#60A5FA] font-semibold">{currentWarranty?.carModel || 'Porsche 911 Carrera (991)'}</span>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="font-['Montserrat'] text-2xl font-bold text-[#111827] tracking-tight">
+              <h1 className="font-display text-2xl font-bold text-[#111827] dark:text-[#F8FAFC] tracking-tight">
                 Digital Vehicle Build Passport & Warranty
               </h1>
-              <span className="px-2.5 py-0.5 rounded bg-[#EEF2FF] border border-[#0213B2]/20 text-[#0213B2] font-mono text-xs font-semibold uppercase">
+              <span className="px-2.5 py-0.5 rounded-lg bg-[#EEF2FF] dark:bg-[#1E293B] border border-[#0213B2]/20 dark:border-blue-900/40 text-[#0213B2] dark:text-[#60A5FA] font-mono text-xs font-semibold uppercase">
                 {currentWarranty?.certificateId || 'VT-WAR-2026-992G'}
               </span>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#DCFCE7] border border-[#16A34A]/30 text-[#16A34A] font-mono text-xs font-semibold">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 font-mono text-xs font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 OFFICIAL WARRANTY ACTIVE
               </span>
             </div>
@@ -148,14 +149,15 @@ export default function ModificationWarrantyPage() {
           <div className="flex flex-wrap items-center gap-3">
             <button 
               onClick={() => showToast('Digital Certificate exported to PDF with cryptographic QR signature.')}
-              className="px-4 py-2 rounded-lg bg-white border border-[#CBD5E1] hover:border-[#0213B2] hover:bg-[#EEF2FF] text-[#111827] hover:text-[#0213B2] font-['Montserrat'] text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-xs"
+              className="px-4 py-2 rounded-xl bg-white dark:bg-[#14151D] border border-slate-300 dark:border-[#282A3A] hover:border-[#0213B2] hover:bg-[#EEF2FF] dark:hover:bg-[#1E293B] text-[#111827] dark:text-[#F8FAFC] hover:text-[#0213B2] text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-xs"
+              data-preserve-white="true"
             >
-              <span className="material-symbols-outlined text-base text-[#64748B]">file_download</span>
+              <span className="material-symbols-outlined text-base text-[#64748B] dark:text-[#94A3B8]">file_download</span>
               <span>Download Certificate</span>
             </button>
             <Link
               to="/shop"
-              className="px-4 py-2 rounded-lg bg-[#0213B2] hover:bg-[#0115BC] text-white font-['Montserrat'] text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-xs transition-all cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-[#0213B2] hover:bg-[#0115BC] text-white text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-md shadow-[#0213B2]/20 transition-all cursor-pointer"
             >
               <span className="material-symbols-outlined text-base">storefront</span>
               <span>Upgrade More Parts</span>
@@ -164,44 +166,44 @@ export default function ModificationWarrantyPage() {
         </div>
 
         {/* Master Certificate Summary Box */}
-        <section className="bg-[#E8EDFF] rounded-xl border border-[#BCC7D8] p-6 shadow-sm">
+        <section className="bg-white dark:bg-[#14151D] rounded-2xl border border-slate-200 dark:border-[#282A3A] p-6 shadow-sm" data-preserve-white="true">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-            <div className="space-y-3 flex-1">
-              <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-[#475569] uppercase tracking-wider">
-                <span className="text-[#0213B2] font-bold">VIN: {currentWarranty?.vin || 'WP0AF2A97RS99201'}</span>
+            <div className="space-y-3.5 flex-1">
+              <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider">
+                <span className="text-[#0213B2] dark:text-[#60A5FA] font-bold">VIN: {currentWarranty?.vin || 'WP0AF2A97RS99201'}</span>
                 <span>•</span>
-                <span>Registered Owner: <strong className="text-[#111827]">{currentWarranty?.customerName || 'Liam Henderson'}</strong></span>
+                <span>Registered Owner: <strong className="text-[#111827] dark:text-[#F8FAFC]">{currentWarranty?.customerName || 'Liam Henderson'}</strong></span>
                 <span>•</span>
                 <span>Issued: <strong>{currentWarranty?.issueDate || '2026-03-15'}</strong></span>
               </div>
-              <h2 className="font-['Montserrat'] text-xl font-bold text-[#111827] tracking-tight">
+              <h2 className="font-display text-xl font-bold text-[#111827] dark:text-[#F8FAFC] tracking-tight">
                 {currentWarranty?.carModel || 'Porsche 911 Carrera (991) Aero Edition'}
               </h2>
-              <p className="text-xs text-[#334155] max-w-2xl leading-relaxed">
+              <p className="text-xs text-[#64748B] dark:text-[#94A3B8] max-w-2xl leading-relaxed">
                 All high-performance modifications including lightweight forged wheels, titanium valved exhaust, and competition coilovers are cryptographically verified and covered by the Virtual Tune Certified Bay Warranty and TÜV Rheinland homologation.
               </p>
-              <div className="pt-2 flex flex-wrap items-center gap-6 text-xs font-mono text-[#475569]">
-                <div>Coverage Term: <span className="text-[#111827] font-semibold">24 Months / 40,000 km</span></div>
-                <div>Expires: <span className="text-[#0213B2] font-semibold">{currentWarranty?.expiryDate || '2028-03-15'}</span></div>
-                <div>Compliance: <span className="text-[#16A34A] font-semibold">100% Pass (0 Fault Codes)</span></div>
+              <div className="pt-2 flex flex-wrap items-center gap-6 text-xs font-mono text-[#64748B] dark:text-[#94A3B8]">
+                <div>Coverage Term: <span className="text-[#111827] dark:text-[#F8FAFC] font-semibold">24 Months / 40,000 km</span></div>
+                <div>Expires: <span className="text-[#0213B2] dark:text-[#60A5FA] font-semibold">{currentWarranty?.expiryDate || '2028-03-15'}</span></div>
+                <div>Compliance: <span className="text-emerald-600 dark:text-emerald-400 font-semibold">100% Pass (0 Fault Codes)</span></div>
               </div>
             </div>
 
             {/* Countdown Days remaining widget */}
-            <div className="lg:w-72 shrink-0 bg-[#D7E1FF] rounded-xl border border-[#BCC7D8] p-5 flex flex-col items-center text-center justify-center">
-              <div className="font-mono text-[10px] uppercase tracking-wider text-[#06169B] font-bold mb-1">Active Coverage Term</div>
+            <div className="lg:w-72 shrink-0 bg-[#F8FAFC] dark:bg-[#1A1C26] rounded-2xl border border-slate-200 dark:border-[#282A3A] p-5 flex flex-col items-center text-center justify-center">
+              <div className="font-mono text-[10px] uppercase tracking-wider text-[#0213B2] dark:text-[#60A5FA] font-bold mb-1">Active Coverage Term</div>
               <div className="flex items-baseline gap-1">
-                <span className="font-mono text-4xl font-extrabold text-[#06169B] leading-none">536</span>
-                <span className="font-mono text-xs text-[#06169B] font-bold">DAYS LEFT</span>
+                <span className="font-mono text-4xl font-extrabold text-[#0213B2] dark:text-[#60A5FA] leading-none">536</span>
+                <span className="font-mono text-xs text-[#0213B2] dark:text-[#60A5FA] font-bold">DAYS LEFT</span>
               </div>
               <div className="w-full mt-3 mb-2">
-                <div className="w-full h-1.5 bg-[#BCC7D8] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#0213B2] rounded-full" style={{ width: '74%' }} />
+                <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                  <div className="h-full bg-[#0213B2] dark:bg-[#60A5FA] rounded-full" style={{ width: '74%' }} />
                 </div>
               </div>
-              <div className="flex justify-between w-full font-mono text-[9px] text-[#475569]">
+              <div className="flex justify-between w-full font-mono text-[9px] text-[#64748B] dark:text-[#94A3B8]">
                 <span>Issued: {currentWarranty?.issueDate || '2026'}</span>
-                <span className="text-[#16A34A] font-bold">74% Remaining</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold">74% Remaining</span>
                 <span>Expires: {currentWarranty?.expiryDate || '2028'}</span>
               </div>
             </div>
@@ -213,14 +215,14 @@ export default function ModificationWarrantyPage() {
           
           {/* Covered Parts */}
           <div className="lg:col-span-8 space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-[#E2E8F0]">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-[#282A3A]">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#0213B2] text-xl">verified</span>
-                <h3 className="font-['Montserrat'] font-bold text-sm text-[#111827]">
+                <span className="material-symbols-outlined text-[#0213B2] dark:text-[#60A5FA] text-xl">verified</span>
+                <h3 className="font-display font-bold text-sm text-[#111827] dark:text-[#F8FAFC]">
                   OEM Certified Warrantied Components
                 </h3>
               </div>
-              <span className="font-mono text-xs text-[#0213B2] px-2.5 py-0.5 rounded bg-[#EEF2FF] border border-[#0213B2]/20 font-semibold">
+              <span className="font-mono text-xs text-[#0213B2] dark:text-[#60A5FA] px-2.5 py-0.5 rounded-lg bg-[#EEF2FF] dark:bg-[#1E293B] border border-[#0213B2]/20 dark:border-blue-900/40 font-semibold">
                 {(currentWarranty?.installedParts || []).length || 4} Components Active
               </span>
             </div>
@@ -234,19 +236,19 @@ export default function ModificationWarrantyPage() {
               ]).map((partName, idx) => (
                 <div 
                   key={idx}
-                  data-preserve-bg="true"
-                  className="bg-white dark:bg-[#1B1D28] rounded-xl border border-[#CBD5E1] dark:border-[#282A3A] p-4 flex items-center justify-between gap-4 hover:border-[#0213B2]/40 dark:hover:border-[#60A5FA]/40 hover:bg-[#F8FAFC] dark:hover:bg-[#222533] transition-all shadow-xs"
+                  className="bg-white dark:bg-[#14151D] rounded-2xl border border-slate-200 dark:border-[#282A3A] p-4 flex items-center justify-between gap-4 hover:border-[#0213B2] dark:hover:border-[#60A5FA] transition-all shadow-xs"
+                  data-preserve-white="true"
                 >
                   <div className="flex items-center gap-3.5">
-                    <div className="w-10 h-10 rounded-lg bg-[#F3F5FA] dark:bg-[#14151D] flex items-center justify-center text-[#0213B2] dark:text-[#60A5FA] shrink-0 border border-[#CBD5E1] dark:border-[#282A3A]">
+                    <div className="w-10 h-10 rounded-xl bg-[#F8FAFC] dark:bg-[#1A1C26] flex items-center justify-center text-[#0213B2] dark:text-[#60A5FA] shrink-0 border border-slate-200 dark:border-[#282A3A]">
                       <span className="material-symbols-outlined text-xl">
                         {idx === 0 ? 'adjust' : idx === 1 ? 'mode_fan' : idx === 2 ? 'album' : 'height'}
                       </span>
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h4 className="font-['Montserrat'] text-xs sm:text-sm text-[#111827] dark:text-[#F8FAFC] font-bold">{partName}</h4>
-                        <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-[#DCFCE7] dark:bg-[#16A34A]/20 border border-[#16A34A]/30 text-[#16A34A] dark:text-[#4ADE80]">
+                        <h4 className="font-display text-xs sm:text-sm text-[#111827] dark:text-[#F8FAFC] font-bold">{partName}</h4>
+                        <span className="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400">
                           ACTIVE
                         </span>
                       </div>
@@ -259,7 +261,7 @@ export default function ModificationWarrantyPage() {
                   <div className="text-right shrink-0">
                     <button 
                       onClick={() => showToast(`Component Details for "${partName}" verified with zero defect codes.`)}
-                      className="px-2.5 py-1.5 rounded-lg bg-[#E5E8F0] dark:bg-[#14151D] hover:bg-[#D7E1FF] dark:hover:bg-[#1A224D] border border-[#CBD5E1] dark:border-[#282A3A] text-xs font-mono text-[#0213B2] dark:text-[#60A5FA] flex items-center gap-1 transition-colors cursor-pointer"
+                      className="px-3 py-1.5 rounded-lg bg-[#F8FAFC] dark:bg-[#1A1C26] hover:bg-[#EEF2FF] dark:hover:bg-[#1E293B] border border-slate-200 dark:border-[#282A3A] text-xs font-mono text-[#0213B2] dark:text-[#60A5FA] flex items-center gap-1 transition-colors cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-sm">verified</span>
                       <span>Verified</span>
@@ -271,19 +273,19 @@ export default function ModificationWarrantyPage() {
           </div>
 
           {/* QR Code & Live Token Verification Box */}
-          <div className="lg:col-span-4 bg-white dark:bg-[#14151D] rounded-xl border border-[#CBD5E1] dark:border-[#282A3A] p-6 space-y-4 shadow-sm" data-preserve-bg="true">
-            <div className="flex items-center justify-between pb-3 border-b border-[#CBD5E1] dark:border-[#282A3A]">
-              <span className="font-['Montserrat'] font-bold text-xs uppercase text-[#111827] dark:text-[#F8FAFC] tracking-wider">
+          <div className="lg:col-span-4 bg-white dark:bg-[#14151D] rounded-2xl border border-slate-200 dark:border-[#282A3A] p-6 space-y-4 shadow-sm" data-preserve-white="true">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-[#282A3A]">
+              <span className="font-display font-bold text-xs uppercase text-[#111827] dark:text-[#F8FAFC] tracking-wider">
                 Digital QR Passport Verification
               </span>
               <span className="material-symbols-outlined text-[#0213B2] dark:text-[#60A5FA] text-lg">qr_code_2</span>
             </div>
 
-            <div className="p-4 bg-[#E8EDFF] dark:bg-[#1A224D] rounded-xl border border-[#BCC7D8] dark:border-[#282A3A] flex flex-col items-center justify-center text-center">
+            <div className="p-4 bg-[#F8FAFC] dark:bg-[#1A1C26] rounded-2xl border border-slate-200 dark:border-[#282A3A] flex flex-col items-center justify-center text-center">
               <span className="material-symbols-outlined text-[#0213B2] dark:text-[#60A5FA]" style={{ fontSize: '96px' }}>
                 qr_code_2
               </span>
-              <div className="font-mono text-[10px] text-[#06169B] dark:text-[#93C5FD] font-bold mt-2">
+              <div className="font-mono text-[10px] text-[#0213B2] dark:text-[#60A5FA] font-bold mt-2">
                 TOKEN: {currentWarranty?.qrCodeToken || '7e9b04f1-8d2a-4c91'}
               </div>
             </div>
@@ -299,8 +301,7 @@ export default function ModificationWarrantyPage() {
                     value={verifyToken}
                     onChange={e => setVerifyToken(e.target.value)}
                     placeholder={currentWarranty?.qrCodeToken || "Enter token..."}
-                    data-preserve-bg="true"
-                    className="w-full bg-white dark:bg-[#1B1D28] border border-[#CBD5E1] dark:border-[#282A3A] rounded-lg px-3 py-2 text-xs font-mono text-[#111827] dark:text-[#F8FAFC] focus:outline-none focus:border-[#0213B2] dark:focus:border-[#60A5FA] focus:ring-1 focus:ring-[#0213B2]"
+                    className="w-full bg-[#F8FAFC] dark:bg-[#1A1C26] border border-slate-300 dark:border-[#282A3A] rounded-xl px-3.5 py-2 text-xs font-mono text-[#111827] dark:text-[#F8FAFC] focus:outline-none focus:border-[#0213B2] dark:focus:border-[#60A5FA] focus:ring-1 focus:ring-[#0213B2]"
                   />
                 </div>
               </div>
@@ -308,7 +309,7 @@ export default function ModificationWarrantyPage() {
               <button
                 type="submit"
                 disabled={verifying}
-                className="w-full py-2.5 rounded-lg bg-[#0213B2] hover:bg-[#0115BC] active:bg-[#06169B] text-white font-['Montserrat'] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-[#0213B2] hover:bg-[#0115BC] active:bg-[#06169B] text-white font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md shadow-[#0213B2]/20 transition-all cursor-pointer"
               >
                 {verifying ? (
                   <>
@@ -325,14 +326,14 @@ export default function ModificationWarrantyPage() {
             </form>
 
             {verifyResult && (
-              <div className="p-3 rounded-lg bg-[#DCFCE7] border border-[#16A34A]/40 text-[#16A34A] text-xs font-mono flex items-center gap-2 animate-in fade-in">
+              <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-mono flex items-center gap-2 animate-in fade-in">
                 <span className="material-symbols-outlined text-base">verified</span>
                 <span>Status: Authenticated in Virtual Tune Blockchain Ledger</span>
               </div>
             )}
 
-            <div className="pt-2 border-t border-[#E2E8F0] text-[10px] font-mono text-[#64748B] flex items-center justify-center gap-2">
-              <span className="material-symbols-outlined text-xs text-[#16A34A]">lock</span>
+            <div className="pt-2 border-t border-slate-100 dark:border-[#282A3A] text-[10px] font-mono text-[#64748B] dark:text-[#94A3B8] flex items-center justify-center gap-2">
+              <span className="material-symbols-outlined text-xs text-emerald-500">lock</span>
               <span>Cryptographically Secured Digital Certificate</span>
             </div>
           </div>

@@ -6,6 +6,10 @@ import ProfileSection from '../components/account/ProfileSection'
 import SecuritySection from '../components/account/SecuritySection'
 import SavedBuildsSection from '../components/account/SavedBuildsSection'
 
+/**
+ * AccountPage - Customer & Partner Profile, Security & 3D Saved Builds Library
+ * Fully integrated with dark/light design system and backend API contracts.
+ */
 export default function AccountPage() {
   const navigate = useNavigate()
   const { currentUser, role, updateCurrentUser } = useAuth()
@@ -183,17 +187,17 @@ export default function AccountPage() {
 
   // Role Color Matrix
   const roleBadgeColors = {
-    GARAGE_OWNER: { bg: '#EEF2FF', border: '#CBD5E1', text: '#0213B2', label: 'Garage Owner (B2B)' },
-    LEAD_TECHNICIAN: { bg: '#DCFCE7', border: '#86EFAC', text: '#16A34A', label: 'Master Technician' },
-    CAR_OWNER: { bg: '#FEF3C7', border: '#FDE68A', text: '#D97706', label: 'Verified Car Owner' },
-    CUSTOMER: { bg: '#FEF3C7', border: '#FDE68A', text: '#D97706', label: 'Verified Car Owner' },
-    ADMIN: { bg: '#F3E8FF', border: '#D8B4FE', text: '#9333EA', label: 'System Administrator' }
+    GARAGE_OWNER: { bg: 'bg-[#EEF2FF] dark:bg-[#1E293B]', border: 'border-[#0213B2]/30 dark:border-blue-900/40', text: 'text-[#0213B2] dark:text-[#60A5FA]', label: 'Garage Owner (B2B)' },
+    LEAD_TECHNICIAN: { bg: 'bg-emerald-50 dark:bg-emerald-950/40', border: 'border-emerald-300 dark:border-emerald-800', text: 'text-emerald-700 dark:text-emerald-400', label: 'Master Technician' },
+    CAR_OWNER: { bg: 'bg-amber-50 dark:bg-amber-950/40', border: 'border-amber-300 dark:border-amber-800', text: 'text-amber-700 dark:text-amber-400', label: 'Verified Car Owner' },
+    CUSTOMER: { bg: 'bg-amber-50 dark:bg-amber-950/40', border: 'border-amber-300 dark:border-amber-800', text: 'text-amber-700 dark:text-amber-400', label: 'Verified Car Owner' },
+    ADMIN: { bg: 'bg-purple-50 dark:bg-purple-950/40', border: 'border-purple-300 dark:border-purple-800', text: 'text-purple-700 dark:text-purple-400', label: 'System Administrator' }
   }
 
   const currentBadge = roleBadgeColors[role] || roleBadgeColors.CAR_OWNER
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-[#F3F5FA] text-[#111827]">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-[#F3F5FA] dark:bg-[#0B0C10] text-[#111827] dark:text-[#F8FAFC] transition-colors duration-200">
       {/* Toast Feedback */}
       {toast && (
         <div 
@@ -214,16 +218,14 @@ export default function AccountPage() {
       <div className="max-w-6xl mx-auto space-y-6">
         {/* User Hero Header Card */}
         <div 
-          className="rounded-2xl p-6 sm:p-8 relative overflow-hidden bg-[#E8EDFF] border border-[#BCC7D8] shadow-sm"
+          className="rounded-2xl p-6 sm:p-8 relative overflow-hidden bg-white dark:bg-[#14151D] border border-slate-200 dark:border-[#282A3A] shadow-sm"
+          data-preserve-white="true"
         >
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
             {/* Avatar Preview */}
             <div className="relative group">
               <div 
-                className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden flex items-center justify-center font-bold text-3xl shadow-md border-2 bg-[#0213B2] text-white"
-                style={{
-                  borderColor: currentBadge.text,
-                }}
+                className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden flex items-center justify-center font-bold text-3xl shadow-md border-2 bg-gradient-to-br from-[#0213B2] to-[#0A26D9] text-white border-slate-200 dark:border-[#282A3A]"
               >
                 {currentUser?.avatar || profileForm.avatarUrl ? (
                   <img 
@@ -237,8 +239,7 @@ export default function AccountPage() {
                 )}
               </div>
               <div 
-                className="absolute -bottom-2 -right-2 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase shadow"
-                style={{ backgroundColor: currentBadge.bg, color: currentBadge.text, border: `1px solid ${currentBadge.border}` }}
+                className={`absolute -bottom-2 -right-2 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase shadow-sm border ${currentBadge.bg} ${currentBadge.border} ${currentBadge.text}`}
               >
                 {role}
               </div>
@@ -248,22 +249,17 @@ export default function AccountPage() {
             <div className="flex-1 text-center sm:text-left space-y-2">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] dark:text-[#F8FAFC] tracking-tight">
                     {currentUser?.fullName || currentUser?.username}
                   </h1>
-                  <p className="text-sm text-[#475569] font-mono">
+                  <p className="text-sm text-[#64748B] dark:text-[#94A3B8] font-mono">
                     @{currentUser?.username} • {currentUser?.email}
                   </p>
                 </div>
 
                 {/* Role & Access Badge */}
                 <div 
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-bold tracking-wider uppercase self-center sm:self-start"
-                  style={{
-                    backgroundColor: currentBadge.bg,
-                    border: `1px solid ${currentBadge.border}`,
-                    color: currentBadge.text
-                  }}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-bold tracking-wider uppercase self-center sm:self-start border ${currentBadge.bg} ${currentBadge.border} ${currentBadge.text}`}
                 >
                   <span className="material-symbols-outlined text-sm">verified_user</span>
                   <span>{currentBadge.label}</span>
@@ -271,22 +267,22 @@ export default function AccountPage() {
               </div>
 
               {currentUser?.garageName && (
-                <div className="inline-flex items-center gap-1.5 text-xs text-[#475569] pt-1">
-                  <span className="material-symbols-outlined text-sm text-[#0213B2]">domain</span>
-                  <span>Affiliated Workshop: <strong className="text-[#111827]">{currentUser.garageName}</strong></span>
+                <div className="inline-flex items-center gap-1.5 text-xs text-[#64748B] dark:text-[#94A3B8] pt-1">
+                  <span className="material-symbols-outlined text-sm text-[#0213B2] dark:text-[#60A5FA]">domain</span>
+                  <span>Affiliated Workshop: <strong className="text-[#111827] dark:text-[#F8FAFC]">{currentUser.garageName}</strong></span>
                 </div>
               )}
             </div>
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex items-center gap-2 mt-8 border-t border-[#BCC7D8] pt-4 overflow-x-auto">
+          <div className="flex items-center gap-2 mt-8 border-t border-slate-100 dark:border-[#282A3A] pt-4 overflow-x-auto">
             <button
               onClick={() => setActiveTab('builds')}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer ${
                 activeTab === 'builds'
-                  ? 'bg-[#0213B2] text-white shadow-sm'
-                  : 'text-[#475569] hover:text-[#0213B2] hover:bg-[#D7E1FF]'
+                  ? 'bg-[#0213B2] text-white shadow-md shadow-[#0213B2]/20'
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0213B2] dark:hover:text-white hover:bg-[#F1F5F9] dark:hover:bg-[#1E293B]'
               }`}
             >
               <span className="material-symbols-outlined text-sm">directions_car</span>
@@ -294,8 +290,8 @@ export default function AccountPage() {
               <span 
                 className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${
                   activeTab === 'builds'
-                    ? 'bg-[#D7E1FF] dark:bg-[#1A224D] text-[#06169B] dark:text-[#93C5FD]'
-                    : 'bg-[#E5E8F0] dark:bg-[#1E202C] text-[#475569] dark:text-[#94A3B8]'
+                    ? 'bg-white/20 text-white'
+                    : 'bg-slate-100 dark:bg-[#1E293B] text-[#64748B] dark:text-[#94A3B8]'
                 }`}
               >
                 {builds.length}
@@ -306,8 +302,8 @@ export default function AccountPage() {
               onClick={() => setActiveTab('profile')}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer ${
                 activeTab === 'profile'
-                  ? 'bg-[#0213B2] text-white shadow-sm'
-                  : 'text-[#475569] hover:text-[#0213B2] hover:bg-[#D7E1FF]'
+                  ? 'bg-[#0213B2] text-white shadow-md shadow-[#0213B2]/20'
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0213B2] dark:hover:text-white hover:bg-[#F1F5F9] dark:hover:bg-[#1E293B]'
               }`}
             >
               <span className="material-symbols-outlined text-sm">person</span>
@@ -318,8 +314,8 @@ export default function AccountPage() {
               onClick={() => setActiveTab('security')}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-150 cursor-pointer ${
                 activeTab === 'security'
-                  ? 'bg-[#0213B2] text-white shadow-sm'
-                  : 'text-[#475569] hover:text-[#0213B2] hover:bg-[#D7E1FF]'
+                  ? 'bg-[#0213B2] text-white shadow-md shadow-[#0213B2]/20'
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0213B2] dark:hover:text-white hover:bg-[#F1F5F9] dark:hover:bg-[#1E293B]'
               }`}
             >
               <span className="material-symbols-outlined text-sm">lock</span>
