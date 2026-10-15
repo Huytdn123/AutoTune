@@ -8,7 +8,6 @@ export default function QuotationDetailCard({
   onUpdateStatus,
   onCreateWorkOrder,
   onViewWorkOrder,
-  onOpenInvoice,
   formatUsd,
   formatVnd,
   renderStatusBadge,
@@ -100,19 +99,7 @@ export default function QuotationDetailCard({
             </button>
           )}
 
-          {/* View / Print Official B2B Invoice */}
-          {onOpenInvoice && (
-            <button
-              type="button"
-              onClick={onOpenInvoice}
-              className="px-3.5 py-2 bg-white dark:bg-[#1B1D28] border border-[#CBD5E1] dark:border-[#282A3A] hover:border-[#0213B2] dark:hover:border-[#60A5FA] text-[#111827] dark:text-[#F8FAFC] rounded-lg text-xs font-['Montserrat'] font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
-            >
-              <span className="material-symbols-outlined text-sm text-[#0213B2] dark:text-[#60A5FA]">
-                receipt_long
-              </span>
-              <span>Print / View Invoice</span>
-            </button>
-          )}
+
         </div>
       </div>
 

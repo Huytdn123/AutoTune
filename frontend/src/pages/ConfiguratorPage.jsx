@@ -204,7 +204,7 @@ export default function ConfiguratorPage() {
       const willBeActive = !prev
       if (!willBeActive) {
         setSelectedParts(pList => pList.filter(p => !p.category?.toLowerCase().includes('aero') && !p.sku?.includes('CARB-AERO') && p.sku !== 'VOR-CF-AERO-992'))
-        glideCameraTo([4.6, 1.9, 5.5], [0, 0.45, 0], '3/4 Front')
+        // Preserve camera in place so user can directly compare before/after changes
         return null
       } else {
         const targetPart = part || {
@@ -234,7 +234,7 @@ export default function ConfiguratorPage() {
       const isAlreadyActive = prev === targetSku || (prev && prev === 'big-country-labs-style-wing' && targetSku === 'GEN-GTWING-F458')
       if (isAlreadyActive) {
         setSelectedParts(pList => pList.filter(p => !p.category?.toLowerCase().includes('spoiler') && !p.sku?.includes('WING') && !p.sku?.includes('GTWING') && p.sku !== 'VOR-CF-AERO-992'))
-        glideCameraTo([4.6, 1.9, 5.5], [0, 0.45, 0], '3/4 Front')
+        // Preserve camera in place so user can directly compare before/after changes
         return null
       } else {
         const targetPart = part || {
@@ -263,11 +263,8 @@ export default function ConfiguratorPage() {
     setSelectedParts(prev => {
       const exists = prev.some(p => (p.partId || p.id) === (part.partId || part.id))
       if (exists) {
-        const remaining = prev.filter(p => (p.partId || p.id) !== (part.partId || part.id))
-        if (remaining.length === 0) {
-          glideCameraTo([4.6, 1.9, 5.5], [0, 0.45, 0], '3/4 Front')
-        }
-        return remaining
+        // Keep camera in current position so user can clearly compare the change without resetting to 3/4
+        return prev.filter(p => (p.partId || p.id) !== (part.partId || part.id))
       } else {
         const rawName = (part.name || part.partName || '').toLowerCase()
         const category = (part.category || '').toLowerCase()
@@ -750,6 +747,7 @@ export default function ConfiguratorPage() {
                 wheelFinish={wheelFinish}
                 selectedBodykit={selectedBodykit}
                 selectedSpoiler={selectedSpoiler}
+                selectedParts={selectedParts}
               />
               <ShowroomFloor isDark={isDark} />
             </Suspense>

@@ -52,7 +52,6 @@ const INITIAL_CART_ITEMS = [
 export default function PartsCartCheckoutPage() {
   const navigate = useNavigate()
   const [cartItems, setCartItems] = useState(INITIAL_CART_ITEMS)
-  const [selectedBay, setSelectedBay] = useState('bay-1')
   const [toastMessage, setToastMessage] = useState(null)
 
   const showToast = (msg) => {
@@ -123,7 +122,7 @@ export default function PartsCartCheckoutPage() {
       const payload = {
         carModel: 'Porsche 911 Carrera (991)',
         customerName: 'Alexander von Berg',
-        notes: `B2B Tuning Package generated from Performance Store Cart (${selectedItems.length} items) - Allocated to ${selectedBay === 'bay-1' ? 'Bay 1 (Dyno Calibration)' : selectedBay === 'bay-2' ? 'Bay 2 (Lift Stage A)' : 'Bay 3 (Carbon Aero Bay)'}`,
+        notes: `B2B Tuning Package generated from Performance Store Cart (${selectedItems.length} items)`,
         laborFee: laborVnd,
         discountAmount: discountVnd,
         items: itemsPayload
@@ -142,7 +141,7 @@ export default function PartsCartCheckoutPage() {
   }
 
   const handleAuthorizePO = () => {
-    showToast(`B2B Purchase Order Authorized & Dispatched to ${selectedBay === 'bay-1' ? 'Bay 1 (Dyno Calibration)' : selectedBay === 'bay-2' ? 'Bay 2 (Lift Stage A)' : 'Bay 3 (Carbon Aero Bay)'}!`)
+    showToast('B2B Purchase Order Authorized & Processed!')
   }
 
   return (
@@ -186,51 +185,6 @@ export default function PartsCartCheckoutPage() {
           </div>
         </div>
 
-        {/* WORKSHOP DELIVERY BAY SELECTOR */}
-        <div className="bg-white dark:bg-[#14151D] border border-slate-200 dark:border-[#282A3A] rounded-2xl p-4 shadow-xs" data-preserve-white="true">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#0213B2] dark:text-[#60A5FA] text-base">precision_manufacturing</span>
-              <span className="text-xs font-bold font-['Montserrat'] text-[#111827] dark:text-[#F8FAFC] uppercase tracking-wider">
-                Target Workshop Bay Dispatch
-              </span>
-            </div>
-            <span className="text-[11px] font-mono text-slate-400">SELECT BAY FOR PARTS STAGING</span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {[
-              { id: 'bay-1', name: 'Bay 01 — Dyno Stage', status: 'Ready for Staging', badge: 'Active Calibration' },
-              { id: 'bay-2', name: 'Bay 02 — Lift Stage A', status: 'Suspension & Brakes', badge: '2 Post Lift' },
-              { id: 'bay-3', name: 'Bay 03 — Carbon Fitting', status: 'Aero & Exterior', badge: 'Dust-Free Booth' }
-            ].map(bay => {
-              const active = selectedBay === bay.id
-              return (
-                <button
-                  key={bay.id}
-                  type="button"
-                  onClick={() => setSelectedBay(bay.id)}
-                  className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
-                    active
-                      ? 'border-[#0213B2] dark:border-[#60A5FA] bg-[#0213B2]/5 dark:bg-[#0213B2]/15 ring-2 ring-[#0213B2]/20'
-                      : 'border-slate-200 dark:border-[#282A3A] bg-slate-50 dark:bg-[#1B1D28] hover:border-slate-300 dark:hover:border-slate-600'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold font-['Montserrat'] text-[#111827] dark:text-[#F8FAFC]">
-                      {bay.name}
-                    </span>
-                    <span className={`w-2 h-2 rounded-full ${active ? 'bg-[#0213B2] dark:bg-[#60A5FA]' : 'bg-slate-300 dark:bg-slate-600'}`} />
-                  </div>
-                  <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                    <span>{bay.status}</span>
-                    <span className="text-[10px] font-bold text-[#0213B2] dark:text-[#60A5FA]">{bay.badge}</span>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-        </div>
 
         {/* 2-COLUMN SPLIT SCREEN B2B PROCUREMENT WORKSPACE */}
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">

@@ -5,7 +5,6 @@ import { useAuth } from '../contexts/AuthContext'
 import QuotationList from '../components/quotation/QuotationList'
 import QuotationDetailCard from '../components/quotation/QuotationDetailCard'
 import WorkOrderWorkspace from '../components/quotation/WorkOrderWorkspace'
-import InvoiceModal from '../components/quotation/InvoiceModal'
 
 /**
  * QuotationInvoicePage - B2B Quotation Engine & Work Order Bay Management Orchestrator
@@ -44,8 +43,6 @@ export default function QuotationInvoicePage() {
   const [selectedProgress, setSelectedProgress] = useState(0)
   const [techNotes, setTechNotes] = useState('')
 
-  // Invoice Modal state
-  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
 
   // Feedback Toast state
   const [toastMessage, setToastMessage] = useState(null)
@@ -431,7 +428,6 @@ export default function QuotationInvoicePage() {
                 const target = workOrders.find(w => w.quotationId === currentQuote?.id)
                 if (target) selectWorkOrder(target)
               }}
-              onOpenInvoice={() => setIsInvoiceModalOpen(true)}
               formatUsd={formatUsd}
               formatVnd={formatVnd}
               renderStatusBadge={renderStatusBadge}
@@ -463,14 +459,6 @@ export default function QuotationInvoicePage() {
         )}
       </main>
 
-      {/* Official B2B Invoice Modal */}
-      <InvoiceModal
-        isOpen={isInvoiceModalOpen}
-        onClose={() => setIsInvoiceModalOpen(false)}
-        quote={currentQuote}
-        formatUsd={formatUsd}
-        formatVnd={formatVnd}
-      />
     </div>
   )
 }

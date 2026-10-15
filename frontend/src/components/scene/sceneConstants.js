@@ -13,6 +13,8 @@ export const CAR_MODEL_FILES = {
 export const PART_MODEL_FILES = {
   'wheel-work-vsxx-19': '/models/parts/ferrari-458/wheels/work-vs-xx.glb',
   'spoiler-bcl-wing':   '/models/parts/ferrari-458/spoilers/big-country-labs-style-wing.glb',
+  'brakes-brembo-gt':   '/models/parts/ferrari-458/brakes/brembo-gt-brakes.glb',
+  'exhaust-akrapovic':  '/models/parts/ferrari-458/exhaust/akrapovic-exhaust-tips.glb',
 }
 
 // ─── Dynamic Aftermarket Wheel Finishes ───────────────────────────────────────

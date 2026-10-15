@@ -14,6 +14,8 @@ import {
 useGLTF.preload(CAR_MODEL_FILES['ferrari-458'], DRACO_PATH)
 useGLTF.preload(PART_MODEL_FILES['wheel-work-vsxx-19'])
 useGLTF.preload(PART_MODEL_FILES['spoiler-bcl-wing'])
+useGLTF.preload(PART_MODEL_FILES['brakes-brembo-gt'])
+useGLTF.preload(PART_MODEL_FILES['exhaust-akrapovic'])
 
 /**
  * Preload a vehicle model on-demand (e.g. when user hovers car selector card)
@@ -40,12 +42,15 @@ export default function VehicleModel3D({
   wheelFinish = 'GLOSS_BLACK',
   selectedBodykit = null,
   selectedSpoiler = null,
+  selectedParts = [],
   autoRotate = false,
   autoRotateSpeed = 0.4
 }) {
   const { scene } = useGLTF(modelPath || CAR_MODEL_FILES['ferrari-458'], DRACO_PATH)
   const workVsxxGLB = useGLTF(PART_MODEL_FILES['wheel-work-vsxx-19'])
   const bclWingGLB  = useGLTF(PART_MODEL_FILES['spoiler-bcl-wing'])
+  const bremboGLB   = useGLTF(PART_MODEL_FILES['brakes-brembo-gt'])
+  const exhaustGLB  = useGLTF(PART_MODEL_FILES['exhaust-akrapovic'])
   const groupRef = useRef()
 
   // Clone scene deep so each model instance is isolated from the global cache
@@ -160,9 +165,14 @@ export default function VehicleModel3D({
             child.material = bodyMaterial
           } else if (nodeName === 'glass') {
             child.material = glassMaterial
-          } else if (nodeName === 'leather' || nodeName === 'steering_leather') {
+          } else if (nodeName === 'leather' || nodeName === 'steering_leather' || nodeName === 'trim' || nodeName === 'steering_trim') {
             child.material = interiorMaterial
-          } else if (['rim_fl', 'rim_fr', 'rim_rr', 'rim_rl', 'wheel', 'trim'].includes(nodeName)) {
+          } else if (
+            nodeName.startsWith('rim_') ||
+            (nodeName.startsWith('wheel') && !['wheel_fl', 'wheel_fr', 'wheel_rl', 'wheel_rr'].includes(nodeName)) ||
+            (child.parent && child.parent.name.toLowerCase().startsWith('wheel_') && (nodeName.includes('wheel') || nodeName.includes('rim')))
+          ) {
+            // Apply detailsMaterial (selected rim color/finish) uniformly to all 4 wheels' spokes and inner barrels
             child.material = detailsMaterial
           }
           return
@@ -263,11 +273,35 @@ export default function VehicleModel3D({
     clonedScene.scale.set(scale, scale, scale)
 
     // 4. Center on X & Z, and place tires flush on the showroom floor (Y = 0)
+    clonedScene.updateMatrixWorld(true)
     const finalBox = new THREE.Box3().setFromObject(clonedScene)
     const center = finalBox.getCenter(new THREE.Vector3())
     clonedScene.position.x = -center.x
     clonedScene.position.z = -center.z
-    clonedScene.position.y = -finalBox.min.y
+
+    // Find the true contact point of the tires with the showroom floor
+    let minTireY = Infinity
+    clonedScene.traverse(child => {
+      if (child.isMesh) {
+        const name = (child.name || '').toLowerCase()
+        const matName = (child.material?.name || '').toLowerCase()
+        if (
+          name.includes('tire') || name.includes('tyre') ||
+          matName.includes('tire') || matName.includes('tyre')
+        ) {
+          const b = new THREE.Box3().setFromObject(child)
+          if (b.min.y < minTireY) {
+            minTireY = b.min.y
+          }
+        }
+      }
+    })
+
+    if (minTireY !== Infinity && !isNaN(minTireY)) {
+      clonedScene.position.y = -minTireY
+    } else {
+      clonedScene.position.y = -finalBox.min.y
+    }
   }, [clonedScene, modelPath, bodyMaterial, detailsMaterial, glassMaterial, interiorMaterial])
 
   // ── 5. Real Physical Aftermarket Parts Swapping Engine ───────────────────────
@@ -307,7 +341,7 @@ export default function VehicleModel3D({
       const name = (child.name || '').toLowerCase()
       const isOemRimComponent =
         name.startsWith('rim_') ||
-        name === 'wheel' ||
+        (name.startsWith('wheel') && !['wheel_fl', 'wheel_fr', 'wheel_rl', 'wheel_rr'].includes(name)) ||
         name === 'centre' ||
         name === 'nuts'
       if (isOemRimComponent) {
@@ -456,6 +490,108 @@ export default function VehicleModel3D({
       }
     })
 
+    // ── D. BRAKE SYSTEM: OEM ↔ REAL BREMBO GT-S 6-PISTON BIG BRAKE KIT ──
+    const isBremboBrakes = Boolean(
+      selectedParts && selectedParts.some(p =>
+        p?.sku === 'BRM-1N1.9042A2' ||
+        /brembo/i.test(p?.name || p?.partName || '') ||
+        /brake/i.test(p?.category || '')
+      )
+    )
+
+    // Hide/show stock brake meshes (rotors and calipers) depending on whether Brembo BBK is active
+    clonedScene.traverse(child => {
+      const name = (child.name || '').toLowerCase()
+      if (name.includes('brake') || name.includes('caliper') || name.includes('disc')) {
+        child.visible = !isBremboBrakes
+      }
+    })
+
+    // Mount high-definition Brembo GT-S 6-Piston Caliper & 380mm Slotted Rotor at 4 wheel hubs
+    // Proportioned to real-world dimensions (380mm front / 355mm rear) leaving authentic clearance inside the rim barrel
+    if (isBremboBrakes && bremboGLB?.scene) {
+      const brakeMounts = [
+        { name: 'FL', pos: [-0.825, 0.358, -1.155], rotY: -Math.PI / 2, scale: 0.76 },
+        { name: 'FR', pos: [ 0.825, 0.360, -1.154], rotY:  Math.PI / 2, scale: 0.76 },
+        { name: 'RL', pos: [-0.820, 0.358,  1.495], rotY: -Math.PI / 2, scale: 0.72 },
+        { name: 'RR', pos: [ 0.820, 0.358,  1.496], rotY:  Math.PI / 2, scale: 0.72 },
+      ]
+
+      brakeMounts.forEach(mount => {
+        const brakeClone = bremboGLB.scene.clone(true)
+        brakeClone.name = `custom_brembo_${mount.name}`
+        brakeClone.position.set(...mount.pos)
+        brakeClone.rotation.set(0, mount.rotY, 0)
+        brakeClone.scale.set(mount.scale, mount.scale, mount.scale)
+        brakeClone.traverse(c => {
+          if (c.isMesh) {
+            c.castShadow = true
+            c.receiveShadow = true
+          }
+        })
+        customGroup.add(brakeClone)
+      })
+    }
+
+    // ── E. EXHAUST SYSTEM: OEM ↔ REAL AKRAPOVIČ EVOLUTION LINE TITANIUM EXHAUST ──
+    const isAkrapovicExhaust = Boolean(
+      selectedParts && selectedParts.some(p =>
+        p?.sku === 'AKR-EVO-TITAN-992' ||
+        /akrapov/i.test(p?.name || p?.partName || '') ||
+        /exhaust/i.test(p?.category || '')
+      )
+    )
+
+    // Hide the stock white exhaust pipes when Akrapovic is active so there is ZERO model nesting/stacking
+    clonedScene.traverse(child => {
+      if (!child.isMesh || !child.geometry || !child.geometry.attributes.position) return
+      const pos = child.geometry.attributes.position
+      if (!child.userData.origPositions) {
+        child.userData.origPositions = new Float32Array(pos.array)
+      }
+      const orig = child.userData.origPositions
+
+      let hasExhaust = false
+      for (let i = 0; i < pos.count; i++) {
+        const x = orig[i * 3]
+        const y = orig[i * 3 + 1]
+        const z = orig[i * 3 + 2]
+        // Check if vertex belongs to the rear triple exhaust pipes inside the bumper oval
+        if (Math.abs(x) < 0.22 && y > 0.35 && y < 0.52 && z > 2.05) {
+          hasExhaust = true
+          if (isAkrapovicExhaust) {
+            // Collapse factory pipe vertex invisibly inside rear engine bay
+            pos.setXYZ(i, 0, 0, 0)
+          } else {
+            // Restore factory pipe vertex
+            pos.setXYZ(i, x, y, z)
+          }
+        }
+      }
+      if (hasExhaust) {
+        pos.needsUpdate = true
+        child.geometry.computeVertexNormals()
+      }
+    })
+
+    if (isAkrapovicExhaust && exhaustGLB?.scene) {
+      const exhaustClone = exhaustGLB.scene.clone(true)
+      exhaustClone.name = 'custom_akrapovic_exhaust'
+      // Perfectly aligned inside the Ferrari 458 bumper oval cutout
+      exhaustClone.position.set(0, 0.428, 2.215)
+      exhaustClone.rotation.set(0, 0, 0)
+      exhaustClone.scale.set(1.0, 1.0, 1.0)
+      exhaustClone.traverse(c => {
+        if (c.isMesh) {
+          c.castShadow = true
+          c.receiveShadow = true
+        }
+      })
+      customGroup.add(exhaustClone)
+    }
+
+
+
     return () => {
       if (customGroup && clonedScene) {
         clonedScene.remove(customGroup)
@@ -468,8 +604,11 @@ export default function VehicleModel3D({
     wheelFinish,
     selectedBodykit,
     selectedSpoiler,
+    selectedParts,
     workVsxxGLB,
     bclWingGLB,
+    bremboGLB,
+    exhaustGLB,
     detailsMaterial,
     detailsColor
   ])
