@@ -4,7 +4,7 @@ const ThemeContext = createContext()
 
 export function ThemeProvider({ children }) {
   // 1. Initial state: restore saved preference if valid ('light' or 'dark').
-  // If no saved preference exists, use 'light' as the default for first-time visitors.
+  // If no saved preference exists, use 'dark' as the default for first-time visitors.
   const [theme, setThemeState] = useState(() => {
     if (typeof window !== 'undefined') {
       try {
@@ -16,7 +16,7 @@ export function ThemeProvider({ children }) {
         console.warn('Unable to access localStorage for theme', e)
       }
     }
-    return 'light'
+    return 'dark'
   })
 
   // 2. Synchronize DOM classes, data attributes, and color scheme when theme changes.
@@ -77,4 +77,3 @@ export function useTheme() {
 }
 
 export default ThemeContext
-

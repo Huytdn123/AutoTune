@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="light">
+<html lang="en" class="dark" data-theme="dark" style="color-scheme: dark;">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/jpeg" href="/images/logo.jpg" />
@@ -14,12 +14,12 @@
     <!-- Material Symbols Outlined -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
-    <!-- Immediate Theme Initialization to eliminate flash of unstyled theme -->
+    <!-- Immediate Theme Initialization to eliminate flash of unstyled theme (Anti-FOUC) -->
     <script>
       (function() {
         try {
           var saved = localStorage.getItem('vt_theme') || localStorage.getItem('theme');
-          var theme = (saved === 'dark' || saved === 'light') ? saved : 'light';
+          var theme = (saved === 'dark' || saved === 'light') ? saved : 'dark';
           var doc = document.documentElement;
           if (theme === 'dark') {
             doc.classList.add('dark');
@@ -164,7 +164,8 @@
       /* Smooth scroll & Material Symbols base styles */
       html {
         scroll-behavior: smooth;
-        background-color: #F3F5FA;
+        background-color: #0B0C10;
+        color-scheme: dark;
       }
       html.dark {
         background-color: #0B0C10;
