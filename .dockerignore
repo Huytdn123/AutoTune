@@ -1,0 +1,9 @@
+frontend/
+database/
+docs/
+.git/
+.gitignore
+*.md
+.idea/
+backend/target/
+

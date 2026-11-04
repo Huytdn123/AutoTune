@@ -1,6 +1,14 @@
 import axios from 'axios'
 
-const API_BASE = '/api'
+// Base API resolution:
+// 1. In production (Vercel): Uses VITE_API_BASE_URL (e.g. https://virtualtune-api.onrender.com)
+// 2. In local development: Falls back to '/api', proxied cleanly via Vite dev server
+const rawApiBase = (import.meta.env.VITE_API_BASE_URL || '').trim()
+const cleanBase = rawApiBase.replace(/\/+$/, '')
+const API_BASE = cleanBase
+  ? (cleanBase.endsWith('/api') ? cleanBase : `${cleanBase}/api`)
+  : '/api'
+
 const ENABLE_MOCK = true
 
 const client = axios.create({

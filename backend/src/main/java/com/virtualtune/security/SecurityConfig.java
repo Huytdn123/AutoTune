@@ -3,6 +3,7 @@ package com.virtualtune.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtualtune.exception.ErrorResponse;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,7 +23,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
@@ -32,6 +35,12 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Value("${spring.h2.console.enabled:false}")
+    private boolean h2ConsoleEnabled;
+
+    @Value("${cors.allowed-origin-patterns:http://localhost:*,http://127.0.0.1:*}")
+    private String corsAllowedOriginPatterns;
 
     public SecurityConfig(CustomUserDetailsService userDetailsService,
             JwtAuthenticationFilter jwtAuthenticationFilter) {
@@ -59,8 +68,17 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Allow Vite development server on any localhost port (conflict-free)
-        configuration.setAllowedOriginPatterns(List.of("http://localhost:*"));
+        
+        List<String> patterns = Arrays.stream(corsAllowedOriginPatterns.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+
+        if (patterns.isEmpty()) {
+            patterns = List.of("http://localhost:*", "http://127.0.0.1:*");
+        }
+
+        configuration.setAllowedOriginPatterns(patterns);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Accept"));
         configuration.setExposedHeaders(List.of("Authorization"));
@@ -76,8 +94,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
-                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+                .csrf(csrf -> csrf.disable());
+
+        if (h2ConsoleEnabled) {
+            http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
+        } else {
+            http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+        }
+
+        http
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -96,9 +121,8 @@ public class SecurityConfig {
                                     "You do not have permission to access this resource");
                             response.getOutputStream().println(objectMapper.writeValueAsString(err));
                         }))
-                .authorizeHttpRequests(auth -> auth
-                        // Public endpoints (no auth required)
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/login", "/api/auth/logout").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/parts/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/cars/**").permitAll()
@@ -107,10 +131,15 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/builds").permitAll()
                         .requestMatchers("/api/fitment", "/api/fitment/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/quotations/calculate").permitAll()
-                        .requestMatchers("/models/**", "/assets/**", "/error", "/h2-console/**").permitAll()
-                        // All other API endpoints require authentication
-                        .requestMatchers("/api/**").authenticated()
-                        .anyRequest().permitAll())
+                        .requestMatchers("/models/**", "/assets/**", "/error").permitAll();
+
+                    if (h2ConsoleEnabled) {
+                        auth.requestMatchers("/h2-console/**").permitAll();
+                    }
+
+                    auth.requestMatchers("/api/**").authenticated()
+                        .anyRequest().permitAll();
+                })
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
