@@ -168,7 +168,7 @@ export default function KnowledgeHubPage() {
                   <tr className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
                     <td className="py-3.5 px-6 font-semibold text-[#111827] dark:text-[#F8FAFC] flex items-center gap-2.5">
                       <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                      <span>Ferrari 458 Italia</span>
+                      <span>Ferrari 458 Spider</span>
                     </td>
                     <td className="py-3.5 px-6 text-[#64748B] dark:text-[#94A3B8]">20x9.0J (F) / 21x12.0J (R)</td>
                     <td className="py-3.5 px-6 text-[#64748B] dark:text-[#94A3B8]">ET25 / ET22</td>

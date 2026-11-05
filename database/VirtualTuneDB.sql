@@ -331,7 +331,7 @@ SET IDENTITY_INSERT dbo.users OFF;
 SET IDENTITY_INSERT dbo.cars ON;
 INSERT INTO dbo.cars (car_id, slug, brand, model, year_manufactured, body_type, tagline, stock_bolt_pattern, stock_wheel_size_inch, stock_wheel_width_inch, stock_offset_et, stock_center_bore_mm, stock_brake_disc_mm, curb_weight_kg, horsepower, price_usd, badge, accent_color, default_body_color, default_rim_color, default_glass_color, model_3d_path, status, specs_json)
 VALUES
-(1, 'ferrari-458', 'Ferrari', '458 Italia', '2009–2015', 'Supercar Coupé', '4.5L V8 · 562hp · 0-100: 3.4s', '5x114.3', 20.0, 9.0, 45, 67.1, 398, 1380, 562, 328000, 'Maranello, Italy', '#CC0000', '#CC0000', '#CCCCCC', '#C8D8F0', '/models/ferrari.glb', 'READY_FOR_3D',
+(1, 'ferrari-458', 'Ferrari', '458 Spider', '2011–2015', 'Supercar Spider', '4.5L V8 · 562hp · 0-100: 3.4s', '5x114.3', 20.0, 9.0, 45, 67.1, 398, 1380, 562, 328000, 'Maranello, Italy', '#CC0000', '#CC0000', '#CCCCCC', '#C8D8F0', '/models/ferrari.glb', 'READY_FOR_3D',
  '{"performance":[{"label":"Engine","value":"4.5L V8 Naturally Aspirated"},{"label":"Power","value":"562 hp @ 9,000 rpm"},{"label":"Torque","value":"398 lb-ft @ 6,000 rpm"},{"label":"0–100 km/h","value":"3.4 seconds"},{"label":"Top Speed","value":"325 km/h"},{"label":"Transmission","value":"7-speed Dual Clutch"},{"label":"Weight","value":"1,380 kg"}],"aerodynamics":[{"label":"Downforce","value":"140 kg @ 200 km/h"},{"label":"Front Splitter","value":"Carbon Fibre Fixed"},{"label":"Diffuser","value":"Active Variable"},{"label":"Cd","value":"0.33"},{"label":"Cl","value":"-0.26"}],"suspension":[{"label":"Front","value":"Double Wishbone MagneRide"},{"label":"Rear","value":"Multi-Link Adaptive"},{"label":"Dampers","value":"Magneto-rheological"},{"label":"Springs","value":"Coilover Adjustable"}]}'),
 
 (2, 'lamborghini-aventador', 'Lamborghini', 'Aventador LP700', '2011–2021', 'Supercar Coupé', '6.5L V12 · 700hp · 0-100: 2.9s', '5x112', 20.0, 9.5, 40, 57.1, 400, 1575, 700, 393000, 'Sant''Agata Bolognese, Italy', '#F5C400', '#F5C400', '#1A1A1A', '#1A1A1A', '/models/lamborghini.glb', 'READY_FOR_3D',
@@ -356,30 +356,30 @@ INSERT INTO dbo.parts (part_id, sku, part_name, category, brand, specifications,
 VALUES
 (1, 'BBS-FIR-992-TITAN', 'BBS LM Forged Monoblock 20"', 'Wheels & Rims', 'BBS Germany',
     'Iconic BBS multi-spoke modular forged design • PCD 5x114.3 / 5x112 • Gold finish',
-    215000000, 8600, '/images/bbs-lm-wheel.jpg', 'Ferrari 458 Italia, Porsche 911 Carrera (991), BMW Vision ConnectedDrive',
+    215000000, 8600, '/images/bbs-lm-wheel.jpg', 'Ferrari 458 Spider, Porsche 911 Carrera (991), BMW Vision ConnectedDrive',
     4.90, 'HOT / BESTSELLER', 8, 'PASS', '5x114.3', 20.0, 9.5, 35, 67.1, NULL, NULL,
     '/models/parts/ferrari-458/wheels/bbs-lm.glb', 'Forged Monoblock Alloy'),
 
 (2, 'WORK-VSXX-19-F458', 'WORK VS-XX 19" Aftermarket Wheel', 'Wheels & Rims', 'WORK Wheels',
     '19-inch 3-piece modular forged construction • Classic mesh design • PCD 5x114.3',
-    105000000, 4200, '/images/work-vs-xx-wheel.jpg', 'Ferrari 458 Italia, Ferrari 458 Spider',
+    105000000, 4200, '/images/work-vs-xx-wheel.jpg', 'Ferrari 458 Spider',
     4.95, 'CC BY 4.0 VERIFIED', 8, 'PASS', '5x114.3', 19.0, 10.0, 30, 67.1, NULL, NULL,
     '/models/parts/ferrari-458/wheels/work-vs-xx.glb', '3-Piece Modular Forged Alloy'),
 
 (4, 'GEN-GTWING-F458', 'Carbon Aero GT Wing', 'Rear Spoilers', 'Track Aerodynamics',
     'Gloss carbon fiber airfoil blade • Twin CNC aluminum uprights • High-downforce track profile',
-    61250000, 2450, '/images/carbon-gt-wing.jpg', 'Ferrari 458 Italia, Ferrari 458 Spider',
+    61250000, 2450, '/images/carbon-gt-wing.jpg', 'Ferrari 458 Spider',
     4.92, 'TRACK SPEC', 5, 'PASS', NULL, NULL, NULL, NULL, NULL, NULL, NULL,
     '/models/parts/ferrari-458/spoilers/carbon-gt-wing.glb', 'Gloss Carbon Fiber & CNC Aluminum'),
 
 (5, 'CARB-AERO-F458', 'Carbon Fiber Aerodynamics Package', 'Carbon Aero Kits', 'Track Aerodynamics',
     'Pre-preg carbon fiber front splitter extensions • Side skirts • Rear diffuser aero fins',
-    80000000, 3200, '/images/carbon-aero-package.jpg', 'Ferrari 458 Italia, Ferrari 458 Spider',
+    80000000, 3200, '/images/carbon-aero-package.jpg', 'Ferrari 458 Spider',
     4.93, 'TRACK SPEC', 4, 'PASS', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Pre-preg 2x2 Carbon Fiber'),
 
 (7, 'AKR-EVO-TITAN-992', 'Akrapovic Evolution Line Titanium Exhaust System', 'Exhaust Systems', 'Akrapovic',
     'Full Titanium construction • Bluetooth active flap control • -11.4 kg weight savings',
-    185000000, 7400, '/images/akrapovic-evolution-line.jpg', 'Porsche 911 Carrera (991), Ferrari 458 Italia',
+    185000000, 7400, '/images/akrapovic-evolution-line.jpg', 'Porsche 911 Carrera (991), Ferrari 458 Spider',
     4.95, 'SIGNATURE SOUND', 3, 'PASS', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Grade 5 Titanium'),
 
 (8, 'KW-35271842-V4CS', 'KW Suspensions V4 Clubsport 3-Way Coilover Kit', 'Coilovers & Shocks', 'KW Automotive',
@@ -394,7 +394,7 @@ VALUES
 
 (10, 'VOR-CF-AERO-992', 'GT3 Carbon Aero Wing', 'Carbon Aero Kits', 'GT3 Aerodynamics',
     'Motorsport-grade swan-neck carbon wing • High-downforce profile • CNC aluminum uprights',
-    145000000, 5800, '/images/gt3-carbon-wing.jpg', 'Ferrari 458 Italia, Porsche 911 Carrera (991), McLaren 720S',
+    145000000, 5800, '/images/gt3-carbon-wing.jpg', 'Ferrari 458 Spider, Porsche 911 Carrera (991), McLaren 720S',
     4.92, 'TRACK SPEC', 2, 'PASS', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Pre-preg Autoclave Carbon');
 SET IDENTITY_INSERT dbo.parts OFF;
 
@@ -417,7 +417,7 @@ SET IDENTITY_INSERT dbo.quotations ON;
 INSERT INTO dbo.quotations (quotation_id, quotation_number, customer_id, car_build_id, car_model, customer_name, customer_phone, garage_id, garage_name, parts_total, labor_total, discount_amount, tax_amount, final_total, status, legal_status, notes)
 VALUES
 (1, 'VT-QTE-2026-089', 5, 2, 'Porsche 911 Carrera (991)', 'Khoi Dang', '+84 988 776 655', 1, 'AutoTune Saigon Performance Hub', 345000000, 15000000, 20000000, 0, 340000000, 'APPROVED', 'PASS', 'High-downforce aero pack + BBS Forged Titanium wheels & Akrapovic Evolution Line exhaust'),
-(2, 'VT-QTE-2026-092', 5, 1, 'Ferrari 458 Italia', 'Khoi Dang', '+84 988 776 655', 1, 'AutoTune Saigon Performance Hub', 145000000, 10000000,  5000000, 0, 150000000, 'SENT',     'PASS', 'Brembo GT Big Brake Kit conversion package with 6-piston monobloc calipers');
+(2, 'VT-QTE-2026-092', 5, 1, 'Ferrari 458 Spider', 'Khoi Dang', '+84 988 776 655', 1, 'AutoTune Saigon Performance Hub', 145000000, 10000000,  5000000, 0, 150000000, 'SENT',     'PASS', 'Brembo GT Big Brake Kit conversion package with 6-piston monobloc calipers');
 SET IDENTITY_INSERT dbo.quotations OFF;
 
 SET IDENTITY_INSERT dbo.quotation_items ON;
@@ -447,7 +447,7 @@ SET IDENTITY_INSERT dbo.warranties OFF;
 GO
 
 PRINT '>>> VirtualTuneDB schema and seed data deployed successfully (100% English)';
-PRINT '>>> 5 Official Supercars: Ferrari 458 Italia | Lamborghini Aventador LP700 | Porsche 911 Carrera (991) | McLaren 720S | BMW Vision ConnectedDrive';
+PRINT '>>> 5 Official Supercars: Ferrari 458 Spider | Lamborghini Aventador LP700 | Porsche 911 Carrera (991) | McLaren 720S | BMW Vision ConnectedDrive';
 PRINT '>>> Accounts: admin | admin_garage | tech_lead | tech_junior | customer_vip';
 PRINT '>>> Default password: password123';
 GO

@@ -1,0 +1,254 @@
+package com.virtualtune.seeder;
+
+import com.virtualtune.model.Garage;
+import com.virtualtune.model.Permission;
+import com.virtualtune.model.Role;
+import com.virtualtune.model.User;
+import com.virtualtune.repository.GarageRepository;
+import com.virtualtune.repository.PermissionRepository;
+import com.virtualtune.repository.RoleRepository;
+import com.virtualtune.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+@Component
+public class UserAndGarageSeeder {
+
+    @Autowired
+    private GarageRepository garageRepository;
+
+    @Autowired
+    private PermissionRepository permissionRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public void seed() {
+        // 1. Garage
+        Garage garage;
+        if (garageRepository.count() == 0) {
+            garage = garageRepository.save(new Garage(
+                    null,
+                    "GARAGE-SGN-01",
+                    "AutoTune Saigon Performance Hub",
+                    "12 Sala Boulevard, An Loi Dong, Thu Duc City",
+                    "Ho Chi Minh City",
+                    "+84 28 3888 9999",
+                    "contact@autotune-saigon.vn",
+                    4, 3, 845000000L,
+                    new BigDecimal("99.98"), new BigDecimal("4.95"), "ACTIVE"
+            ));
+        } else {
+            garage = garageRepository.findAll().get(0);
+        }
+
+        // 2. Permissions
+        if (permissionRepository.count() == 0) {
+            permissionRepository.save(new Permission(null, "VIEW_DASHBOARD", "Executive Operations Dashboard", "DASHBOARD"));
+            permissionRepository.save(new Permission(null, "MANAGE_FINANCE", "Financial & Revenue Management", "FINANCE"));
+            permissionRepository.save(new Permission(null, "DISPATCH_BAY", "Service Bay Dispatch & Scheduling", "WORK_ORDER"));
+            permissionRepository.save(new Permission(null, "MANAGE_TEAM", "Staff & User Administration", "ACCOUNTS"));
+            permissionRepository.save(new Permission(null, "EXECUTE_WORK_ORDER", "Work Order Execution & Updates", "WORK_ORDER"));
+            permissionRepository.save(new Permission(null, "VALIDATE_FITMENT", "Fitment Tolerance Verification", "FITMENT"));
+            permissionRepository.save(new Permission(null, "CUSTOMIZE_3D", "3D CAD Studio Configurator", "STUDIO"));
+            permissionRepository.save(new Permission(null, "REQUEST_QUOTE", "Commercial Quotation Request", "QUOTATION"));
+            permissionRepository.save(new Permission(null, "VIEW_WARRANTY", "Digital Warranty Passport", "WARRANTY"));
+        }
+
+        List<Permission> allPerms = permissionRepository.findAll();
+
+        // 3. Roles
+        Role adminRole = roleRepository.findByRoleCode("ADMIN").orElseGet(() -> {
+            Role r = new Role(null, "ADMIN", "System Administrator", "Full system access, audit, security and multi-tenant management", "#EF4444");
+            r.setPermissions(new HashSet<>(allPerms));
+            return roleRepository.save(r);
+        });
+
+        Role garageOwnerRole = roleRepository.findByRoleCode("GARAGE_OWNER").orElseGet(() -> {
+            Role r = new Role(null, "GARAGE_OWNER", "Garage Owner (B2B)", "Executive management, bay dispatch, quotation approvals, team administration", "#6091C3");
+            r.setPermissions(new HashSet<>(allPerms));
+            return roleRepository.save(r);
+        });
+
+        Role techLeadRole = roleRepository.findByRoleCode("LEAD_TECHNICIAN").orElseGet(() -> {
+            Role r = new Role(null, "LEAD_TECHNICIAN", "Master Technician", "Work order execution, kinematic alignment, 3D CAD fitment & tolerance appraisal", "#10B981");
+            Set<Permission> techPerms = new HashSet<>();
+            allPerms.forEach(p -> {
+                if (p.getPermissionCode().equals("VIEW_DASHBOARD") ||
+                    p.getPermissionCode().equals("DISPATCH_BAY") ||
+                    p.getPermissionCode().equals("EXECUTE_WORK_ORDER") ||
+                    p.getPermissionCode().equals("VALIDATE_FITMENT") ||
+                    p.getPermissionCode().equals("CUSTOMIZE_3D") ||
+                    p.getPermissionCode().equals("VIEW_WARRANTY")) {
+                    techPerms.add(p);
+                }
+            });
+            r.setPermissions(techPerms);
+            return roleRepository.save(r);
+        });
+
+        roleRepository.findByRoleCode("TECHNICIAN").orElseGet(() -> {
+            Role r = new Role(null, "TECHNICIAN", "Service Technician", "Work order execution, kinematic alignment, fitment inspection", "#10B981");
+            Set<Permission> techPerms = new HashSet<>();
+            allPerms.forEach(p -> {
+                if (p.getPermissionCode().equals("VIEW_DASHBOARD") ||
+                    p.getPermissionCode().equals("DISPATCH_BAY") ||
+                    p.getPermissionCode().equals("EXECUTE_WORK_ORDER") ||
+                    p.getPermissionCode().equals("VALIDATE_FITMENT") ||
+                    p.getPermissionCode().equals("CUSTOMIZE_3D") ||
+                    p.getPermissionCode().equals("VIEW_WARRANTY")) {
+                    techPerms.add(p);
+                }
+            });
+            r.setPermissions(techPerms);
+            return roleRepository.save(r);
+        });
+
+        Role carOwnerRole = roleRepository.findByRoleCode("CAR_OWNER").orElseGet(() -> {
+            Role r = new Role(null, "CAR_OWNER", "VIP Client (Car Owner)", "3D exterior studio staging, instant quotation request, digital warranty passport", "#F59E0B");
+            Set<Permission> carPerms = new HashSet<>();
+            allPerms.forEach(p -> {
+                if (p.getPermissionCode().equals("CUSTOMIZE_3D") ||
+                    p.getPermissionCode().equals("REQUEST_QUOTE") ||
+                    p.getPermissionCode().equals("VIEW_WARRANTY")) {
+                    carPerms.add(p);
+                }
+            });
+            r.setPermissions(carPerms);
+            return roleRepository.save(r);
+        });
+
+        roleRepository.findByRoleCode("CUSTOMER").orElseGet(() -> {
+            Role r = new Role(null, "CUSTOMER", "Customer", "3D exterior studio staging, instant quotation request, digital warranty passport", "#F59E0B");
+            Set<Permission> carPerms = new HashSet<>();
+            allPerms.forEach(p -> {
+                if (p.getPermissionCode().equals("CUSTOMIZE_3D") ||
+                    p.getPermissionCode().equals("REQUEST_QUOTE") ||
+                    p.getPermissionCode().equals("VIEW_WARRANTY")) {
+                    carPerms.add(p);
+                }
+            });
+            r.setPermissions(carPerms);
+            return roleRepository.save(r);
+        });
+
+        // 4. Users
+        String defaultBcrypt = passwordEncoder.encode("password123");
+
+        if (userRepository.findByUsername("admin").isEmpty()) {
+            userRepository.save(new User(
+                    null,
+                    "admin",
+                    defaultBcrypt,
+                    "System Administrator",
+                    "admin@virtualtune.com",
+                    "+84 901 000 001",
+                    adminRole,
+                    garage,
+                    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
+                    "ACTIVE"
+            ));
+        }
+
+        if (userRepository.findByUsername("admin_garage").isEmpty()) {
+            userRepository.save(new User(
+                    null,
+                    "admin_garage",
+                    defaultBcrypt,
+                    "Tuan Tran",
+                    "tuan.tran@autotune-saigon.vn",
+                    "+84 908 112 345",
+                    garageOwnerRole,
+                    garage,
+                    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+                    "ACTIVE"
+            ));
+        }
+
+        if (userRepository.findByUsername("tech_lead").isEmpty()) {
+            userRepository.save(new User(
+                    null,
+                    "tech_lead",
+                    defaultBcrypt,
+                    "Long Nguyen",
+                    "long.tech@autotune-saigon.vn",
+                    "+84 912 345 678",
+                    techLeadRole,
+                    garage,
+                    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
+                    "ACTIVE"
+            ));
+        }
+
+        if (userRepository.findByUsername("customer_vip").isEmpty()) {
+            userRepository.save(new User(
+                    null,
+                    "customer_vip",
+                    defaultBcrypt,
+                    "Khoi Dang",
+                    "khoi.dang@gmail.com",
+                    "+84 988 776 655",
+                    carOwnerRole,
+                    null,
+                    "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150",
+                    "ACTIVE"
+            ));
+        }
+
+        if (userRepository.findByUsername("tech_junior").isEmpty()) {
+            userRepository.save(new User(
+                    null,
+                    "tech_junior",
+                    defaultBcrypt,
+                    "Duc Vu",
+                    "duc.vu@autotune-saigon.vn",
+                    "+84 933 889 900",
+                    techLeadRole,
+                    garage,
+                    "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150",
+                    "ACTIVE"
+            ));
+        }
+    }
+
+    public void syncAccounts() {
+        Map<String, String> englishNames = Map.of(
+                "admin", "System Administrator",
+                "admin_garage", "Tuan Tran",
+                "tech_lead", "Long Nguyen",
+                "customer_vip", "Khoi Dang",
+                "tech_junior", "Duc Vu"
+        );
+
+        englishNames.forEach((username, cleanName) -> {
+            userRepository.findByUsername(username).ifPresent(u -> {
+                boolean needsSave = false;
+                if (!passwordEncoder.matches("password123", u.getPasswordHash())) {
+                    u.setPasswordHash(passwordEncoder.encode("password123"));
+                    needsSave = true;
+                }
+                if (u.getFullName() == null || !u.getFullName().equals(cleanName)) {
+                    u.setFullName(cleanName);
+                    needsSave = true;
+                }
+                if (needsSave) {
+                    userRepository.save(u);
+                }
+            });
+        });
+    }
+}
+

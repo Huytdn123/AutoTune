@@ -143,7 +143,7 @@ export default function QuotationInvoicePage() {
 
       const payload = {
         shareCode: b.shareCode,
-        carModel: cfg.carName || `${b.car?.brand || 'Ferrari'} ${b.car?.model || '458 Italia'}`,
+        carModel: cfg.carName || `${b.car?.brand || 'Ferrari'} ${b.car?.model || '458 Spider'}`,
         customerName: currentUser?.fullName || 'Virtual Tune VIP Client',
         customerPhone: currentUser?.phone || '+84 908 123 456',
         notes: `3D Custom Build (${b.shareCode}): Paint ${cfg.bodyColorName || b.bodyColor}, Interior ${cfg.interiorColorName || 'Leather'}, Wheels ${cfg.selectedWheelSku || 'OEM'}, Bodykit ${cfg.selectedBodykitSku || 'OEM'}, Spoiler ${cfg.selectedSpoilerSku || 'OEM'}.`,
@@ -371,7 +371,7 @@ export default function QuotationInvoicePage() {
                     <span className="text-xs font-mono text-[#64748B] dark:text-[#94A3B8]">Build Code: {buildPreview.build.shareCode}</span>
                   </div>
                   <h2 className="text-lg font-black text-[#111827] dark:text-[#F8FAFC] mt-1">
-                    {buildPreview.config?.carName || buildPreview.build.buildName || 'Ferrari 458 Italia Custom Build'}
+                    {buildPreview.config?.carName || buildPreview.build.buildName || 'Ferrari 458 Spider Custom Build'}
                   </h2>
                   <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-0.5">
                     Exterior: <strong className="text-[#111827]">{buildPreview.config?.bodyColorName || buildPreview.build.bodyColor}</strong> · 
