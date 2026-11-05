@@ -23,7 +23,9 @@ export default function WheelSelector({
   // Other wheel options if available from catalog
   const extraWheels = partsCatalog.filter(
     p => p.sku !== 'WORK-VSXX-19-F458' &&
-         (p.category?.toLowerCase().includes('wheel') || p.sku?.includes('FIR') || p.sku?.includes('TE37'))
+         !p.sku?.includes('TE37') &&
+         !p.name?.toLowerCase().includes('te37') &&
+         (p.category?.toLowerCase().includes('wheel') || p.sku?.includes('FIR') || p.sku?.includes('BBS'))
   )
 
   const isWorkSelected = Boolean(
@@ -201,7 +203,7 @@ export default function WheelSelector({
                 isDark ? 'bg-black/50 border-white/15' : 'bg-white border-slate-200'
               }`}>
                 <img
-                  src={wheel.imageUrl || (wheel.sku?.includes('TE37') ? '/images/rays-te37-ultra.jpg' : '/images/bbs-fi-r-wheel.jpg')}
+                  src={wheel.imageUrl || '/images/bbs-lm-wheel.jpg'}
                   alt={wheel.name || wheel.partName}
                   className="w-full h-full object-contain"
                 />

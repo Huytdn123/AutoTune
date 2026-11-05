@@ -52,7 +52,7 @@ export default function PerformanceHardwareSelector({
             } else if (/brembo/i.test(rawName) || /brake/i.test(hw.category || '') || hw.sku === 'BRM-1N1.9042A2') {
               imgUrl = '/images/brembo-gt-brake-kit.jpg'
             } else {
-              imgUrl = '/images/vorsteiner-carbon-aero.jpg'
+              imgUrl = '/images/gt3-carbon-wing.jpg'
             }
           }
 

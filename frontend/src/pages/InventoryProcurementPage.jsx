@@ -13,7 +13,7 @@ const PART_IMAGES = {
   'AKR-EVO-TITAN-992': '/images/akrapovic-evolution-line.jpg',
   'KW-35271842-V4CS': '/images/kw-v4-clubsport.jpg',
   'BRM-1N1.9042A2': '/images/brembo-gt-brake-kit.jpg',
-  'VOR-CF-AERO-992': '/images/vorsteiner-carbon-aero.jpg'
+  'VOR-CF-AERO-992': '/images/gt3-carbon-wing.jpg'
 }
 
 const INVENTORY_CATEGORIES = [

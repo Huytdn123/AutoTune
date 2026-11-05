@@ -1,6 +1,6 @@
 import { useRef, useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useGLTF } from '@react-three/drei'
+import { useGLTF, useFBX } from '@react-three/drei'
 import * as THREE from 'three'
 import {
   CAR_MODEL_FILES,
@@ -15,8 +15,8 @@ useGLTF.preload(CAR_MODEL_FILES['ferrari-458'], DRACO_PATH)
 useGLTF.preload(CAR_MODEL_FILES['vinfast-vf3'], DRACO_PATH)
 useGLTF.preload(PART_MODEL_FILES['wheel-work-vsxx-19'])
 useGLTF.preload(PART_MODEL_FILES['wheel-bbs-lm-20'])
-useGLTF.preload(PART_MODEL_FILES['wheel-rays-te37-20'])
 useGLTF.preload(PART_MODEL_FILES['spoiler-bcl-wing'])
+useFBX.preload(PART_MODEL_FILES['spoiler-gt3-wing'])
 useGLTF.preload(PART_MODEL_FILES['brakes-brembo-gt'])
 useGLTF.preload(PART_MODEL_FILES['exhaust-akrapovic'])
 
@@ -52,8 +52,8 @@ export default function VehicleModel3D({
   const { scene } = useGLTF(modelPath || CAR_MODEL_FILES['ferrari-458'], DRACO_PATH)
   const workVsxxGLB = useGLTF(PART_MODEL_FILES['wheel-work-vsxx-19'])
   const bbsLmGLB    = useGLTF(PART_MODEL_FILES['wheel-bbs-lm-20'])
-  const te37GLB     = useGLTF(PART_MODEL_FILES['wheel-rays-te37-20'])
   const bclWingGLB  = useGLTF(PART_MODEL_FILES['spoiler-bcl-wing'])
+  const gt3WingFBX  = useFBX(PART_MODEL_FILES['spoiler-gt3-wing'])
   const bremboGLB   = useGLTF(PART_MODEL_FILES['brakes-brembo-gt'])
   const exhaustGLB  = useGLTF(PART_MODEL_FILES['exhaust-akrapovic'])
   const groupRef = useRef()
@@ -372,7 +372,7 @@ export default function VehicleModel3D({
     customGroup.name = 'VirtualTune_Custom_Parts'
     clonedScene.add(customGroup)
 
-    // ── A. WHEEL SWAP: OEM ↔ AFTERMARKET WHEELS (WORK VS-XX, BBS LM, VOLK TE37) ──
+    // ── A. WHEEL SWAP: OEM ↔ AFTERMARKET WHEELS (WORK VS-XX, BBS LM) ──
     const wheelSku = typeof selectedWheel === 'string'
       ? selectedWheel
       : (selectedWheel?.sku || selectedWheel?.name || '')
@@ -392,14 +392,7 @@ export default function VehicleModel3D({
       wheelSku.toLowerCase().includes('lm')
     )
 
-    const isVolkTe37 = Boolean(
-      wheelSku === 'RAYS-TE37-ULTRA-20' ||
-      wheelSku === 'wheel-rays-te37-20' ||
-      wheelSku.toLowerCase().includes('te37') ||
-      wheelSku.toLowerCase().includes('rays')
-    )
-
-    const isAftermarketWheel = isWorkVsxx || isBbsLm || isVolkTe37
+    const isAftermarketWheel = isWorkVsxx || isBbsLm
 
     clonedScene.traverse(child => {
       const name = (child.name || '').toLowerCase()
@@ -461,8 +454,7 @@ export default function VehicleModel3D({
           customGroup.add(wheelClone)
         })
       } else if (isBbsLm && bbsLmGLB?.scene) {
-        // BBS LM Gold Wheels 20"
-        const isGold = !detailsColor || detailsColor.toUpperCase() === '#B87A2A' || detailsColor.toUpperCase() === '#D4AF37'
+        // BBS LM Wheels 20"
         wheelMounts.forEach(mount => {
           const mountContainer = new THREE.Group()
           mountContainer.name = `custom_bbs_lm_${mount.name}`
@@ -472,69 +464,28 @@ export default function VehicleModel3D({
           const wheelClone = bbsLmGLB.scene.clone(true)
           const bbsScale = 0.1387
           wheelClone.scale.set(bbsScale, bbsScale, bbsScale)
-          wheelClone.rotation.set(-Math.PI / 2, 0, 0)
-          wheelClone.position.set(0, 0, -0.1486)
+          wheelClone.rotation.set(Math.PI / 2, 0, 0)
+          wheelClone.position.set(0, 0, -0.0216)
 
           wheelClone.traverse(c => {
             if (c.isMesh) {
+              const n = (c.name || '').toLowerCase()
+              // Hide the flat background cylinder mesh that blocks the wheel spokes & Ferrari brakes
+              if (n.includes('cylinder') || (c.material && c.material.name === 'Material.003')) {
+                c.visible = false
+                return
+              }
+
               c.castShadow = true
               c.receiveShadow = true
-              // Recolor ONLY Material.002 (Rim face/spokes). Preserve Material.001 (Center cap BBS logo) and Material.003 (inner barrel).
+
+              // Recolor Material.002 (Rim face/spokes). Preserve Material.001 (Center cap BBS logo)
               if (c.material && c.material.name === 'Material.002') {
                 c.material = c.material.clone()
-                if (isGold) {
-                  c.material.color.set('#D4AF37')
-                  c.material.metalness = 0.85
-                  c.material.roughness = 0.25
-                } else {
-                  c.material.map = null
-                  c.material.color.set(detailsColor)
-                  c.material.metalness = finishPreset.metalness || 0.85
-                  c.material.roughness = finishPreset.roughness || 0.20
-                }
-                c.material.needsUpdate = true
-              }
-            }
-          })
-
-          mountContainer.add(wheelClone)
-          customGroup.add(mountContainer)
-        })
-      } else if (isVolkTe37 && te37GLB?.scene) {
-        // Volk Racing TE37 20"
-        wheelMounts.forEach(mount => {
-          const mountContainer = new THREE.Group()
-          mountContainer.name = `custom_volk_te37_${mount.name}`
-          mountContainer.position.set(...mount.pos)
-          mountContainer.rotation.set(0, mount.rotY, 0)
-
-          const wheelClone = te37GLB.scene.clone(true)
-          // Hide duplicate tire and brake meshes so it cleanly integrates with Ferrari OEM tires & Brembo brakes
-          wheelClone.traverse(c => {
-            const n = (c.name || '').toLowerCase()
-            if (c.isMesh) {
-              if (n.includes('tire') || n.includes('tyre') || n.includes('brake') || n.includes('brembo') || n.includes('pad') || n.includes('caliper')) {
-                c.visible = false
-              }
-            }
-          })
-
-          const teScale = 0.08217
-          wheelClone.scale.set(teScale, teScale, teScale)
-          wheelClone.rotation.set(-Math.PI / 2, 0, 0)
-          wheelClone.position.set(0, 0, -0.0698)
-
-          wheelClone.traverse(c => {
-            if (c.isMesh && c.visible) {
-              c.castShadow = true
-              c.receiveShadow = true
-              // Recolor ONLY Material 4 'material' (the rim/spokes mesh 'Rim_001_Rim_0').
-              // Preserve Volk decals, Rays decals, Rim_Nut, Rim.001 center cap.
-              if (c.material && (c.material.name === 'material' || (c.name || '').includes('Rim_001'))) {
-                c.material = c.material.clone()
-                c.material.color.set(detailsColor || '#8C6A3A')
-                c.material.metalness = finishPreset.metalness || 0.80
-                c.material.roughness = finishPreset.roughness || 0.28
+                c.material.map = null
+                c.material.color.set(detailsColor || finishPreset.hex)
+                c.material.metalness = finishPreset.metalness ?? 0.85
+                c.material.roughness = finishPreset.roughness ?? 0.22
                 c.material.needsUpdate = true
               }
             }
@@ -546,23 +497,43 @@ export default function VehicleModel3D({
       }
     }
 
-    // ── B. REAR SPOILER: OEM ↔ REAL BIG COUNTRY LABS STYLE GT WING ──
+    // ── B. REAR SPOILER: OEM ↔ OPTION 1: CARBON AERO GT WING ↔ OPTION 2: GT3 CARBON AERO WING ──
     const isBCLWing = Boolean(
       selectedSpoiler && (
         selectedSpoiler === 'bcl-gt-wing' ||
         selectedSpoiler === 'big-country-labs-style-wing' ||
         selectedSpoiler === 'carbon-gt-wing' ||
+        selectedSpoiler === 'GEN-GTWING-F458' ||
         selectedSpoiler?.sku === 'GEN-GTWING-F458' ||
         (selectedSpoiler?.assetUrl || '').includes('big-country-labs') ||
-        (typeof selectedSpoiler === 'string' && (
-          selectedSpoiler.toLowerCase().includes('wing') ||
-          selectedSpoiler.toLowerCase().includes('spoiler') ||
+        (typeof selectedSpoiler === 'string' && !selectedSpoiler.toLowerCase().includes('gt3') && !selectedSpoiler.toLowerCase().includes('vorsteiner') && (
           selectedSpoiler.toLowerCase().includes('bcl') ||
-          selectedSpoiler.toLowerCase().includes('country')
+          selectedSpoiler.toLowerCase().includes('country') ||
+          selectedSpoiler.toLowerCase().includes('gen-gtwing')
         ))
       )
     )
 
+    const isGT3Wing = Boolean(
+      selectedSpoiler && (
+        selectedSpoiler === 'VOR-CF-AERO-992' ||
+        selectedSpoiler === 'gt3-carbon-aero-wing' ||
+        selectedSpoiler === 'free_gt3_spoiler_v01' ||
+        selectedSpoiler?.sku === 'VOR-CF-AERO-992' ||
+        (selectedSpoiler?.assetUrl || '').includes('free_gt3_spoiler') ||
+        (typeof selectedSpoiler === 'string' && (
+          selectedSpoiler.toLowerCase().includes('gt3') ||
+          selectedSpoiler.toLowerCase().includes('vorsteiner') ||
+          selectedSpoiler.toLowerCase().includes('vor-cf-aero')
+        )) ||
+        (typeof selectedSpoiler?.name === 'string' && (
+          selectedSpoiler.name.toLowerCase().includes('gt3') ||
+          selectedSpoiler.name.toLowerCase().includes('vorsteiner')
+        ))
+      )
+    )
+
+    // Option 1: Carbon Aero GT Wing (Preserved 100% Intact)
     if (isBCLWing && bclWingGLB?.scene) {
       const wingMountGroup = new THREE.Group()
       wingMountGroup.name = 'custom_spoiler_bcl_wing'
@@ -598,6 +569,61 @@ export default function VehicleModel3D({
       wingMountGroup.add(wingClone)
       wingMountGroup.position.set(0, 0.915, 1.25)
       customGroup.add(wingMountGroup)
+    }
+
+    // Option 2: GT3 Carbon Aero Wing (Real 3D FBX Swan-Neck Downforce Wing)
+    if (isGT3Wing && gt3WingFBX) {
+      const gt3MountGroup = new THREE.Group()
+      gt3MountGroup.name = 'custom_spoiler_gt3_wing'
+
+      const wingClone = gt3WingFBX.clone(true)
+
+      // High-performance PBR Motorsport materials
+      const carbonBladeMaterial = new THREE.MeshPhysicalMaterial({
+        name: 'gt3_carbon_blade',
+        color: new THREE.Color('#18181c'),
+        metalness: 0.85,
+        roughness: 0.22,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.04,
+        envMapIntensity: 1.5,
+      })
+
+      const bracketMaterial = new THREE.MeshStandardMaterial({
+        name: 'gt3_swan_neck_brackets',
+        color: new THREE.Color('#151517'),
+        metalness: 0.88,
+        roughness: 0.28,
+        envMapIntensity: 1.2,
+      })
+
+      wingClone.traverse(child => {
+        if (child.isMesh) {
+          child.castShadow = true
+          child.receiveShadow = true
+          const meshName = (child.name || '').toLowerCase()
+          if (meshName.includes('plane007') || meshName.includes('plane004') || meshName.includes('plane008')) {
+            child.material = bracketMaterial
+          } else {
+            // Plane, Plane001, Plane002 (Airfoil Blade & Endplates)
+            child.material = carbonBladeMaterial
+          }
+        }
+      })
+
+      const scale = 0.0090
+      wingClone.scale.set(scale, scale, scale)
+      // Correct motorsport orientation:
+      // Rotate 180 deg around Y so aerodynamic leading edge faces forward and trailing strakes point rearward
+      wingClone.rotation.y = Math.PI
+      // Local offset so rotated upright feet base (Y=88.192, Z=12.69) sits flush at mount group origin (0, 0, 0)
+      wingClone.position.set(0, -88.192 * scale, 12.69 * scale)
+
+      gt3MountGroup.add(wingClone)
+      // Mount precisely on Ferrari 458 rear trunk lid (behind the engine glass canopy):
+      // Upright feet anchor flush at Y=0.885, Z=1.82, with airfoil blade suspended over the rear decklid and ducktail lip
+      gt3MountGroup.position.set(0, 0.885, 1.82)
+      customGroup.add(gt3MountGroup)
     }
 
     // ── C. BODY & AERO: OEM ↔ CARBON AERO PACKAGE ──
@@ -756,8 +782,8 @@ export default function VehicleModel3D({
     selectedParts,
     workVsxxGLB,
     bbsLmGLB,
-    te37GLB,
     bclWingGLB,
+    gt3WingFBX,
     bremboGLB,
     exhaustGLB,
     detailsMaterial,

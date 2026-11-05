@@ -360,13 +360,7 @@ VALUES
     4.90, 'HOT / BESTSELLER', 8, 'PASS', '5x114.3', 20.0, 9.5, 35, 67.1, NULL, NULL,
     '/models/parts/ferrari-458/wheels/bbs-lm.glb', 'Forged Monoblock Alloy'),
 
-(2, 'RAYS-TE37-ULTRA-20', 'Volk Racing TE37 20"', 'Wheels & Rims', 'Rays Japan',
-    'Motorsport-grade 6-spoke forged monoblock • PCD 5x114.3 • Bronze Anodized finish',
-    185000000, 7400, '/images/volk-te37-wheel.jpg', 'Ferrari 458 Italia, Ferrari 458 Spider',
-    5.00, 'TRACK LEGEND', 6, 'PASS', '5x114.3', 20.0, 10.0, 30, 67.1, NULL, NULL,
-    '/models/parts/ferrari-458/wheels/volk-te37.glb', 'Motorsport Forged Monoblock'),
-
-(3, 'WORK-VSXX-19-F458', 'WORK VS-XX 19" Aftermarket Wheel', 'Wheels & Rims', 'WORK Wheels',
+(2, 'WORK-VSXX-19-F458', 'WORK VS-XX 19" Aftermarket Wheel', 'Wheels & Rims', 'WORK Wheels',
     '19-inch 3-piece modular forged construction • Classic mesh design • PCD 5x114.3',
     105000000, 4200, '/images/work-vs-xx-wheel.jpg', 'Ferrari 458 Italia, Ferrari 458 Spider',
     4.95, 'CC BY 4.0 VERIFIED', 8, 'PASS', '5x114.3', 19.0, 10.0, 30, 67.1, NULL, NULL,
@@ -398,10 +392,10 @@ VALUES
     96250000, 3850, '/images/brembo-gt-brake-kit.jpg', 'Universal Supercar Hubs (Ferrari 458, Porsche 911, McLaren 720S)',
     4.98, 'RACING SPEC', 5, 'PASS', 'Universal', NULL, NULL, NULL, NULL, 380, 19.0, NULL, 'Forged Monoblock Aluminum'),
 
-(10, 'VOR-CF-AERO-992', 'Vorsteiner Aero Carbon Wing & Rear Diffuser Package', 'Carbon Aero Kits', 'Vorsteiner USA',
-    'Pre-preg 2x2 weave vacuum autoclave carbon • Aerodynamic downforce profile',
-    145000000, 5800, '/images/vorsteiner-carbon-aero.jpg', 'Porsche 911 Carrera (991), McLaren 720S, BMW Vision ConnectedDrive',
-    4.90, 'ULTRA LIGHTWEIGHT', 2, 'PASS', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Pre-preg Autoclave Carbon');
+(10, 'VOR-CF-AERO-992', 'GT3 Carbon Aero Wing', 'Carbon Aero Kits', 'GT3 Aerodynamics',
+    'Motorsport-grade swan-neck carbon wing • High-downforce profile • CNC aluminum uprights',
+    145000000, 5800, '/images/gt3-carbon-wing.jpg', 'Ferrari 458 Italia, Porsche 911 Carrera (991), McLaren 720S',
+    4.92, 'TRACK SPEC', 2, 'PASS', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Pre-preg Autoclave Carbon');
 SET IDENTITY_INSERT dbo.parts OFF;
 
 -- 4.8 CarBuilds (Saved 3D Builds with Valid Share Codes)

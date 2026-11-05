@@ -35,7 +35,7 @@
 1. **3D Real-time Car Tuning Studio:**
    - Dựng hình xe 3D tương tác thời gian thực với hệ thống ánh sáng studio và bản đồ phản chiếu môi trường (Environment HDR).
    - Tùy biến màu sơn PBR chuyên nghiệp (Metallic, Solid, Pearl, Satin) với lớp phủ bóng trong suốt (Clearcoat).
-   - Hoán đổi mâm xe Aftermarket (BBS LM, Volk Racing TE37, WORK VS-XX) và cánh gió thể thao (Big Country Labs Style Wing).
+   - Hoán đổi mâm xe Aftermarket (BBS LM, WORK VS-XX) và cánh gió thể thao (Big Country Labs Style GT Wing, GT3 Carbon Aero Wing).
    - Góc nhìn camera định sẵn (3/4 Front, Side Profile, Rear Wing, Wheel Close-up) cùng chế độ xoay tự động 360°.
 
 2. **Fitment Engine (Kiểm Tra Tương Thích CAD):**

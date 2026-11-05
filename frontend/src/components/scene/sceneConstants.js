@@ -15,8 +15,8 @@ export const CAR_MODEL_FILES = {
 export const PART_MODEL_FILES = {
   'wheel-work-vsxx-19': '/models/parts/ferrari-458/wheels/work-vs-xx.glb',
   'wheel-bbs-lm-20':    '/models/parts/ferrari-458/wheels/bbs-lm.glb',
-  'wheel-rays-te37-20': '/models/parts/ferrari-458/wheels/volk-te37.glb',
   'spoiler-bcl-wing':   '/models/parts/ferrari-458/spoilers/big-country-labs-style-wing.glb',
+  'spoiler-gt3-wing':   '/models/parts/ferrari-458/spoilers/free_gt3_spoiler_v01.fbx',
   'brakes-brembo-gt':   '/models/parts/ferrari-458/brakes/brembo-gt-brakes.glb',
   'exhaust-akrapovic':  '/models/parts/ferrari-458/exhaust/akrapovic-exhaust-tips.glb',
 }

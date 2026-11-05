@@ -71,13 +71,7 @@ export default function ConfiguratorPage() {
 
   // 3D Physical Customization States (Geometry-level Real Part Swaps)
   const [selectedWheel,   setSelectedWheel]   = useState(null)  // null = OEM, or part sku / id
-  const [wheelFinish,     setWheelFinish]     = useState('GLOSS_BLACK')
-  const [wheelColorMap,   setWheelColorMap]   = useState({
-    oem: '#CCCCCC',
-    'WORK-VSXX-19-F458': '#111111',
-    'BBS-FIR-992-TITAN': '#B87A2A',
-    'RAYS-TE37-ULTRA-20': '#8C6A3A',
-  }) // GLOSS_BLACK, SATIN_BLACK, SILVER, GUNMETAL
+  const [wheelFinish,     setWheelFinish]     = useState('GLOSS_BLACK') // GLOSS_BLACK, SATIN_BLACK, SILVER, GUNMETAL
   const [selectedBodykit, setSelectedBodykit] = useState(null)  // null = OEM, or part sku / id
   const [selectedSpoiler, setSelectedSpoiler] = useState(null)  // null = OEM, 'big-country-labs-style-wing'
 
@@ -193,10 +187,6 @@ export default function ConfiguratorPage() {
     if (!part) {
       setSelectedWheel(null)
       setSelectedParts(prev => prev.filter(p => !p.category?.toLowerCase().includes('wheel') && !p.sku?.includes('WORK') && !p.sku?.includes('NOV') && !p.sku?.includes('BBS') && !p.sku?.includes('RAYS')))
-      // Restore OEM remembered color
-      const oemCol = wheelColorMap['oem'] || '#CCCCCC'
-      setRimColor(oemCol)
-      setSelectedRim(RIM_COLORS.find(c => c.hex.toLowerCase() === oemCol.toLowerCase()) || { hex: oemCol, name: 'OEM Rim' })
       glideCameraTo([4.6, 1.9, 5.5], [0, 0.45, 0], '3/4 Front')
     } else {
       const sku = part.sku || 'WORK-VSXX-19-F458'
@@ -205,18 +195,10 @@ export default function ConfiguratorPage() {
         const filtered = prev.filter(p => !p.category?.toLowerCase().includes('wheel') && !p.sku?.includes('WORK') && !p.sku?.includes('NOV') && !p.sku?.includes('BBS') && !p.sku?.includes('RAYS'))
         return [...filtered, part]
       })
-      // Restore this wheel's independent remembered color
-      const savedCol = wheelColorMap[sku] || (
-        sku.includes('FIR') || sku.includes('BBS') ? '#B87A2A' :
-        sku.includes('TE37') || sku.includes('RAYS') ? '#8C6A3A' :
-        sku.includes('WORK') ? '#111111' : '#CCCCCC'
-      )
-      setRimColor(savedCol)
-      setSelectedRim(RIM_COLORS.find(c => c.hex.toLowerCase() === savedCol.toLowerCase()) || { hex: savedCol, name: 'Custom Rim' })
       // Glides directly to close-up on front wheel dish, deep rim lip, and brake caliper
       glideCameraTo([2.15, 0.58, 2.05], [0.92, 0.36, 1.18], null)
     }
-  }, [glideCameraTo, wheelColorMap])
+  }, [glideCameraTo])
 
   const handleToggleBodykit = useCallback((part) => {
     setAutoRotate(false)
@@ -272,7 +254,7 @@ export default function ConfiguratorPage() {
           return [...filtered, targetPart]
         })
         // Dramatic elevated rear 3/4 overlooking carbon GT wing blade, uprights, and rear decklid
-        glideCameraTo([1.85, 1.65, -3.2], [0, 0.95, -1.35], null)
+        glideCameraTo([1.85, 1.65, -3.2], [0, 1.0, -1.75], null)
         return targetSku === 'GEN-GTWING-F458' ? 'big-country-labs-style-wing' : targetSku
       }
     })
@@ -405,11 +387,11 @@ export default function ConfiguratorPage() {
                 setSelectedParts(cfg.selectedParts)
                 const w = cfg.selectedParts.find(p => (p.category || '').toLowerCase().includes('wheel') || (p.sku || '').includes('WORK') || (p.sku || '').includes('VSXX'))
                 setSelectedWheel(w ? (w.sku || 'WORK-VSXX-19-F458') : (cfg.selectedWheelSku || null))
-                const b = cfg.selectedParts.find(p => (p.category || '').toLowerCase().includes('aero') || (p.sku || '').includes('AERO'))
+                const b = cfg.selectedParts.find(p => p.sku !== 'VOR-CF-AERO-992' && ((p.category || '').toLowerCase().includes('aero') || (p.sku || '').includes('AERO')))
                 setSelectedBodykit(b ? (b.sku || 'carbon-aero') : (cfg.bodyAeroEnabled ? 'carbon-aero' : (cfg.selectedBodykitSku || null)))
-                const s = cfg.selectedParts.find(p => (p.category || '').toLowerCase().includes('spoiler') || (p.sku || '').includes('WING') || (p.sku || '').includes('GTWING') || (p.sku || '').includes('BCL'))
+                const s = cfg.selectedParts.find(p => (p.category || '').toLowerCase().includes('spoiler') || (p.sku || '').includes('WING') || (p.sku || '').includes('GTWING') || (p.sku || '').includes('BCL') || p.sku === 'VOR-CF-AERO-992')
                 if (s) {
-                  setSelectedSpoiler('big-country-labs-style-wing')
+                  setSelectedSpoiler(s.sku === 'VOR-CF-AERO-992' ? 'VOR-CF-AERO-992' : 'big-country-labs-style-wing')
                 } else if (cfg.selectedSpoilerSku) {
                   setSelectedSpoiler(cfg.selectedSpoilerSku)
                 } else {
@@ -479,14 +461,9 @@ export default function ConfiguratorPage() {
     setAutoRotate(false)
     setSelectedRim(color)
     setRimColor(color.hex)
-    const activeKey = selectedWheel || 'oem'
-    setWheelColorMap(prev => ({
-      ...prev,
-      [activeKey]: color.hex,
-    }))
     // Close-up on front-left wheel dish, rim finish, and brake caliper
     glideCameraTo([2.15, 0.58, 2.05], [0.92, 0.36, 1.18], null)
-  }, [glideCameraTo, selectedWheel])
+  }, [glideCameraTo])
 
   const handleGlassColor = useCallback((color) => {
     setAutoRotate(false)

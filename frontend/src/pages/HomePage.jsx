@@ -20,7 +20,7 @@ const CUSTOMIZATION_CATEGORIES = [
     id: 'wheels',
     title: 'Forged Monoblock & Modular Wheels',
     subtitle: 'Track-Tuned Lightweight Rims',
-    desc: 'BBS LM Forged Monoblock, Volk Racing TE37, WORK VS-XX. Drastically lowers unsprung rotational mass for razor-sharp steering feedback.',
+    desc: 'BBS LM Forged Monoblock, WORK VS-XX. Drastically lowers unsprung rotational mass for razor-sharp steering feedback.',
     image: '/images/bbs-fi-r-wheel.jpg',
     specs: ['PCD 5x114.3 / 5x130 Bolt Patterns', 'Aerospace 6061-T6 Forged Aluminum', 'Unsprung Mass Reduction up to -18.4%'],
     actionLabel: 'Browse Wheels in Store',

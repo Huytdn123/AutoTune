@@ -3,7 +3,7 @@ import React from 'react'
 /**
  * SpoilerSelector - Image-First 2D Visual Product Cards for Rear Spoiler & Wing (Group 3)
  * Strictly contains rear spoilers, GT wings, and aero wing packages.
- * Includes Vorsteiner Aero Carbon Wing Package and Big Country Labs Style GT Wing.
+ * Includes Carbon Aero GT Wing and GT3 Carbon Aero Wing.
  */
 export default function SpoilerSelector({
   partsCatalog = [],
@@ -20,17 +20,17 @@ export default function SpoilerSelector({
     brand: 'Track Aerodynamics'
   }
 
-  // Vorsteiner Aero Carbon Wing & Diffuser package (classified under Rear Spoiler & Wing)
-  const vorsteinerPart = partsCatalog.find(p => p.sku === 'VOR-CF-AERO-992') || {
+  // GT3 Carbon Aero Wing (replaces Vorsteiner option)
+  const gt3WingPart = partsCatalog.find(p => p.sku === 'VOR-CF-AERO-992') || {
     sku: 'VOR-CF-AERO-992',
-    name: 'Vorsteiner Aero Carbon Wing & Rear Diffuser Package',
-    partName: 'Vorsteiner Aero Carbon Wing & Rear Diffuser Package',
+    name: 'GT3 Carbon Aero Wing',
+    partName: 'GT3 Carbon Aero Wing',
     priceUsd: 5800,
-    imageUrl: '/images/vorsteiner-carbon-aero.jpg',
-    brand: 'Vorsteiner USA'
+    imageUrl: '/images/gt3-carbon-wing.jpg',
+    brand: 'GT3 AERODYNAMICS'
   }
 
-  const wingOptions = [gtWingPart, vorsteinerPart]
+  const wingOptions = [gtWingPart, gt3WingPart]
 
   return (
     <div className="space-y-2.5">
@@ -53,7 +53,8 @@ export default function SpoilerSelector({
           const isThisChecked = Boolean(
             selectedSpoiler &&
             (selectedSpoiler === wing.sku ||
-             (wing.sku === 'GEN-GTWING-F458' && selectedSpoiler === 'big-country-labs-style-wing'))
+             (wing.sku === 'GEN-GTWING-F458' && selectedSpoiler === 'big-country-labs-style-wing') ||
+             (wing.sku === 'VOR-CF-AERO-992' && (selectedSpoiler === 'VOR-CF-AERO-992' || selectedSpoiler === 'gt3-carbon-aero-wing')))
           )
 
           return (
@@ -80,7 +81,7 @@ export default function SpoilerSelector({
                 }`}
               >
                 <img
-                  src={wing.imageUrl || (wing.sku === 'GEN-GTWING-F458' ? '/images/carbon-gt-wing.jpg' : '/images/vorsteiner-carbon-aero.jpg')}
+                  src={wing.imageUrl || (wing.sku === 'GEN-GTWING-F458' ? '/images/carbon-gt-wing.jpg' : '/images/gt3-carbon-wing.jpg')}
                   alt={wing.name || wing.partName}
                   className="w-full h-full object-contain"
                 />
@@ -92,7 +93,7 @@ export default function SpoilerSelector({
                   <span className={`text-[10px] font-mono uppercase font-black tracking-wider ${
                     isDark ? 'text-[#6091C3]' : 'text-[#0213B2]'
                   }`}>
-                    {wing.brand || 'Track Spec'}
+                    {wing.brand || 'GT3 AERODYNAMICS'}
                   </span>
                   <span className="px-1.5 py-0.5 rounded text-[8.5px] font-mono font-bold bg-[#DCFCE7]/20 text-[#16A34A] border border-[#16A34A]/30">
                     Track Wing
@@ -107,7 +108,7 @@ export default function SpoilerSelector({
                   isDark ? 'text-white/40' : 'text-slate-600 font-medium'
                 }`}>
                   {wing.sku === 'VOR-CF-AERO-992'
-                    ? 'Carbon Wing Blade + Rear Diffuser'
+                    ? 'GT3 Carbon Rear Wing'
                     : 'Carbon Airfoil · Twin Uprights'}
                 </p>
                 <div className="mt-1 flex items-center justify-between">
