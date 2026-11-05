@@ -7,14 +7,14 @@
 ![React](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-6.0-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Three.js](https://img.shields.io/badge/Three.js-r170-black?style=for-the-badge&logo=threedotjs&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![H2 Database](https://img.shields.io/badge/Database-H2_In--Memory_(Zero_Install)-006699?style=for-the-badge&logo=databricks&logoColor=white)
-![MS SQL Server](https://img.shields.io/badge/MSSQL_Server-2022_(Tùy_Chọn)-CC292B?style=for-the-badge&logo=microsoftsqlserver&logoColor=white)
 ![Security](https://img.shields.io/badge/Security-Spring_Security_6_%2B_JWT-blue?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 
 **Nền tảng B2B SaaS hỗ trợ cá nhân hóa, mô phỏng 3D độ xe tương tác thời gian thực & quản lý vận hành xưởng độ xe chuyên nghiệp.**  
-*Đồ án môn học EXE101 - Trường Đại học FPT*
+*Đồ án môn học EXE101 - Khởi nghiệp công nghệ | Trường Đại học FPT*
 
-[📖 Giới Thiệu](#-giới-thiệu-overview) • [✨ Tính Năng](#-tính-năng-nổi-bật-key-features) • [🛠️ Công Nghệ](#-công-nghệ-sử-dụng-tech-stack) • [⚡ Khởi Chạy Dự Án](#-khởi-chạy-dự-án) • [🔑 Tài Khoản Test](TEST_ACCOUNTS.md)
+[📖 Giới Thiệu](#-giới-thiệu-overview) • [✨ Tính Năng](#-tính-năng-nổi-bật-key-features) • [🛠️ Công Nghệ](#-công-nghệ-sử-dụng-tech-stack) • [⚡ Khởi Chạy](#-khởi-chạy-dự-án)
 
 </div>
 
@@ -22,92 +22,104 @@
 
 ## 📖 Giới Thiệu (Overview)
 
-**Virtual Tune** là giải pháp kết hợp giữa **đồ họa 3D Web tương tác (WebGL/Three.js)** và **hệ thống quản trị xưởng độ xe (Garage ERP)**:
-- **3D Tuning Trực Quan:** Giúp khách hàng xem trước bản độ 360°, đổi màu sơn, mâm vỏ, bodykit và kiểm tra tự động độ tương thích kỹ thuật (Fitment Check) trước khi thi công.
-- **Quản Trị Vận Hành:** Hỗ trợ Garage tối ưu hóa quy trình từ tư vấn báo giá, tiếp nhận xe, điều phối lệnh làm việc (Work Orders) cho kỹ thuật viên đến quản lý kho phụ tùng.
+**Virtual Tune** là giải pháp toàn diện kết hợp giữa **công nghệ đồ họa 3D Web tương tác (WebGL / Three.js / React Three Fiber)** và **hệ thống quản trị xưởng độ xe chuyên nghiệp (Garage ERP)**:
+
+- **3D Tuning Studio Trực Quan:** Cho phép khách hàng và kỹ thuật viên tương tác 360°, đổi màu sơn đa tầng (Metallic, Pearl, Satin), độ mâm thể thao, cánh gió GT Wing khí động học, kính cách nhiệt riêng tư và kiểm tra tự động độ tương thích kỹ thuật trước khi thi công thực tế.
+- **Dark Mode Hiện Đại Mặc Định:** Giao diện Dark Mode tối ưu cho xưởng độ xe và phòng thiết kế, tích hợp cơ chế chống chớp sáng (Anti-FOUC) và lưu giữ tùy chọn cá nhân.
+- **Hệ Thống Quản Trị Vận Hành (ERP):** Tối ưu hóa toàn bộ luồng nghiệp vụ từ tư vấn báo giá trực tuyến, tiếp nhận xe, điều phối lệnh làm việc (Work Orders) cho kỹ thuật viên đến quản lý kho phụ tùng và cấp hộ chiếu bảo hành số.
 
 ---
 
 ## ✨ Tính Năng Nổi Bật (Key Features)
 
-- **3D Car Tuning Studio:** Tương tác mô hình xe 3D thời gian thực trên Three.js & React Three Fiber (đổi sơn, mâm vỏ, hạ gầm, spoiler...).
-- **Fitment Engine:** Tự động kiểm tra thông số kỹ thuật (PCD, Offset ET, Center Bore) đảm bảo phụ tùng tương thích với xe.
-- **Work Order Management:** Điều phối, giao việc và theo dõi tiến độ thi công xe theo từng giai đoạn.
-- **Kho & Phụ Tùng:** Quản lý danh mục phụ tùng, tồn kho, nhà cung cấp và giỏ hàng báo giá.
-- **RBAC & Bảo Mật:** Phân quyền 4 vai trò (`GARAGE_OWNER`, `LEAD_TECHNICIAN`, `CAR_OWNER`, `GUEST`) bằng Spring Security 6 & JWT.
+1. **3D Real-time Car Tuning Studio:**
+   - Dựng hình xe 3D tương tác thời gian thực với hệ thống ánh sáng studio và bản đồ phản chiếu môi trường (Environment HDR).
+   - Tùy biến màu sơn PBR chuyên nghiệp (Metallic, Solid, Pearl, Satin) với lớp phủ bóng trong suốt (Clearcoat).
+   - Hoán đổi mâm xe Aftermarket (BBS LM, Volk Racing TE37, WORK VS-XX) và cánh gió thể thao (Big Country Labs Style Wing).
+   - Góc nhìn camera định sẵn (3/4 Front, Side Profile, Rear Wing, Wheel Close-up) cùng chế độ xoay tự động 360°.
+
+2. **Fitment Engine (Kiểm Tra Tương Thích CAD):**
+   - Tự động đối chiếu thông số cơ khí: mẫu ốc trục bánh (PCD), độ lệch trục bánh (Offset ET), đường kính lỗ định tâm (Center Bore) và đường kính đĩa phanh để cảnh báo sớm nguy cơ cạ vè hoặc kẹt cùm phanh.
+
+3. **Work Order & Garage Operations:**
+   - Điều phối lệnh độ xe, phân bổ kỹ thuật viên trưởng và kỹ thuật viên thực thi.
+   - Quản lý trạng thái theo thời gian thực: *Tiếp nhận xe ➔ Thi công ➔ Kiểm tra an toàn (TÜV / ECE) ➔ Bàn giao*.
+
+4. **Báo Giá & Hộ Chiếu Bảo Hành Số:**
+   - Tự động tính toán tổng chi phí phụ tùng và nhân công lắp đặt.
+   - Xuất mã QR Token xác thực chứng chỉ bảo hành điện tử độc bản cho từng cấu hình độ xe.
+
+5. **Bảo Mật Phân Quyền Đa Tầng (RBAC):**
+   - Phân quyền chặt chẽ bằng Spring Security 6 và JWT Stateless Authentication qua 4 vai trò độc lập.
+
 
 ---
 
 ## 🛠️ Công Nghệ Sử Dụng (Tech Stack)
 
 ### 🖥️ Frontend
-| Thành Phần | Công Nghệ | Phiên Bản | Ghi Chú |
-|:---|:---|:---:|:---|
-| **Framework** | React | 19.x | Component-based, Hooks |
-| **Build Tool** | Vite | 6.x | Fast HMR, tối ưu bundle |
-| **3D Engine** | Three.js + `@react-three/fiber` | ^0.170.x | Render mô hình 3D WebGL trực tiếp |
-| **3D Helpers** | `@react-three/drei` | Latest | Controls, Environment & Lighting |
-| **HTTP Client** | Axios | Latest | Xử lý REST API, Mock Fallback & JWT Interceptors |
-| **Icons** | Material Symbols | CDN | Google Fonts Icons |
+- **Framework & Runtime:** React 19 + Vite 6 (HMR cực nhanh, code-splitting tối ưu).
+- **3D Graphics:** Three.js (r170) + `@react-three/fiber` + `@react-three/drei`.
+- **Styling & Theme:** Tailwind CSS 3.4 (Hệ thống Design Tokens chuẩn xác, Dark Mode mặc định, chống FOUC).
+- **HTTP Client:** Axios (Tự động đính kèm JWT Bearer token và xử lý lỗi đồng bộ).
+- **Icons & Typography:** Google Material Symbols Outlined, Montserrat, Inter, JetBrains Mono.
 
 ### ⚙️ Backend
-| Thành Phần | Công Nghệ | Phiên Bản | Ghi Chú |
-|:---|:---|:---:|:---|
-| **Ngôn ngữ** | Java (Oracle JDK) | 25.0.1 | Hiệu năng cao, Virtual Threads |
-| **Framework** | Spring Boot | 3.5.0 | RESTful API |
-| **Bảo mật** | Spring Security 6 | 6.x | Stateless, BCrypt, H2 Console Allowed |
-| **Xác thực** | JJWT (Java JWT) | 0.12.6 | JWT Token-based Authentication |
-| **ORM** | Spring Data JPA + Hibernate | 6.x | Quản lý Entity & Database |
-| **Build Tool** | Maven Wrapper (`mvnw`) | 3.14.0 | Build độc lập môi trường |
+- **Ngôn ngữ:** Java 25.0.1 (Oracle OpenJDK) với Virtual Threads.
+- **Framework:** Spring Boot 3.5.0 (RESTful Architecture).
+- **Bảo mật:** Spring Security 6 (Stateless JWT Filter, CORS phân tách dev/prod, PasswordEncoder BCrypt).
+- **Xác thực:** JJWT (Java JWT) 0.12.6.
+- **ORM & Data:** Spring Data JPA + Hibernate ORM 6.6.
+- **Build Tool:** Maven Wrapper (`mvnw`).
 
 ### 🗄️ Database
-| Thành Phần | Công Nghệ | Chi Tiết |
-|:---|:---|:---|
-| **Mặc Định (Zero-Install)** | **H2 In-Memory Database** | Tự động tạo DB trong RAM, chạy ngay trên mọi máy **không cần cài đặt DB**. Tự động seed tài khoản test & phụ tùng xe. |
-| **Web Console Quản Trị** | H2 Web Console | Truy cập trực tiếp tại `http://localhost:8080/h2-console` |
-| **Tùy Chọn Mở Rộng** | Microsoft SQL Server 2022 | Hỗ trợ kết nối SQL Server thật qua file cấu hình `application.properties` (kèm script `database/VirtualTuneDB.sql`) |
+- **Mặc Định (Zero-Install):** **H2 In-Memory Database** — Tự động khởi tạo trong RAM khi bật ứng dụng, nạp sẵn 6 mẫu xe, phụ tùng và tài khoản kiểm thử. Không yêu cầu cài đặt phần mềm database bên ngoài.
+- **H2 Console:** Truy cập kiểm tra trực quan tại `http://localhost:8080/h2-console` *(chỉ mở trong môi trường dev)*.
+- **Tùy Chọn Mở Rộng:** Tương thích Microsoft SQL Server 2022 (file script `database/VirtualTuneDB.sql`).
 
 ---
 
 ## ⚡ Khởi Chạy Dự Án
 
 ### 1. Khởi Chạy Nhanh 1-Click (Khuyên Dùng)
-Nhấp đúp vào file **[`start-dev.bat`](start-dev.bat)** tại thư mục gốc:
-- **Tự động kiểm tra môi trường:** Quét Java 25 & Node.js (tự động hỗ trợ tải và cài đặt nếu máy chưa có).
-- **Tự động cài đặt thư viện:** Chạy `npm install` nếu phát hiện chưa có `node_modules`.
-- **Bung 2 Terminal độc lập:**
-  - **Backend API (Spring Boot - Java 25):** `http://localhost:8080`
-  - **Frontend Application (React 19 Vite):** `http://localhost:5173`
-- **Quản lý Database H2:** `http://localhost:8080/h2-console`  
+Nhấp đúp chuột vào tệp **[`start-dev.bat`](start-dev.bat)** tại thư mục gốc:
+- Tự động kiểm tra cài đặt Java 25 & Node.js trên máy.
+- Tự động chạy `npm install` nếu chưa có `node_modules`.
+- Đồng thời mở 2 tiến trình độc lập:
+  - **Backend API:** `http://localhost:8080`
+  - **Frontend Application:** `http://localhost:5173`
+- Quản trị DB H2 tại: `http://localhost:8080/h2-console`  
   *(JDBC URL: `jdbc:h2:mem:VirtualTuneDB` | User: `sa` | Password: để trống)*
 
 ---
 
-### 2. Khởi Chạy Thủ Công (Tùy Chọn)
+### 2. Khởi Chạy Thủ Công (Manual Setup)
 
-* **Backend:**
-  ```powershell
-  cd backend
-  .\mvnw.cmd spring-boot:run
-  ```
-* **Frontend:**
-  ```bash
-  cd frontend
-  npm install
-  npm run dev
-  ```
-* **Chuyển sang SQL Server thật (khi cần):**
-  Mở file [`backend/src/main/resources/application.properties`](backend/src/main/resources/application.properties), bỏ comment các dòng cấu hình SQL Server và chạy file script:
-  ```bash
-  sqlcmd -S localhost -U sa -P 123 -C -i "database\VirtualTuneDB.sql"
-  ```
+#### Bước 1: Khởi động Backend
+```powershell
+cd backend
+.\mvnw.cmd clean test spring-boot:run
+```
+*Backend sẽ lắng nghe tại cổng `8080` (hoặc cổng cấu hình qua biến môi trường `PORT`).*
 
----
+#### Bước 2: Khởi động Frontend
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+*Truy cập giao diện tại `http://localhost:5173`.*
 
-## 🔑 Tài Khoản Kiểm Thử (Test Accounts)
+#### Bước 3: Đóng gói kiểm tra sản xuất
+```powershell
+# Kiểm thử Frontend
+cd frontend
+npm run build
 
-> ⚠️ Toàn bộ danh sách tài khoản demo, mật khẩu và ma trận phân quyền chi tiết được lưu trữ tại:  
-👉 **[`TEST_ACCOUNTS.md`](TEST_ACCOUNTS.md)**
+# Kiểm thử Backend
+cd ../backend
+.\mvnw.cmd test
+```
 
 ---
 
@@ -115,23 +127,30 @@ Nhấp đúp vào file **[`start-dev.bat`](start-dev.bat)** tại thư mục g�
 
 ```text
 VIRTUAL TUNE/
-├── ⚡ start-dev.bat           # Script 1-click thông minh kiểm tra môi trường & chạy đồng thời
-├── 🔑 TEST_ACCOUNTS.md        # Danh sách tài khoản kiểm thử & phân quyền
-├── 📖 README.md               # Tài liệu tổng quan & hướng dẫn dự án
+├── ⚡ start-dev.bat           # Script 1-click tự động kiểm tra môi trường & chạy đồng thời
+├── 📖 README.md               # Tài liệu tổng quan và hướng dẫn khởi chạy dự án
+├── Dockerfile                 # Đóng gói container Docker (multi-stage Java 25)
 ├── backend/                   # Source code Backend Spring Boot 3.5 (Java 25)
 │   ├── src/main/java/         # Controllers, Services, Security, Models, DataInitializer
-│   ├── src/main/resources/    # application.properties (H2 / SQL Server)
-│   └── pom.xml                # Dependencies Maven
+│   ├── src/main/resources/    # application.properties (dev/prod profiles)
+│   ├── src/test/java/         # Unit & Integration Tests (Auth, Security, Fleet)
+│   └── pom.xml                # Quản lý thư viện Maven
 ├── frontend/                  # Source code Frontend React 19 + Vite 6
-│   ├── src/                   # Components, Pages, 3D Studio, Assets
-│   └── package.json           # Dependencies npm
-├── database/                  # File script SQL VirtualTuneDB.sql
-└── docs/                      # Tài liệu thiết kế & SRS (được gitignore an toàn)
+│   ├── public/                # Static assets, hình ảnh xe, models 3D (.glb)
+│   │   ├── images/            # Hình ảnh xe (.webp), mâm xe, phụ tùng
+│   │   └── models/            # Mô hình GLB xe (vinfast, ferrari, lambo,...) và phụ tùng
+│   ├── src/                   # Components, Pages, 3D Studio Scene, Contexts
+│   │   ├── components/scene/  # VehicleModel3D, StudioLights, ShowroomFloor
+│   │   ├── contexts/          # ThemeContext (Dark Mode mặc định)
+│   │   └── services/          # api.js (Axios client)
+│   ├── package.json           # Quản lý dependencies npm
+│   └── vercel.json            # Cấu hình routing deploy Vercel
+└── database/                  # Script VirtualTuneDB.sql cho MSSQL (tùy chọn)
 ```
 
 ---
 
-## 📄 Bản Quyền (License)
+## 📄 Bản Quyền & Tác Quyền (License)
 
 Dự án phát triển phục vụ môn học **EXE101 - Khởi nghiệp công nghệ** tại Trường Đại học FPT.  
-Bản quyền thuộc về nhóm phát triển **VIRTUAL TUNE**.
+Bản quyền thuộc về nhóm phát triển **VIRTUAL TUNE**. Mọi quyền được bảo lưu.
