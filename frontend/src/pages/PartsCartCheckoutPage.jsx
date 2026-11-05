@@ -5,7 +5,7 @@ import { quotationApi } from '../services/api'
 const INITIAL_CART_ITEMS = [
   {
     id: 1,
-    name: 'BBS FI-R Forged Monoblock Wheel Set (20"/21")',
+    name: 'BBS LM Forged Monoblock 20"',
     sku: 'BBS-FIR-992-TITAN',
     spec: 'Titanium Silver • PCD 5x112 / ET35',
     image: '/images/bbs-fi-r-wheel.jpg',

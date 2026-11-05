@@ -59,6 +59,7 @@ export const normalizeCar = (c) => {
     model: c.model,
     modelPath: c.model3dPath || c.modelPath,
     year: c.yearManufactured || c.year,
+    bodyType: c.bodyType || 'Electric Mini SUV',
     tagline: c.tagline,
     accentColor: c.accentColor || '#CC0000',
     defaultBody: c.defaultBodyColor || c.defaultBody || '#CC0000',

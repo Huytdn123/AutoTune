@@ -12,7 +12,10 @@ import {
 
 // Preload the default vehicle model to ensure instant 3D studio mount without waiting
 useGLTF.preload(CAR_MODEL_FILES['ferrari-458'], DRACO_PATH)
+useGLTF.preload(CAR_MODEL_FILES['vinfast-vf3'], DRACO_PATH)
 useGLTF.preload(PART_MODEL_FILES['wheel-work-vsxx-19'])
+useGLTF.preload(PART_MODEL_FILES['wheel-bbs-lm-20'])
+useGLTF.preload(PART_MODEL_FILES['wheel-rays-te37-20'])
 useGLTF.preload(PART_MODEL_FILES['spoiler-bcl-wing'])
 useGLTF.preload(PART_MODEL_FILES['brakes-brembo-gt'])
 useGLTF.preload(PART_MODEL_FILES['exhaust-akrapovic'])
@@ -48,6 +51,8 @@ export default function VehicleModel3D({
 }) {
   const { scene } = useGLTF(modelPath || CAR_MODEL_FILES['ferrari-458'], DRACO_PATH)
   const workVsxxGLB = useGLTF(PART_MODEL_FILES['wheel-work-vsxx-19'])
+  const bbsLmGLB    = useGLTF(PART_MODEL_FILES['wheel-bbs-lm-20'])
+  const te37GLB     = useGLTF(PART_MODEL_FILES['wheel-rays-te37-20'])
   const bclWingGLB  = useGLTF(PART_MODEL_FILES['spoiler-bcl-wing'])
   const bremboGLB   = useGLTF(PART_MODEL_FILES['brakes-brembo-gt'])
   const exhaustGLB  = useGLTF(PART_MODEL_FILES['exhaust-akrapovic'])
@@ -109,7 +114,17 @@ export default function VehicleModel3D({
 
   // Reactively update material colors
   useEffect(() => {
-    bodyMaterial.color.set(bodyColor)
+    const c = new THREE.Color(bodyColor)
+    bodyMaterial.color.copy(c)
+    // Automotive paint finish tuning: light/white coats get refined specular balance for rich pearl gloss
+    const luminance = 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b
+    if (luminance > 0.82) {
+      bodyMaterial.metalness = 0.35
+      bodyMaterial.roughness = 0.22
+    } else {
+      bodyMaterial.metalness = 0.65
+      bodyMaterial.roughness = 0.28
+    }
     bodyMaterial.needsUpdate = true
   }, [bodyColor, bodyMaterial])
 
@@ -146,6 +161,7 @@ export default function VehicleModel3D({
     const isPorsche = modelPath.includes('porsche')
     const isMcLaren = modelPath.includes('mclaren')
     const isBMW     = modelPath.includes('bmw')
+    const isVinFast = modelPath.includes('vinfast') || modelPath.includes('vf3')
 
     const platesToRemove = []
 
@@ -175,6 +191,36 @@ export default function VehicleModel3D({
             // Apply detailsMaterial (selected rim color/finish) uniformly to all 4 wheels' spokes and inner barrels
             child.material = detailsMaterial
           }
+          return
+        }
+
+        // ── 2. VINFAST VF3 PLUS 2026: PRECISE MATERIAL CLASSIFICATION ──
+        if (isVinFast) {
+          // Object_5 (material: Blue_Car_Paint.001) is the exterior metal body panels (hood, doors, quarter panels)
+          if (nodeName === 'object_5' || matName.includes('paint') || matName.includes('car_paint')) {
+            child.material = bodyMaterial
+          } else if (nodeName === 'object_6' || matName === 'material.012') {
+            // Object_6 is the cabin windows/windshield (original: dark glossy glass)
+            // Preserve dark privacy glass look while supporting custom glass tints
+            if (glassColor && glassColor !== '#141c24') {
+              child.material = new THREE.MeshPhysicalMaterial({
+                name: 'vf3_tinted_glass',
+                color: new THREE.Color(glassColor),
+                metalness: 0.15,
+                roughness: 0.05,
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.04,
+                envMapIntensity: 2.0,
+              })
+            }
+          }
+          // Preserve authentic original materials:
+          // - Object_4 (Tire.002): Tires, rubber, and wheels with baked PBR texture maps
+          // - Object_7 (Material.010): Rugged matte/satin black SUV claddings, roof, wheel arches, bumpers
+          // - Object_8 & Object_17 (Clean_chrome): VinFast chrome bird-wing emblems & front reflectors
+          // - Object_9 (Disk): Headlight inner reflector housing
+          // - Object_10 to Object_15: Headlight & taillight optical clusters (red, amber, clear)
+          // - Object_16 & Object_18: Headlight outer & inner transparent glass lenses
           return
         }
 
@@ -256,6 +302,8 @@ export default function VehicleModel3D({
     // 2. Auto-orient: Ferrari has baked quaternion causing rear to face camera — fix with PI flip
     if (isFerrari) {
       clonedScene.rotation.y = Math.PI
+    } else if (isVinFast) {
+      clonedScene.rotation.y = 0
     } else {
       const rawBox = new THREE.Box3().setFromObject(clonedScene)
       const rawSize = rawBox.getSize(new THREE.Vector3())
@@ -269,7 +317,8 @@ export default function VehicleModel3D({
     const orientedBox = new THREE.Box3().setFromObject(clonedScene)
     const orientedSize = orientedBox.getSize(new THREE.Vector3())
     const length = Math.max(orientedSize.x, orientedSize.z)
-    const scale = 4.4 / Math.max(length, 0.01)
+    const targetLength = isVinFast ? 3.9 : 4.4
+    const scale = targetLength / Math.max(length, 0.01)
     clonedScene.scale.set(scale, scale, scale)
 
     // 4. Center on X & Z, and place tires flush on the showroom floor (Y = 0)
@@ -323,19 +372,34 @@ export default function VehicleModel3D({
     customGroup.name = 'VirtualTune_Custom_Parts'
     clonedScene.add(customGroup)
 
-    // ── A. WHEEL SWAP: OEM ↔ WORK VS-XX 19" AFTERMARKET WHEELS ──
-    const isAftermarketWheel = Boolean(
-      selectedWheel && (
-        selectedWheel === 'work-vsxx-19' ||
-        selectedWheel?.sku === 'WORK-VSXX-19-F458' ||
-        (selectedWheel?.assetUrl || '').includes('work-vs-xx') ||
-        (typeof selectedWheel === 'string' && (
-          selectedWheel.toLowerCase().includes('work') ||
-          selectedWheel.toLowerCase().includes('vsxx') ||
-          selectedWheel.toLowerCase().includes('vs-xx')
-        ))
-      )
+    // ── A. WHEEL SWAP: OEM ↔ AFTERMARKET WHEELS (WORK VS-XX, BBS LM, VOLK TE37) ──
+    const wheelSku = typeof selectedWheel === 'string'
+      ? selectedWheel
+      : (selectedWheel?.sku || selectedWheel?.name || '')
+
+    const isWorkVsxx = Boolean(
+      wheelSku === 'WORK-VSXX-19-F458' ||
+      wheelSku === 'work-vsxx-19' ||
+      wheelSku.toLowerCase().includes('work') ||
+      wheelSku.toLowerCase().includes('vsxx')
     )
+
+    const isBbsLm = Boolean(
+      wheelSku === 'BBS-FIR-992-TITAN' ||
+      wheelSku === 'wheel-bbs-lm-20' ||
+      wheelSku.toLowerCase().includes('bbs') ||
+      wheelSku.toLowerCase().includes('fir') ||
+      wheelSku.toLowerCase().includes('lm')
+    )
+
+    const isVolkTe37 = Boolean(
+      wheelSku === 'RAYS-TE37-ULTRA-20' ||
+      wheelSku === 'wheel-rays-te37-20' ||
+      wheelSku.toLowerCase().includes('te37') ||
+      wheelSku.toLowerCase().includes('rays')
+    )
+
+    const isAftermarketWheel = isWorkVsxx || isBbsLm || isVolkTe37
 
     clonedScene.traverse(child => {
       const name = (child.name || '').toLowerCase()
@@ -365,7 +429,7 @@ export default function VehicleModel3D({
       }
     })
 
-    if (isAftermarketWheel && workVsxxGLB?.scene) {
+    if (isAftermarketWheel) {
       const finishPreset = WHEEL_FINISH_PRESETS[wheelFinish] || WHEEL_FINISH_PRESETS['GLOSS_BLACK']
       const wheelMounts = [
         { name: 'FL', pos: [-0.956, 0.358, -1.155], rotY: -Math.PI / 2 },
@@ -374,27 +438,112 @@ export default function VehicleModel3D({
         { name: 'RR', pos: [0.950, 0.358, 1.496],   rotY: Math.PI / 2 },
       ]
 
-      wheelMounts.forEach(mount => {
-        const wheelClone = workVsxxGLB.scene.clone(true)
-        wheelClone.name = `custom_work_vsxx_${mount.name}`
-        wheelClone.position.set(...mount.pos)
-        wheelClone.rotation.set(0, mount.rotY, 0)
-        wheelClone.scale.set(1.15, 1.15, 1.15)
-        wheelClone.traverse(c => {
-          if (c.isMesh) {
-            c.castShadow = true
-            c.receiveShadow = true
-            if (c.material && (c.material.name === 'paint' || c.material.name === 'material')) {
-              c.material = c.material.clone()
-              c.material.color.set(detailsColor || finishPreset.hex)
-              c.material.metalness = finishPreset.metalness
-              c.material.roughness = finishPreset.roughness
-              c.material.needsUpdate = true
+      if (isWorkVsxx && workVsxxGLB?.scene) {
+        wheelMounts.forEach(mount => {
+          const wheelClone = workVsxxGLB.scene.clone(true)
+          wheelClone.name = `custom_work_vsxx_${mount.name}`
+          wheelClone.position.set(...mount.pos)
+          wheelClone.rotation.set(0, mount.rotY, 0)
+          wheelClone.scale.set(1.15, 1.15, 1.15)
+          wheelClone.traverse(c => {
+            if (c.isMesh) {
+              c.castShadow = true
+              c.receiveShadow = true
+              if (c.material && (c.material.name === 'paint' || c.material.name === 'material')) {
+                c.material = c.material.clone()
+                c.material.color.set(detailsColor || finishPreset.hex)
+                c.material.metalness = finishPreset.metalness
+                c.material.roughness = finishPreset.roughness
+                c.material.needsUpdate = true
+              }
             }
-          }
+          })
+          customGroup.add(wheelClone)
         })
-        customGroup.add(wheelClone)
-      })
+      } else if (isBbsLm && bbsLmGLB?.scene) {
+        // BBS LM Gold Wheels 20"
+        const isGold = !detailsColor || detailsColor.toUpperCase() === '#B87A2A' || detailsColor.toUpperCase() === '#D4AF37'
+        wheelMounts.forEach(mount => {
+          const mountContainer = new THREE.Group()
+          mountContainer.name = `custom_bbs_lm_${mount.name}`
+          mountContainer.position.set(...mount.pos)
+          mountContainer.rotation.set(0, mount.rotY, 0)
+
+          const wheelClone = bbsLmGLB.scene.clone(true)
+          const bbsScale = 0.1387
+          wheelClone.scale.set(bbsScale, bbsScale, bbsScale)
+          wheelClone.rotation.set(-Math.PI / 2, 0, 0)
+          wheelClone.position.set(0, 0, -0.1486)
+
+          wheelClone.traverse(c => {
+            if (c.isMesh) {
+              c.castShadow = true
+              c.receiveShadow = true
+              // Recolor ONLY Material.002 (Rim face/spokes). Preserve Material.001 (Center cap BBS logo) and Material.003 (inner barrel).
+              if (c.material && c.material.name === 'Material.002') {
+                c.material = c.material.clone()
+                if (isGold) {
+                  c.material.color.set('#D4AF37')
+                  c.material.metalness = 0.85
+                  c.material.roughness = 0.25
+                } else {
+                  c.material.map = null
+                  c.material.color.set(detailsColor)
+                  c.material.metalness = finishPreset.metalness || 0.85
+                  c.material.roughness = finishPreset.roughness || 0.20
+                }
+                c.material.needsUpdate = true
+              }
+            }
+          })
+
+          mountContainer.add(wheelClone)
+          customGroup.add(mountContainer)
+        })
+      } else if (isVolkTe37 && te37GLB?.scene) {
+        // Volk Racing TE37 20"
+        wheelMounts.forEach(mount => {
+          const mountContainer = new THREE.Group()
+          mountContainer.name = `custom_volk_te37_${mount.name}`
+          mountContainer.position.set(...mount.pos)
+          mountContainer.rotation.set(0, mount.rotY, 0)
+
+          const wheelClone = te37GLB.scene.clone(true)
+          // Hide duplicate tire and brake meshes so it cleanly integrates with Ferrari OEM tires & Brembo brakes
+          wheelClone.traverse(c => {
+            const n = (c.name || '').toLowerCase()
+            if (c.isMesh) {
+              if (n.includes('tire') || n.includes('tyre') || n.includes('brake') || n.includes('brembo') || n.includes('pad') || n.includes('caliper')) {
+                c.visible = false
+              }
+            }
+          })
+
+          const teScale = 0.08217
+          wheelClone.scale.set(teScale, teScale, teScale)
+          wheelClone.rotation.set(-Math.PI / 2, 0, 0)
+          wheelClone.position.set(0, 0, -0.0698)
+
+          wheelClone.traverse(c => {
+            if (c.isMesh && c.visible) {
+              c.castShadow = true
+              c.receiveShadow = true
+              // Recolor ONLY Material 4 'material' (the rim/spokes mesh 'Rim_001_Rim_0').
+              // Preserve Volk decals, Rays decals, Rim_Nut, Rim.001 center cap.
+              if (c.material && (c.material.name === 'material' || (c.name || '').includes('Rim_001'))) {
+                c.material = c.material.clone()
+                c.material.color.set(detailsColor || '#8C6A3A')
+                c.material.metalness = finishPreset.metalness || 0.80
+                c.material.roughness = finishPreset.roughness || 0.28
+                c.material.needsUpdate = true
+              }
+            }
+          })
+
+          mountContainer.add(wheelClone)
+          customGroup.add(mountContainer)
+        })
+      }
     }
 
     // ── B. REAR SPOILER: OEM ↔ REAL BIG COUNTRY LABS STYLE GT WING ──
@@ -606,6 +755,8 @@ export default function VehicleModel3D({
     selectedSpoiler,
     selectedParts,
     workVsxxGLB,
+    bbsLmGLB,
+    te37GLB,
     bclWingGLB,
     bremboGLB,
     exhaustGLB,

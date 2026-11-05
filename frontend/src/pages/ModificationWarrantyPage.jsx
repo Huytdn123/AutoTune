@@ -46,7 +46,7 @@ export default function ModificationWarrantyPage() {
           legalComplianceStatus: 'TÜV Rheinland §21 & ECE R124 Road Legal',
           qrCodeToken: '7e9b04f1-8d2a-4c91-b3fa-992gt3cert',
           installedParts: [
-            'BBS FI-R Monoblock Forged 20"/21" Wheel Set',
+            'BBS LM Forged Monoblock 20" Wheel Set',
             'Akrapovič Evolution Line Titanium Exhaust System',
             'Brembo GT-S 6-Piston Big Brake Kit 380mm',
             'KW Suspensions V4 Clubsport 3-Way Coilovers'
@@ -68,7 +68,7 @@ export default function ModificationWarrantyPage() {
         legalComplianceStatus: 'TÜV Rheinland §21 & ECE R124 Road Legal',
         qrCodeToken: '7e9b04f1-8d2a-4c91-b3fa-992gt3cert',
         installedParts: [
-          'BBS FI-R Monoblock Forged 20"/21" Wheel Set',
+          'BBS LM Forged Monoblock 20" Wheel Set',
           'Akrapovič Evolution Line Titanium Exhaust System',
           'Brembo GT-S 6-Piston Big Brake Kit 380mm',
           'KW Suspensions V4 Clubsport 3-Way Coilovers'
@@ -229,7 +229,7 @@ export default function ModificationWarrantyPage() {
 
             <div className="space-y-3">
               {(currentWarranty?.installedParts || [
-                'BBS FI-R Monoblock Forged 20"/21" Wheel Set',
+                'BBS LM Forged Monoblock 20" Wheel Set',
                 'Akrapovič Evolution Line Titanium Exhaust System',
                 'Brembo GT-S 6-Piston Big Brake Kit 380mm',
                 'KW Suspensions V4 Clubsport 3-Way Coilovers'

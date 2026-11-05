@@ -164,4 +164,18 @@ public class AuthVerificationTest {
                         .header("Authorization", "Bearer invalid.fake.token.here"))
                 .andExpect(status().isUnauthorized());
     }
+
+    @Test
+    @DisplayName("11. GET /api/cars returns exactly 6 vehicles including VinFast VF3 Plus 2026 (White Edition)")
+    void testGetAllCarsIncludesVinFastVF3() throws Exception {
+        mockMvc.perform(get("/api/cars"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(6)))
+                .andExpect(jsonPath("$[?(@.slug == 'vinfast-vf3')].brand").value("VinFast"))
+                .andExpect(jsonPath("$[?(@.slug == 'vinfast-vf3')].model").value("VF3 Plus"))
+                .andExpect(jsonPath("$[?(@.slug == 'vinfast-vf3')].yearManufactured").value("2026"))
+                .andExpect(jsonPath("$[?(@.slug == 'vinfast-vf3')].defaultBodyColor").value("#FAFAFA"))
+                .andExpect(jsonPath("$[?(@.slug == 'vinfast-vf3')].model3dPath").value("/models/vinfast/vf3-plus-2026/vinfast_vf3_plus_2026.glb"))
+                .andExpect(jsonPath("$[?(@.slug == 'vinfast-vf3')].bodyType").value("Electric Mini SUV"));
+    }
 }

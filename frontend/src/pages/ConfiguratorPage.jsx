@@ -9,6 +9,7 @@ import {
   ShowroomFloor,
   StudioLights,
   CarLoadingFallback,
+  ModelErrorBoundary,
 } from '../components/CarScene3D'
 import { carApi, buildApi, partApi } from '../services/api'
 import ModelSelector from '../components/configurator/ModelSelector'
@@ -70,7 +71,13 @@ export default function ConfiguratorPage() {
 
   // 3D Physical Customization States (Geometry-level Real Part Swaps)
   const [selectedWheel,   setSelectedWheel]   = useState(null)  // null = OEM, or part sku / id
-  const [wheelFinish,     setWheelFinish]     = useState('GLOSS_BLACK') // GLOSS_BLACK, SATIN_BLACK, SILVER, GUNMETAL
+  const [wheelFinish,     setWheelFinish]     = useState('GLOSS_BLACK')
+  const [wheelColorMap,   setWheelColorMap]   = useState({
+    oem: '#CCCCCC',
+    'WORK-VSXX-19-F458': '#111111',
+    'BBS-FIR-992-TITAN': '#B87A2A',
+    'RAYS-TE37-ULTRA-20': '#8C6A3A',
+  }) // GLOSS_BLACK, SATIN_BLACK, SILVER, GUNMETAL
   const [selectedBodykit, setSelectedBodykit] = useState(null)  // null = OEM, or part sku / id
   const [selectedSpoiler, setSelectedSpoiler] = useState(null)  // null = OEM, 'big-country-labs-style-wing'
 
@@ -186,17 +193,30 @@ export default function ConfiguratorPage() {
     if (!part) {
       setSelectedWheel(null)
       setSelectedParts(prev => prev.filter(p => !p.category?.toLowerCase().includes('wheel') && !p.sku?.includes('WORK') && !p.sku?.includes('NOV') && !p.sku?.includes('BBS') && !p.sku?.includes('RAYS')))
+      // Restore OEM remembered color
+      const oemCol = wheelColorMap['oem'] || '#CCCCCC'
+      setRimColor(oemCol)
+      setSelectedRim(RIM_COLORS.find(c => c.hex.toLowerCase() === oemCol.toLowerCase()) || { hex: oemCol, name: 'OEM Rim' })
       glideCameraTo([4.6, 1.9, 5.5], [0, 0.45, 0], '3/4 Front')
     } else {
-      setSelectedWheel(part.sku || 'WORK-VSXX-19-F458')
+      const sku = part.sku || 'WORK-VSXX-19-F458'
+      setSelectedWheel(sku)
       setSelectedParts(prev => {
         const filtered = prev.filter(p => !p.category?.toLowerCase().includes('wheel') && !p.sku?.includes('WORK') && !p.sku?.includes('NOV') && !p.sku?.includes('BBS') && !p.sku?.includes('RAYS'))
         return [...filtered, part]
       })
+      // Restore this wheel's independent remembered color
+      const savedCol = wheelColorMap[sku] || (
+        sku.includes('FIR') || sku.includes('BBS') ? '#B87A2A' :
+        sku.includes('TE37') || sku.includes('RAYS') ? '#8C6A3A' :
+        sku.includes('WORK') ? '#111111' : '#CCCCCC'
+      )
+      setRimColor(savedCol)
+      setSelectedRim(RIM_COLORS.find(c => c.hex.toLowerCase() === savedCol.toLowerCase()) || { hex: savedCol, name: 'Custom Rim' })
       // Glides directly to close-up on front wheel dish, deep rim lip, and brake caliper
       glideCameraTo([2.15, 0.58, 2.05], [0.92, 0.36, 1.18], null)
     }
-  }, [glideCameraTo])
+  }, [glideCameraTo, wheelColorMap])
 
   const handleToggleBodykit = useCallback((part) => {
     setAutoRotate(false)
@@ -459,9 +479,14 @@ export default function ConfiguratorPage() {
     setAutoRotate(false)
     setSelectedRim(color)
     setRimColor(color.hex)
+    const activeKey = selectedWheel || 'oem'
+    setWheelColorMap(prev => ({
+      ...prev,
+      [activeKey]: color.hex,
+    }))
     // Close-up on front-left wheel dish, rim finish, and brake caliper
     glideCameraTo([2.15, 0.58, 2.05], [0.92, 0.36, 1.18], null)
-  }, [glideCameraTo])
+  }, [glideCameraTo, selectedWheel])
 
   const handleGlassColor = useCallback((color) => {
     setAutoRotate(false)
@@ -735,7 +760,8 @@ export default function ConfiguratorPage() {
             <StudioLights isDark={isDark} />
 
             <Suspense fallback={<CarLoadingFallback />}>
-              <VehicleModel3D
+              <ModelErrorBoundary>
+                <VehicleModel3D
                 key={activeCar.id}
                 modelPath={activeCar.modelPath}
                 modelId={activeCar.id}
@@ -748,7 +774,8 @@ export default function ConfiguratorPage() {
                 selectedBodykit={selectedBodykit}
                 selectedSpoiler={selectedSpoiler}
                 selectedParts={selectedParts}
-              />
+                />
+              </ModelErrorBoundary>
               <ShowroomFloor isDark={isDark} />
             </Suspense>
 

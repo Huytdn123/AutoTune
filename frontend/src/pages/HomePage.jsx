@@ -9,7 +9,9 @@ const CAR_IMAGE_MAP = {
   'porsche-gt3': '/images/cars/porsche-911-carrera.webp',
   'lamborghini-aventador': '/images/cars/lamborghini-aventador.webp',
   'bmw-m4-csl': '/images/cars/bmw-connecteddrive.webp',
-  'mclaren-720s': '/images/cars/mclaren-720s.webp'
+  'mclaren-720s': '/images/cars/mclaren-720s.webp',
+  'vinfast-vf3': '/images/cars/vinfast-vf3.webp',
+  'vinfast-vf3-2026': '/images/cars/vinfast-vf3.webp'
 }
 
 // 4 Verified Mechanical Domains with real database parts & specifications
@@ -18,7 +20,7 @@ const CUSTOMIZATION_CATEGORIES = [
     id: 'wheels',
     title: 'Forged Monoblock & Modular Wheels',
     subtitle: 'Track-Tuned Lightweight Rims',
-    desc: 'BBS FI-R Titanium, Volk Racing TE37 Ultra M-Spec, WORK VS-XX. Drastically lowers unsprung rotational mass for razor-sharp steering feedback.',
+    desc: 'BBS LM Forged Monoblock, Volk Racing TE37, WORK VS-XX. Drastically lowers unsprung rotational mass for razor-sharp steering feedback.',
     image: '/images/bbs-fi-r-wheel.jpg',
     specs: ['PCD 5x114.3 / 5x130 Bolt Patterns', 'Aerospace 6061-T6 Forged Aluminum', 'Unsprung Mass Reduction up to -18.4%'],
     actionLabel: 'Browse Wheels in Store',
@@ -238,7 +240,7 @@ export default function HomePage() {
                 {/* Floating Interactive Badge */}
                 <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between pointer-events-none">
                   <div className="bg-slate-900/85 backdrop-blur-md border border-white/20 text-white px-3.5 py-2 rounded-xl text-xs font-mono">
-                    <span className="text-[#60A5FA] font-bold">Ferrari 458 Italia</span> · Rosso Corsa · BBS FI-R 20"
+                    <span className="text-[#60A5FA] font-bold">Ferrari 458 Italia</span> · Rosso Corsa · BBS LM 20"
                   </div>
                   <div className="hidden sm:inline-flex bg-[#0213B2]/90 backdrop-blur-md border border-white/25 text-white px-3 py-1.5 rounded-xl text-xs font-['Montserrat'] font-bold uppercase tracking-wider">
                     Ready for Staging
@@ -277,7 +279,7 @@ export default function HomePage() {
                 <span className="text-xs font-mono font-bold uppercase text-[#0213B2] dark:text-[#60A5FA]">Verified Database Fleet</span>
               </div>
               <h2 className="font-['Montserrat'] text-2xl sm:text-3xl lg:text-4xl font-black text-[#111827] dark:text-white uppercase tracking-tight">
-                Production Supercars Ready for 3D Customization
+                Production Fleet & EV Staging Ready for 3D Customization
               </h2>
               <p className="text-sm sm:text-base text-[#475569] dark:text-[#CBD5E1] mt-2 max-w-2xl">
                 Select any vehicle below to launch directly into the 3D studio with authentic factory telemetry, curb weight, and hub bolt patterns.

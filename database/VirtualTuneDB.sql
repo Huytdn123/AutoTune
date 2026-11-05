@@ -344,22 +344,27 @@ VALUES
  '{"performance":[{"label":"Engine","value":"4.0L Twin-Turbo V8 M840T"},{"label":"Power","value":"720 hp @ 7,500 rpm"},{"label":"Torque","value":"568 lb-ft @ 5,500 rpm"},{"label":"0–100 km/h","value":"2.8 seconds"},{"label":"Top Speed","value":"341 km/h"},{"label":"Transmission","value":"7-speed SSG Dual Clutch"},{"label":"Weight","value":"1,332 kg"}],"aerodynamics":[{"label":"Downforce","value":"1,000+ kg @ 250 km/h"},{"label":"Active Wing","value":"Integrated Active Airbrake"},{"label":"Front","value":"Carbon MonoCell II Front Sub"},{"label":"Cd","value":"0.32"},{"label":"Cl","value":"-0.46"}],"suspension":[{"label":"Front","value":"Proactive Chassis Control II"},{"label":"Rear","value":"Wishbone Hydraulic Interconnect"},{"label":"Dampers","value":"3-Stage Variable PCC II"},{"label":"Springs","value":"High-Performance GTR Race"}]}'),
 
 (5, 'bmw-m4-csl', 'BMW', 'Vision ConnectedDrive', '2011 Concept', 'Concept Roadster', 'Electric / TT Hybrid · Concept Roadster · 0-100: 4.5s', '5x112', 20.0, 9.5, 25, 72.6, 360, 1450, 340, 120000, 'Munich, Bavaria, Germany', '#0066CC', '#1A1A1A', '#CCCCCC', '#1A1A1A', '/models/bmw.glb', 'READY_FOR_3D',
- '{"performance":[{"label":"Engine","value":"Electric / TwinPower Turbo Hybrid Concept"},{"label":"Power","value":"340 hp equivalent"},{"label":"Torque","value":"369 lb-ft equivalent"},{"label":"0–100 km/h","value":"4.5 seconds"},{"label":"Top Speed","value":"250 km/h"},{"label":"Transmission","value":"Single-Speed Direct Drive"},{"label":"Weight","value":"1,450 kg"}],"aerodynamics":[{"label":"Downforce","value":"50 kg @ 200 km/h"},{"label":"Active Grille","value":"Adaptive Kidney Grille Shutter"},{"label":"Fairings","value":"Streamlined Speedster Fairings"},{"label":"Cd","value":"0.26"},{"label":"Cl","value":"-0.12"}],"suspension":[{"label":"Front","value":"Double Wishbone Lightweight Aluminum"},{"label":"Rear","value":"Multi-Link Dynamic Suspension"},{"label":"Dampers","value":"BMW Dynamic Damper Control"},{"label":"Springs","value":"M Performance Progressive Springs"}]}');
+ '{"performance":[{"label":"Engine","value":"Electric / TwinPower Turbo Hybrid Concept"},{"label":"Power","value":"340 hp equivalent"},{"label":"Torque","value":"369 lb-ft equivalent"},{"label":"0–100 km/h","value":"4.5 seconds"},{"label":"Top Speed","value":"250 km/h"},{"label":"Transmission","value":"Single-Speed Direct Drive"},{"label":"Weight","value":"1,450 kg"}],"aerodynamics":[{"label":"Downforce","value":"50 kg @ 200 km/h"},{"label":"Active Grille","value":"Adaptive Kidney Grille Shutter"},{"label":"Fairings","value":"Streamlined Speedster Fairings"},{"label":"Cd","value":"0.26"},{"label":"Cl","value":"-0.12"}],"suspension":[{"label":"Front","value":"Double Wishbone Lightweight Aluminum"},{"label":"Rear","value":"Multi-Link Dynamic Suspension"},{"label":"Dampers","value":"BMW Dynamic Damper Control"},{"label":"Springs","value":"M Performance Progressive Springs"}]}'),
+
+(6, 'vinfast-vf3', 'VinFast', 'VF3 Plus', '2026', 'Electric Mini SUV', 'Single Motor · 43hp · City EV · 210km Range', '4x100', 16.0, 6.0, 40, 54.1, 260, 857, 43, 13000, 'White Edition · City EV', '#0068FF', '#FAFAFA', '#1A1A1A', '#C8D8F0', '/models/vinfast/vf3-plus-2026/vinfast_vf3_plus_2026.glb', 'READY_FOR_3D',
+ '{"performance":[{"label":"Motor","value":"Permanent Magnet Synchronous (Rear Axle)"},{"label":"Power","value":"43 hp (32 kW)"},{"label":"Torque","value":"110 Nm"},{"label":"0–50 km/h","value":"5.3 seconds"},{"label":"0–100 km/h","value":"19.5 seconds"},{"label":"Top Speed","value":"100 km/h"},{"label":"Battery","value":"18.64 kWh LFP (Liquid Cooled)"},{"label":"Range (NEDC)","value":"210 km per charge"},{"label":"Charging (10-70%)","value":"36 minutes (DC Fast Charging)"},{"label":"Weight","value":"857 kg"}],"aerodynamics":[{"label":"Body Style","value":"2-Door 4-Seater Mini SUV"},{"label":"Ground Clearance","value":"191 mm"},{"label":"Approach Angle","value":"25.0°"},{"label":"Departure Angle","value":"32.0°"},{"label":"Turning Radius","value":"4.0 m"},{"label":"Cd","value":"0.36"}],"suspension":[{"label":"Front","value":"MacPherson Strut with Coil Springs"},{"label":"Rear","value":"Trailing Arm Rigid Axle with Coil Springs"},{"label":"Brakes","value":"Front Disc / Rear Drum with Regenerative Braking"},{"label":"Steering","value":"Electric Power Steering (EPS)"}]}');
 SET IDENTITY_INSERT dbo.cars OFF;
 
 -- 4.7 Parts (6 Official Performance Parts Catalog with CAD & Fitment Specs)
 SET IDENTITY_INSERT dbo.parts ON;
 INSERT INTO dbo.parts (part_id, sku, part_name, category, brand, specifications, price_vnd, price_usd, image_url, compatible_vehicles, rating, badge, stock_quantity, legal_compliance_status, bolt_pattern, wheel_diameter_inch, wheel_width_inch, offset_et, center_bore_mm, brake_disc_diameter_mm, min_wheel_diameter_inch, asset_url, material)
 VALUES
-(1, 'BBS-FIR-992-TITAN', 'BBS FI-R Forged Monoblock Wheel Set 20"/21"', 'Wheels & Rims', 'BBS Germany',
-    'Ultra-lightweight aerospace forged aluminum • PCD 5x112 / ET35 • 7.8 kg/wheel',
-    215000000, 8600, '/images/bbs-fi-r-wheel.jpg', 'Porsche 911 Carrera (991), BMW Vision ConnectedDrive, McLaren 720S',
-    4.90, 'HOT / BESTSELLER', 8, 'PASS', '5x112', 20.0, 9.5, 35, 66.6, NULL, NULL, NULL, 'Aerospace Forged Aluminum'),
+(1, 'BBS-FIR-992-TITAN', 'BBS LM Forged Monoblock 20"', 'Wheels & Rims', 'BBS Germany',
+    'Iconic BBS multi-spoke modular forged design • PCD 5x114.3 / 5x112 • Gold finish',
+    215000000, 8600, '/images/bbs-lm-wheel.jpg', 'Ferrari 458 Italia, Porsche 911 Carrera (991), BMW Vision ConnectedDrive',
+    4.90, 'HOT / BESTSELLER', 8, 'PASS', '5x114.3', 20.0, 9.5, 35, 67.1, NULL, NULL,
+    '/models/parts/ferrari-458/wheels/bbs-lm.glb', 'Forged Monoblock Alloy'),
 
-(2, 'RAYS-TE37-ULTRA-20', 'Volk Racing TE37 Ultra M-Spec Forged 20"', 'Wheels & Rims', 'Rays Japan',
-    'Motorsport-grade forged monoblock • PCD 5x114.3 • Bronze Anodized finish',
-    185000000, 7400, '/images/rays-te37-ultra.jpg', 'Ferrari 458 Italia',
-    5.00, 'TRACK LEGEND', 6, 'PASS', '5x114.3', 20.0, 10.0, 30, 66.1, NULL, NULL, NULL, 'Motorsport Forged Monoblock'),
+(2, 'RAYS-TE37-ULTRA-20', 'Volk Racing TE37 20"', 'Wheels & Rims', 'Rays Japan',
+    'Motorsport-grade 6-spoke forged monoblock • PCD 5x114.3 • Bronze Anodized finish',
+    185000000, 7400, '/images/volk-te37-wheel.jpg', 'Ferrari 458 Italia, Ferrari 458 Spider',
+    5.00, 'TRACK LEGEND', 6, 'PASS', '5x114.3', 20.0, 10.0, 30, 67.1, NULL, NULL,
+    '/models/parts/ferrari-458/wheels/volk-te37.glb', 'Motorsport Forged Monoblock'),
 
 (3, 'WORK-VSXX-19-F458', 'WORK VS-XX 19" Aftermarket Wheel', 'Wheels & Rims', 'WORK Wheels',
     '19-inch 3-piece modular forged construction • Classic mesh design • PCD 5x114.3',

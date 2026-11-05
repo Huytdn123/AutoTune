@@ -265,8 +265,8 @@ public class DataInitializer implements CommandLineRunner {
 
         // 5. Parts (Wheels & Rims, Brake Systems, Exhaust Systems, Coilovers & Shocks, Carbon Aero Kits)
         if (partRepository.count() == 0) {
-            partRepository.save(new Part(null, "BBS-FIR-992-TITAN", "BBS FI-R Forged Monoblock Wheel Set 20\"/21\"", "Wheels & Rims", "BBS Germany", "Ultra-lightweight aerospace forged aluminum • PCD 5x112 / ET35 • 7.8 kg/wheel", 215000000L, 8, "PASS", "/images/bbs-fi-r-wheel.jpg", "Porsche 911 Carrera (991), BMW Vision ConnectedDrive", new BigDecimal("4.90"), "HOT / BESTSELLER"));
-            partRepository.save(new Part(null, "RAYS-TE37-ULTRA-20", "Volk Racing TE37 Ultra M-Spec Forged 20\"", "Wheels & Rims", "Rays Japan", "Motorsport-grade forged monoblock • PCD 5x114.3 • Bronze Anodized finish", 185000000L, 6, "PASS", "/images/rays-te37-ultra.jpg", "Ferrari 458, Honda Civic Type R", new BigDecimal("5.00"), "TRACK LEGEND"));
+            partRepository.save(new Part(null, "BBS-FIR-992-TITAN", "BBS LM Forged Monoblock 20\"", "Wheels & Rims", "BBS Germany", "Iconic BBS multi-spoke modular forged design • PCD 5x114.3 / 5x112 • Gold finish", 215000000L, 8, "PASS", "/images/bbs-lm-wheel.jpg", "Ferrari 458 Italia, Porsche 911 Carrera (991), BMW Vision ConnectedDrive", new BigDecimal("4.90"), "HOT / BESTSELLER"));
+            partRepository.save(new Part(null, "RAYS-TE37-ULTRA-20", "Volk Racing TE37 20\"", "Wheels & Rims", "Rays Japan", "Motorsport-grade 6-spoke forged monoblock • PCD 5x114.3 • Bronze Anodized finish", 185000000L, 6, "PASS", "/images/volk-te37-wheel.jpg", "Ferrari 458 Italia, Ferrari 458 Spider", new BigDecimal("5.00"), "TRACK LEGEND"));
             partRepository.save(new Part(null, "AKR-EVO-TITAN-992", "Akrapovič Evolution Line Titanium Exhaust System", "Exhaust Systems", "Akrapovič", "Full Titanium construction • Bluetooth active flap control • -11.4 kg weight savings", 185000000L, 3, "PASS", "/images/akrapovic-evolution-line.jpg", "Porsche 911 Carrera (991), Carrera S", new BigDecimal("4.95"), "SIGNATURE SOUND"));
             partRepository.save(new Part(null, "KW-35271842-V4CS", "KW Suspensions V4 Clubsport 3-Way Coilover Kit", "Coilovers & Shocks", "KW Automotive", "16-click rebound & independent high/low speed compression • Uniball camber plates", 123000000L, 4, "PASS", "/images/kw-v4-clubsport.jpg", "BMW Vision ConnectedDrive, Porsche 911 Carrera (991), McLaren 720S", new BigDecimal("4.85"), "TRACK READY"));
             partRepository.save(new Part(null, "BRM-1N1.9042A2", "Brembo GT-S 6-Piston Big Brake Kit 380x34mm", "Brake Systems", "Brembo Racing", "Radial monoblock caliper • 2-piece Type 3 slotted disc • 800°C thermal endurance", 96250000L, 5, "PASS", "/images/brembo-gt-brake-kit.jpg", "Porsche 911 Carrera (991), Ferrari 458", new BigDecimal("4.98"), "RACING SPEC"));
@@ -302,8 +302,8 @@ public class DataInitializer implements CommandLineRunner {
 
         // Ensure official parts exist and match catalog with media
         List<Part> targetParts = List.of(
-                new Part(null, "BBS-FIR-992-TITAN", "BBS FI-R Forged Monoblock Wheel Set 20\"/21\"", "Wheels & Rims", "BBS Germany", "Ultra-lightweight aerospace forged aluminum • PCD 5x112 / ET35 • 7.8 kg/wheel", 215000000L, 8, "PASS", "/images/bbs-fi-r-wheel.jpg", "Porsche 911 Carrera (991), BMW Vision ConnectedDrive", new BigDecimal("4.90"), "HOT / BESTSELLER"),
-                new Part(null, "RAYS-TE37-ULTRA-20", "Volk Racing TE37 Ultra M-Spec Forged 20\"", "Wheels & Rims", "Rays Japan", "Motorsport-grade forged monoblock • PCD 5x114.3 • Bronze Anodized finish", 185000000L, 6, "PASS", "/images/rays-te37-ultra.jpg", "Ferrari 458, Honda Civic Type R", new BigDecimal("5.00"), "TRACK LEGEND"),
+                new Part(null, "BBS-FIR-992-TITAN", "BBS LM Forged Monoblock 20\"", "Wheels & Rims", "BBS Germany", "Iconic BBS multi-spoke modular forged design • PCD 5x114.3 / 5x112 • Gold finish", 215000000L, 8, "PASS", "/images/bbs-lm-wheel.jpg", "Ferrari 458 Italia, Porsche 911 Carrera (991), BMW Vision ConnectedDrive", new BigDecimal("4.90"), "HOT / BESTSELLER"),
+                new Part(null, "RAYS-TE37-ULTRA-20", "Volk Racing TE37 20\"", "Wheels & Rims", "Rays Japan", "Motorsport-grade 6-spoke forged monoblock • PCD 5x114.3 • Bronze Anodized finish", 185000000L, 6, "PASS", "/images/volk-te37-wheel.jpg", "Ferrari 458 Italia, Ferrari 458 Spider", new BigDecimal("5.00"), "TRACK LEGEND"),
                 new Part(null, "WORK-VSXX-19-F458", "WORK VS-XX 19\" Aftermarket Wheel", "Wheels & Rims", "WORK Wheels", "19-inch 3-piece modular forged construction • Classic mesh design • PCD 5x114.3", 105000000L, 8, "PASS", "/images/work-vs-xx-wheel.jpg", "Ferrari 458 Italia, Ferrari 458 Spider", new BigDecimal("4.95"), "CC BY 4.0 VERIFIED"),
                 new Part(null, "GEN-GTWING-F458", "Carbon Aero GT Wing", "Rear Spoilers", "Track Aerodynamics", "Gloss carbon fiber airfoil blade • Twin CNC aluminum uprights • High-downforce track profile", 61250000L, 5, "PASS", "/images/carbon-gt-wing.jpg", "Ferrari 458 Italia, Ferrari 458 Spider", new BigDecimal("4.92"), "TRACK SPEC"),
                 new Part(null, "CARB-AERO-F458", "Carbon Fiber Aerodynamics Package", "Carbon Aero Kits", "Track Aerodynamics", "Pre-preg carbon fiber front splitter extensions • Side skirts • Rear diffuser aero fins", 80000000L, 4, "PASS", "/images/carbon-aero-package.jpg", "Ferrari 458 Italia, Ferrari 458 Spider", new BigDecimal("4.93"), "TRACK SPEC"),
@@ -333,17 +333,21 @@ public class DataInitializer implements CommandLineRunner {
 
             // Engineering Fitment specifications & 3D Assets
             if ("BBS-FIR-992-TITAN".equals(tp.getSku())) {
-                p.setBoltPattern("5x112");
+                p.setAssetUrl("/models/parts/ferrari-458/wheels/bbs-lm.glb");
+                p.setMaterial("Forged Monoblock Alloy");
+                p.setBoltPattern("5x114.3");
                 p.setWheelDiameterInch(new BigDecimal("20.0"));
                 p.setWheelWidthInch(new BigDecimal("9.5"));
                 p.setOffsetEt(35);
-                p.setCenterBoreMm(new BigDecimal("66.6"));
+                p.setCenterBoreMm(new BigDecimal("67.1"));
             } else if ("RAYS-TE37-ULTRA-20".equals(tp.getSku())) {
+                p.setAssetUrl("/models/parts/ferrari-458/wheels/volk-te37.glb");
+                p.setMaterial("Motorsport Forged Monoblock");
                 p.setBoltPattern("5x114.3");
                 p.setWheelDiameterInch(new BigDecimal("20.0"));
                 p.setWheelWidthInch(new BigDecimal("10.0"));
                 p.setOffsetEt(30);
-                p.setCenterBoreMm(new BigDecimal("66.1"));
+                p.setCenterBoreMm(new BigDecimal("67.1"));
             } else if ("WORK-VSXX-19-F458".equals(tp.getSku())) {
                 p.setAssetUrl("/models/parts/ferrari-458/wheels/work-vs-xx.glb");
                 p.setMaterial("3-Piece Modular Forged Alloy");
@@ -475,6 +479,28 @@ public class DataInitializer implements CommandLineRunner {
                 "/models/bmw.glb",
                 "READY_FOR_3D",
                 "{\"performance\":[{\"label\":\"Engine\",\"value\":\"Electric / TwinPower Turbo Hybrid Concept\"},{\"label\":\"Power\",\"value\":\"340 hp equivalent\"},{\"label\":\"Torque\",\"value\":\"369 lb-ft equivalent\"},{\"label\":\"0–100 km/h\",\"value\":\"4.5 seconds\"},{\"label\":\"Top Speed\",\"value\":\"250 km/h\"},{\"label\":\"Transmission\",\"value\":\"Single-Speed Direct Drive\"},{\"label\":\"Weight\",\"value\":\"1,450 kg\"}],\"aerodynamics\":[{\"label\":\"Downforce\",\"value\":\"50 kg @ 200 km/h\"},{\"label\":\"Active Grille\",\"value\":\"Adaptive Kidney Grille Shutter\"},{\"label\":\"Fairings\",\"value\":\"Streamlined Speedster Fairings\"},{\"label\":\"Cd\",\"value\":\"0.26\"},{\"label\":\"Cl\",\"value\":\"-0.12\"}],\"suspension\":[{\"label\":\"Front\",\"value\":\"Double Wishbone Lightweight Aluminum\"},{\"label\":\"Rear\",\"value\":\"Multi-Link Dynamic Suspension\"},{\"label\":\"Dampers\",\"value\":\"BMW Dynamic Damper Control\"},{\"label\":\"Springs\",\"value\":\"M Performance Progressive Springs\"}]}"
+            ),
+            new Car(
+                null,
+                "vinfast-vf3",
+                "VinFast",
+                "VF3 Plus",
+                "2026",
+                "Electric Mini SUV",
+                "Single Motor · 43hp · City EV · 210km Range",
+                "4x100",
+                new BigDecimal("16.0"),
+                857,
+                43,
+                13000L,
+                "White Edition · City EV",
+                "#0068FF",
+                "#FAFAFA",
+                "#1A1A1A",
+                "#C8D8F0",
+                "/models/vinfast/vf3-plus-2026/vinfast_vf3_plus_2026.glb",
+                "READY_FOR_3D",
+                "{\"performance\":[{\"label\":\"Motor\",\"value\":\"Permanent Magnet Synchronous (Rear Axle)\"},{\"label\":\"Power\",\"value\":\"43 hp (32 kW)\"},{\"label\":\"Torque\",\"value\":\"110 Nm\"},{\"label\":\"0–50 km/h\",\"value\":\"5.3 seconds\"},{\"label\":\"0–100 km/h\",\"value\":\"19.5 seconds\"},{\"label\":\"Top Speed\",\"value\":\"100 km/h\"},{\"label\":\"Battery\",\"value\":\"18.64 kWh LFP (Liquid Cooled)\"},{\"label\":\"Range (NEDC)\",\"value\":\"210 km per charge\"},{\"label\":\"Charging (10-70%)\",\"value\":\"36 minutes (DC Fast Charging)\"},{\"label\":\"Weight\",\"value\":\"857 kg\"}],\"aerodynamics\":[{\"label\":\"Body Style\",\"value\":\"2-Door 4-Seater Mini SUV\"},{\"label\":\"Ground Clearance\",\"value\":\"191 mm\"},{\"label\":\"Approach Angle\",\"value\":\"25.0°\"},{\"label\":\"Departure Angle\",\"value\":\"32.0°\"},{\"label\":\"Turning Radius\",\"value\":\"4.0 m\"},{\"label\":\"Cd\",\"value\":\"0.36\"}],\"suspension\":[{\"label\":\"Front\",\"value\":\"MacPherson Strut with Coil Springs\"},{\"label\":\"Rear\",\"value\":\"Trailing Arm Rigid Axle with Coil Springs\"},{\"label\":\"Brakes\",\"value\":\"Front Disc / Rear Drum with Regenerative Braking\"},{\"label\":\"Steering\",\"value\":\"Electric Power Steering (EPS)\"}]}"
             )
         );
 
@@ -504,6 +530,11 @@ public class DataInitializer implements CommandLineRunner {
                 car.setStockOffsetEt(25);
                 car.setStockCenterBoreMm(new BigDecimal("72.6"));
                 car.setStockBrakeDiscMm(360);
+            } else if ("vinfast-vf3".equals(car.getSlug())) {
+                car.setStockWheelWidthInch(new BigDecimal("6.0"));
+                car.setStockOffsetEt(40);
+                car.setStockCenterBoreMm(new BigDecimal("54.1"));
+                car.setStockBrakeDiscMm(260);
             }
 
             carRepository.findBySlug(car.getSlug()).ifPresentOrElse(
@@ -566,10 +597,10 @@ public class DataInitializer implements CommandLineRunner {
         q1.setFinalTotal(340000000L);
         q1.setStatus("APPROVED");
         q1.setLegalStatus("PASS");
-        q1.setNotes("High-downforce aero pack + BBS Forged Titanium wheels & Akrapovič Evolution Line exhaust");
+        q1.setNotes("High-downforce aero pack + BBS LM Forged wheels & Akrapovič Evolution Line exhaust");
 
         List<QuotationItem> q1Items = new ArrayList<>();
-        QuotationItem item1 = new QuotationItem(null, q1, null, "BBS FI-R Forged Titanium Wheels (Set of 4)", "BBS-FIR-992-TITAN", "Wheels", 1, 185000000L, 185000000L);
+        QuotationItem item1 = new QuotationItem(null, q1, null, "BBS LM Forged Monoblock 20\" (Set of 4)", "BBS-FIR-992-TITAN", "Wheels", 1, 185000000L, 185000000L);
         QuotationItem item2 = new QuotationItem(null, q1, null, "Akrapovič Evolution Line Titanium Exhaust", "AKR-EVO-TITAN-992", "Exhaust", 1, 160000000L, 160000000L);
         q1Items.add(item1);
         q1Items.add(item2);

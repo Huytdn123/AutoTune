@@ -7,11 +7,15 @@ export const CAR_MODEL_FILES = {
   'mclaren-720s':          '/models/mclaren.glb',
   'bmw-m4-csl':            '/models/bmw.glb',
   'bmw-vision':            '/models/bmw.glb',
+  'vinfast-vf3':           '/models/vinfast/vf3-plus-2026/vinfast_vf3_plus_2026.glb',
+  'vinfast-vf3-2026':      '/models/vinfast/vf3-plus-2026/vinfast_vf3_plus_2026.glb',
 }
 
 // ─── Official Real-Life Aftermarket 3D Part Assets ───────────────────────────
 export const PART_MODEL_FILES = {
   'wheel-work-vsxx-19': '/models/parts/ferrari-458/wheels/work-vs-xx.glb',
+  'wheel-bbs-lm-20':    '/models/parts/ferrari-458/wheels/bbs-lm.glb',
+  'wheel-rays-te37-20': '/models/parts/ferrari-458/wheels/volk-te37.glb',
   'spoiler-bcl-wing':   '/models/parts/ferrari-458/spoilers/big-country-labs-style-wing.glb',
   'brakes-brembo-gt':   '/models/parts/ferrari-458/brakes/brembo-gt-brakes.glb',
   'exhaust-akrapovic':  '/models/parts/ferrari-458/exhaust/akrapovic-exhaust-tips.glb',

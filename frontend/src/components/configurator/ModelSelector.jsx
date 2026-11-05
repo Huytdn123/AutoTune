@@ -50,13 +50,24 @@ export default function ModelSelector({
                   style={{ backgroundColor: car.defaultBodyColor || car.defaultBody }}
                 />
                 <div className="min-w-0">
-                  <p className={`text-[13px] font-black tracking-tight truncate ${
-                    isSelected
-                      ? isDark ? 'text-white' : 'text-[#0213B2]'
-                      : isDark ? 'text-white' : 'text-slate-950'
-                  }`}>
-                    {car.brand} {car.model}
-                  </p>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <p className={`text-[13px] font-black tracking-tight truncate ${
+                      isSelected
+                        ? isDark ? 'text-white' : 'text-[#0213B2]'
+                        : isDark ? 'text-white' : 'text-slate-950'
+                    }`}>
+                      {car.brand} {car.model}
+                    </p>
+                    {car.bodyType && (
+                      <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider shrink-0 ${
+                        car.bodyType.toLowerCase().includes('electric') || car.bodyType.toLowerCase().includes('ev')
+                          ? isDark ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800/60' : 'bg-emerald-50 text-emerald-700 border border-emerald-300'
+                          : isDark ? 'bg-white/10 text-slate-300' : 'bg-slate-100 text-slate-600'
+                      }`}>
+                        {car.bodyType.toLowerCase().includes('electric') ? 'Affordable EV' : car.bodyType}
+                      </span>
+                    )}
+                  </div>
                   <p className={`text-[11px] font-mono mt-0.5 leading-tight truncate ${
                     isSelected
                       ? isDark ? 'text-blue-200' : 'text-slate-700 font-medium'
